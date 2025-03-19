@@ -1,0 +1,47 @@
+# Generic
+# --------------------------
+Thumbs.db
+Desktop.ini
+.directory
+.DS_Store
+._*
+*.cache
+*.crt
+*.log
+*.old
+*.key
+*.pem
+*.tmp
+*.zip
+*~
+
+# Build files
+# --------------------------
+bootstrap/ssr
+storage/pail
+
+# Development files
+# --------------------------
+.env.*
+.env
+.php-version
+.tool-versions
+# phpunit.dusk.xml
+node_modules
+vendor
+
+Homestead.json
+Homestead.yaml
+
+# Node.js lock files
+.pnpm-store
+package-lock.json
+# pnpm-lock.yaml
+yarn.lock
+
+# But Keep these
+# --------------------------
+!.env.example
+!.env.*.example
+!.htaccess
+!.gitkeep

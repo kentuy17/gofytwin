@@ -1,0 +1,28 @@
+* text=auto eol=lf
+
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+
+.deploy/development export-ignore
+.deploy/production  export-ignore
+.devcontainer       export-ignore
+.dockerignore       export-ignore
+.gitattributes      export-ignore
+/.gitignore         export-ignore
+.github             export-ignore
+.styleci.yml        export-ignore
+.vscode             export-ignore
+*.config.js         export-ignore
+*.config.ts         export-ignore
+docker-compose.yaml export-ignore
+phpunit.xml         export-ignore
+phpunit.*.xml       export-ignore
+pnpm-lock.yaml      export-ignore
+public/.gitignore   export-ignore
+scripts             export-ignore
+tests               export-ignore
+tsconfig.json       export-ignore
+jsconfig.json       export-ignore
