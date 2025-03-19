@@ -16,7 +16,7 @@ const appName = import.meta.env.APP_NAME ?? 'Laravel'
 
 void createInertiaApp({
   title: title => `${title} - ${appName}`,
-  resolve: async name => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
+  resolve: async name => resolvePageComponent(`./pages/${name}.jsx`, import.meta.glob('./pages/**/*.jsx')),
   setup({ el, App, props }) {
     const root = createRoot(el)
 
