@@ -1,12 +1,18 @@
 <?php
 
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthOtpController;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
+Route::get('/home', function () {
+    // return Inertia::render('welcome');
+    return Redirect::to(route('login'));
 })->name('home');
+
+Route::get('/', function() {
+    return Redirect::to(route('login'));
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
