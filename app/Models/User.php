@@ -21,6 +21,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'mobile_no',
+        'location',
+        'percentage',
+        'account_status',
+        'ip',
+        'user_attempts',
+        'user_level',
+        'is_referral',
+        'website_url',
+        'is_new',
+        'website_register',
+        'credits',
+        'bet_limit',
     ];
 
     /**

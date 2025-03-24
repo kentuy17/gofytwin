@@ -21,6 +21,8 @@ export default antfu({
       'react/no-unstable-default-props': ['off'],
       'react-dom/no-unsafe-target-blank': ['off'],
       'react-refresh/only-export-components': ['off'],
+      'unused-imports/no-unused-imports': ['warn'],
+      'no-unused-vars': ['warn'],
     },
   },
   typescript: {
