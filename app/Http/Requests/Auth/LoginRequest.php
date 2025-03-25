@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Controllers\AuthOtpController;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +27,13 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+        // return [
+        //     'email' => ['required', 'string', 'email'],
+        //     'password' => ['required', 'string'],
+        // ];
+
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'mobile_no' => ['required', 'string'],
         ];
     }
 
@@ -41,15 +46,26 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        // generateOtp
+        $otp = new AuthOtpController(SettingsModel);
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
+        // return success if generated
 
-        RateLimiter::clear($this->throttleKey());
+        // wait for userOtp
+
+        // check if match
+
+        // authenticate
+
+        // if (! Auth::attempt($this->only('mobile_no'), $this->boolean('remember'))) {
+        //     RateLimiter::hit($this->throttleKey());
+
+        //     throw ValidationException::withMessages([
+        //         'mobile_no' => __('auth.failed'),
+        //     ]);
+        // }
+
+        // RateLimiter::clear($this->throttleKey());
     }
 
     /**

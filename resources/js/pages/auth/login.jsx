@@ -33,13 +33,13 @@ import 'react-phone-number-input/style.css'
 export function PhoneInputCountry({ inputStr }) {
   const icon = getCountryFlagEmojiFromCountryCodeOrNameOrFlagEmoji('PH')
   const [activeIcon, setActiveIcon] = useState(icon)
-  const [phoneNum, setPhoneNum] = useState('')
+  const [mobile_no, setmobile_no] = useState('')
   // console.log(data)
 
   const handleInputChanged = (str) => {
     const { value } = str.target
     console.log(value, 'blogger')
-    setPhoneNum(value)
+    setmobile_no(value)
     const x = countries.findIndex(i => i.dialCode === value)
 
     if (x) {
@@ -59,29 +59,35 @@ export function PhoneInputCountry({ inputStr }) {
       </div>
       <div dir="ltr">
         <Input placeholder="6811604" onKeyDown={handleInputChanged} className="rounded-none" />
-        <span>{phoneNum}</span>
+        <span>{mobile_no}</span>
       </div>
     </div>
+  )
+}
+
+export function InputOtpDialog() {
+  return (
+    <div>InputOtpDialog</div>
   )
 }
 
 function LoginDialog() {
   const submitRef = useRef(null)
   const { data, setData, post, processing, reset } = useForm({
-    phoneNum: '',
-    remember: false,
+    mobile_no: '',
+    remember: true,
   })
 
   const submit = (e) => {
     e.preventDefault()
-    const { isValid } = phone(data.phoneNum)
+    const { isValid } = phone(data.mobile_no)
 
     if (!isValid) {
       alert('Invalid format')
       return
     }
 
-    post(route('login'), {
+    post(route('otp.generate'), {
       onFinish: () => reset('password'),
     })
   }
@@ -99,8 +105,8 @@ function LoginDialog() {
             // international
             defaultCountry="PH"
             placeholder="Enter phone number"
-            value={data.phoneNum}
-            onChange={e => setData('phoneNum', e)}
+            value={data.mobile_no}
+            onChange={e => setData('mobile_no', e)}
             className={cn(
               'border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
               'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
@@ -129,7 +135,8 @@ function LoginDialog() {
   )
 }
 
-export default function Login({ status }) {
+export default function Login({ status, site }) {
+  console.log(site)
   return (
     <AuthLayout>
       <Head title="Log in" />

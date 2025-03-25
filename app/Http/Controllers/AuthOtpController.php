@@ -11,8 +11,10 @@ use App\Models\VerificationCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Inertia\Inertia;
 
 class AuthOtpController extends Controller
 {
@@ -24,10 +26,12 @@ class AuthOtpController extends Controller
 
     const FREE_CREDITS = 0;
 
-    public function __construct(
-        SettingsModel $settings
-    ) {
-        $this->settings = $settings;
+    const MOBILE_APP_URL = 'https://gamefowlmaster.com';
+
+    public function __construct()
+    {
+
+        $this->settings = new SettingsModel;
         $this->background_image = $this->settings->getValueFor('background_image');
     }
 
@@ -42,44 +46,30 @@ class AuthOtpController extends Controller
     // Return View of OTP Login Page
     public function login(Request $request)
     {
-        // $credentials = request(['email', 'password']);
-
-        // if (!auth()->attempt($credentials)) {
-        //     return response()->json([
-        //         'message' => 'Unauthorized'
-        //     ], 401);
-        // }
-
-        // $token = auth()->user()->createToken('authToken');
-
-        // return response()->json([
-        //     'message' => 'Logged in successfully',
-        //     'token' => $token->plainTextToken,
-        //     'token_type' => 'Bearer'
-        // ]);
-
-        if (Auth::check()) {
-
-            return redirect('/');
-        }
-        // if($this->checkMaintenance()){
-
-        //     return $this->checkMaintenance();
-        // }
-
-        return view('auth.otp-login', [
-            'pot_money' => $pot_money->amount,
+        return [
+            'status' => $request->session()->get('status'),
+            // 'pot_money' => $pot_money->amount,
             'app_url' => self::MOBILE_APP_URL,
-            'pot_money_six_digits' => $pot_money_six_digits->amount,
+            // 'pot_money_six_digits' => $pot_money_six_digits->amount,
             'landing_page' => true,
             'ref_code' => null,
             'settings' => $this->settings,
-            'settings' => $this->settings,
             'home_banner' => null !== ($this->settings->getValueFor('banner_image')) ? $this->settings->getValueFor('banner_image') : 'images/homepage-banner.png',
-            // 'home_banner' => null !== ($this->settings->getValueFor('login_banner_image')) ? $this->settings->getValueFor('login_banner_image') : 'images/homepage-banner.png',
             'background_image' => $this->background_image,
             'og_image' => $this->settings->getValueFor('og_image'),
-        ]);
+        ];
+
+        // return view('auth.otp-login', [
+        //     'pot_money' => $pot_money->amount,
+        //     'app_url' => self::MOBILE_APP_URL,
+        //     'pot_money_six_digits' => $pot_money_six_digits->amount,
+        //     'landing_page' => true,
+        //     'ref_code' => null,
+        //     'settings' => $this->settings,
+        //     'home_banner' => null !== ($this->settings->getValueFor('banner_image')) ? $this->settings->getValueFor('banner_image') : 'images/homepage-banner.png',
+        //     'background_image' => $this->background_image,
+        //     'og_image' => $this->settings->getValueFor('og_image'),
+        // ]);
     }
 
     public function check(Request $request)
@@ -127,11 +117,18 @@ class AuthOtpController extends Controller
     public function generate(Request $request)
     {
         // Check if User has OTP, if not, generate
-        $verificationCode = $this->generateOtp($request, $request->ref_code);
-        if (! $verificationCode) {
+        $verificationCode = $this->generateOtp($request);
 
-            return json_encode(['success' => false, 'msg' => 'Your account has been deactivated. Please contact support below:', 'response' => null]);
+        // return $verificationCode;
+        if (! $verificationCode) {
+            // return json_encode(['success' => false, 'msg' => 'Your account has been deactivated. Please contact support below:', 'response' => null]);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Your account has been deactivated. Please contact support below:',
+                'response' => null,
+            ]);
         }
+
         $user = User::find($verificationCode->user_id);
         if ($user->user_attempts > 2) {
             $user->account_status = 'inactive';
@@ -147,10 +144,13 @@ class AuthOtpController extends Controller
             $user->user_attempts = $next_attempt;
             $user->save();
 
-            return json_encode(['success' => true,
-                'msg' => 'Check you Phone for your OTP.',
-                'redirect_url' => URL::to('/').'/otp/verification/'.$verificationCode->user_id,
-                'response' => null]
+            return json_encode(
+                [
+                    'success' => true,
+                    'msg' => 'Check you Phone for your OTP.',
+                    'redirect_url' => URL::to('/').'/otp/verification/'.$verificationCode->user_id,
+                    'response' => null,
+                ]
             );
             // return redirect()->route('otp.verification', ['user_id' => $verificationCode->user_id])->with('error',  $message);
         }
@@ -165,10 +165,15 @@ class AuthOtpController extends Controller
 
         // Return With OTP Your STL verification code is 6086. Please do not share. Happy Betting!
 
-        return json_encode(['success' => true,
-            'msg' => 'Congratulations! Your account has been created.',
-            'redirect_url' => URL::to('/').'/otp/verification/'.$verificationCode->user_id,
-            'response' => null]
+        return Redirect::to('/otp/verification/'.$verificationCode->user_id);
+
+        return json_encode(
+            [
+                'success' => true,
+                'msg' => 'Congratulations! Your account has been created.',
+                'redirect_url' => URL::to('/').'/otp/verification/'.$verificationCode->user_id,
+                'response' => null,
+            ]
         );
         // return redirect()->route('otp.verification', ['user_id' => $verificationCode->user_id])->with('success',  $message);
     }
@@ -191,8 +196,14 @@ class AuthOtpController extends Controller
         return $this->url_origin($s, $use_forwarded_host).$s['REQUEST_URI'];
     }
 
-    public function generateOtp($request, $ref_code)
+    public function generateOtp($request)
     {
+        // return response()->json([
+        //     'requests' => $request->all(),
+        //     'status' => 'success',
+        //     'message' => 'otp generated'
+        // ], 200);
+
         $base_url = URL::to('/');
         $user = User::where('mobile_no', $request->mobile_no)->first();
         if ($user) {
@@ -212,11 +223,12 @@ class AuthOtpController extends Controller
             $city = $location->city;
         }
 
+        $site_check_url = config('app.debug') ? 'gofytwin' : '127.0.0.1';
         if (! $user) {
-            if (str_contains($base_url, 'gofytwin')) {
-
+            if (str_contains($base_url, $site_check_url)) {
                 return redirect(self::FAKE_URL);
             }
+
             // $absolute_url = $this->full_url( $_SERVER );
             $user = User::create([
                 'name' => $request->mobile_no,
@@ -282,7 +294,11 @@ class AuthOtpController extends Controller
             $is_expired = true;
         }
 
-        return false;
+        // return false;
+        return Inertia::render('auth/otp', [
+            'code' => $verificationCode,
+            'user' => $user,
+        ]);
     }
 
     public function loginWithOtp(Request $request)
@@ -303,15 +319,21 @@ class AuthOtpController extends Controller
         $now = Carbon::now();
         if (! $verificationCode) {
 
-            return json_encode(['success' => false,
-                'msg' => 'Confirmation Code is INCORRECT.',
-                'response' => null]
+            return json_encode(
+                [
+                    'success' => false,
+                    'msg' => 'Confirmation Code is INCORRECT.',
+                    'response' => null,
+                ]
             );
         } elseif ($verificationCode && $now->isAfter($verificationCode->expire_at)) {
 
-            return json_encode(['success' => false,
-                'msg' => 'Your OTP has expired',
-                'response' => null]
+            return json_encode(
+                [
+                    'success' => false,
+                    'msg' => 'Your OTP has expired',
+                    'response' => null,
+                ]
             );
         }
 
