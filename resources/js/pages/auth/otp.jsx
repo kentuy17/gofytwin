@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-/* eslint-disable no-alert */
+
 // import TextLink from '@/components/text-link'
 
 import {
@@ -31,9 +31,8 @@ import AuthLayout from '@/layouts/auth-layout'
 import { Head, useForm } from '@inertiajs/react'
 import { countries, getCountryFlagEmojiFromCountryCodeOrNameOrFlagEmoji } from 'country-codes-flags-phone-codes'
 // import { LoaderCircle } from 'lucide-react'
-import { phone } from 'phone'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 // import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 
@@ -78,25 +77,41 @@ export function InputOtpDialog() {
   )
 }
 
-function LoginDialog() {
-  // const submitRef = useRef(null)
-  const { data, setData, post, reset } = useForm({
+function OtpDialog({ user }) {
+  const submitRef = useRef(null)
+  console.log(user, 'userData')
+
+  const { data, setData, post, errors } = useForm({
     otp: '',
+    user_id: user.id,
   })
 
   const submit = (e) => {
     e.preventDefault()
-    const { isValid } = phone(data.mobile_no)
+    console.log(data.otp.length)
 
-    if (!isValid) {
-      alert('Invalid format')
+    if (data.otp.length !== 4) {
+      console.log('Too small dick')
       return
     }
 
-    post(route('otp.generate'), {
-      onFinish: () => reset('password'),
+    post(route('otp.getlogin'), {
+      onFinish: () => console.log('paksit'),
+      onError: err => console.log([err, errors, data]),
     })
   }
+
+  const handleOnInput = (value) => {
+    console.log(value, 'valuy')
+    setData('otp', value)
+  }
+
+  useEffect(() => {
+    if (data.otp.length === 4) {
+      console.log(data.otp, 'trigger')
+      submitRef.current.click()
+    }
+  }, [data.otp])
 
   return (
     <AlertDialog open className="flex flex-col items-center">
@@ -111,7 +126,7 @@ function LoginDialog() {
             <InputOTP
               maxLength={4}
               value={data.otp}
-              onChange={value => setData('otp', value)}
+              onChange={handleOnInput}
             >
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
@@ -134,6 +149,7 @@ function LoginDialog() {
                   )}
             </div>
           </div>
+          <button type="submit" ref={submitRef} className="hidden">submit</button>
         </form>
         <AlertDialogFooter>
           {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
@@ -153,13 +169,14 @@ function LoginDialog() {
   )
 }
 
-export default function Otp({ status, site }) {
-  console.log(site)
+export default function Otp({ user, code, ip }) {
+  console.log([code, ip])
+
   return (
     <AuthLayout>
       <Head title="Log in" />
-      <LoginDialog />
-      {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+      <OtpDialog user={user} />
+      {/* {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>} */}
     </AuthLayout>
   )
 }

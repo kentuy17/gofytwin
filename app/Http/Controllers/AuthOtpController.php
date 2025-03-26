@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class AuthOtpController extends Controller
@@ -294,17 +295,20 @@ class AuthOtpController extends Controller
             $is_expired = true;
         }
 
+        $ip_address = file_get_contents('https://api.ipify.org');
+        // print_r($ip_address);
+
         // return false;
         return Inertia::render('auth/otp', [
             'code' => $verificationCode,
             'user' => $user,
+            'ip' => $ip_address,
         ]);
     }
 
     public function loginWithOtp(Request $request)
     {
         if (Auth::check()) {
-
             return redirect('/');
         }
         // Validation
@@ -318,23 +322,19 @@ class AuthOtpController extends Controller
 
         $now = Carbon::now();
         if (! $verificationCode) {
+            throw ValidationException::withMessages([
+                'success' => false,
+                'msg' => 'Confirmation Code is INCORRECT.',
+                'response' => null,
+            ]);
+        }
 
-            return json_encode(
-                [
-                    'success' => false,
-                    'msg' => 'Confirmation Code is INCORRECT.',
-                    'response' => null,
-                ]
-            );
-        } elseif ($verificationCode && $now->isAfter($verificationCode->expire_at)) {
-
-            return json_encode(
-                [
-                    'success' => false,
-                    'msg' => 'Your OTP has expired',
-                    'response' => null,
-                ]
-            );
+        if ($verificationCode && $now->isAfter($verificationCode->expire_at)) {
+            throw ValidationException::withMessages([
+                'success' => false,
+                'msg' => 'Your OTP has expired',
+                'response' => null,
+            ]);
         }
 
         $user = User::whereId($request->user_id)->first();
