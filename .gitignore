@@ -20,6 +20,10 @@ Desktop.ini
 bootstrap/ssr
 storage/pail
 
+!public/
+public/*
+!public/build
+
 # Development files
 # --------------------------
 .env.*
