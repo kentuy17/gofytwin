@@ -190,10 +190,10 @@ class AuthOtpController extends Controller
         $base_url = URL::to('/');
         $user = User::where('mobile_no', $request->mobile_no)->first();
         if ($user) {
-            if (str_contains($base_url, 'gofytwin') && ! in_array($user->id, $this->allowed_access)) {
+            // if (str_contains($base_url, 'gofytwin') && ! in_array($user->id, $this->allowed_access)) {
 
-                return redirect(self::FAKE_URL);
-            }
+            //     return redirect(self::FAKE_URL);
+            // }
             if ($user->account_status != 'active' || $user->user_attempts >= 3) {
 
                 return false;
@@ -206,11 +206,11 @@ class AuthOtpController extends Controller
             $city = $location->city;
         }
 
-        $site_check_url = config('app.debug') ? 'gofytwin' : '127.0.0.1';
+        // $site_check_url = config('app.debug') ? 'gofytwin' : '127.0.0.1';
         if (! $user) {
-            if (str_contains($base_url, $site_check_url)) {
-                return redirect(self::FAKE_URL);
-            }
+            // if (str_contains($base_url, $site_check_url)) {
+            //     return redirect(self::FAKE_URL);
+            // }
 
             // $absolute_url = $this->full_url( $_SERVER );
             $user = User::create([
