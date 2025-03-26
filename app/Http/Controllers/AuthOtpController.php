@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class AuthOtpController extends Controller
@@ -33,6 +34,7 @@ class AuthOtpController extends Controller
 
         $this->settings = new SettingsModel;
         $this->background_image = $this->settings->getValueFor('background_image');
+        $this->ip_address = file_get_contents('https://api.ipify.org');
     }
 
     public function dls()
@@ -48,9 +50,7 @@ class AuthOtpController extends Controller
     {
         return [
             'status' => $request->session()->get('status'),
-            // 'pot_money' => $pot_money->amount,
             'app_url' => self::MOBILE_APP_URL,
-            // 'pot_money_six_digits' => $pot_money_six_digits->amount,
             'landing_page' => true,
             'ref_code' => null,
             'settings' => $this->settings,
@@ -58,18 +58,6 @@ class AuthOtpController extends Controller
             'background_image' => $this->background_image,
             'og_image' => $this->settings->getValueFor('og_image'),
         ];
-
-        // return view('auth.otp-login', [
-        //     'pot_money' => $pot_money->amount,
-        //     'app_url' => self::MOBILE_APP_URL,
-        //     'pot_money_six_digits' => $pot_money_six_digits->amount,
-        //     'landing_page' => true,
-        //     'ref_code' => null,
-        //     'settings' => $this->settings,
-        //     'home_banner' => null !== ($this->settings->getValueFor('banner_image')) ? $this->settings->getValueFor('banner_image') : 'images/homepage-banner.png',
-        //     'background_image' => $this->background_image,
-        //     'og_image' => $this->settings->getValueFor('og_image'),
-        // ]);
     }
 
     public function check(Request $request)
@@ -118,15 +106,9 @@ class AuthOtpController extends Controller
     {
         // Check if User has OTP, if not, generate
         $verificationCode = $this->generateOtp($request);
-
-        // return $verificationCode;
         if (! $verificationCode) {
-            // return json_encode(['success' => false, 'msg' => 'Your account has been deactivated. Please contact support below:', 'response' => null]);
-            return response()->json([
-                'success' => false,
-                'msg' => 'Your account has been deactivated. Please contact support below:',
-                'response' => null,
-            ]);
+            return Redirect::to('/login')
+                ->with('error', 'Your account has been deactivated. Please contact support.');
         }
 
         $user = User::find($verificationCode->user_id);
@@ -144,18 +126,10 @@ class AuthOtpController extends Controller
             $user->user_attempts = $next_attempt;
             $user->save();
 
-            return json_encode(
-                [
-                    'success' => true,
-                    'msg' => 'Check you Phone for your OTP.',
-                    'redirect_url' => URL::to('/').'/otp/verification/'.$verificationCode->user_id,
-                    'response' => null,
-                ]
-            );
-            // return redirect()->route('otp.verification', ['user_id' => $verificationCode->user_id])->with('error',  $message);
+            return Redirect::to('/otp/verification/'.$verificationCode->user_id)
+                ->with('msg', 'Check you Phone for your OTP.');
         }
 
-        // $text_message = "Your Small Town Luck (STL) verification code is {otp}. Please do not share.";
         $text_message = 'Ka-Number! Your OTP Confirmation Code is: {otp}.';
 
         // seme SMS
@@ -176,6 +150,15 @@ class AuthOtpController extends Controller
             ]
         );
         // return redirect()->route('otp.verification', ['user_id' => $verificationCode->user_id])->with('success',  $message);
+    }
+
+    public function redirectOtpComponent()
+    {
+        return Inertia::render('auth/otp', [
+            'code' => $verificationCode ?? null,
+            'user' => $user ?? null,
+            'ip' => $this->ip_address,
+        ]);
     }
 
     public function url_origin($s, $use_forwarded_host = false)
@@ -294,78 +277,83 @@ class AuthOtpController extends Controller
             $is_expired = true;
         }
 
-        // return false;
         return Inertia::render('auth/otp', [
             'code' => $verificationCode,
             'user' => $user,
+            'ip' => $this->ip_address,
         ]);
     }
 
     public function loginWithOtp(Request $request)
     {
         if (Auth::check()) {
-
             return redirect('/');
         }
+
         // Validation
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'otp' => 'required',
         ]);
 
+        $user = User::whereId($request->user_id)->first();
+        $user->user_attempts += 1;
+        $user->save();
+
         // Validation Logic
         $verificationCode = VerificationCode::where('user_id', $request->user_id)->where('otp', $request->otp)->first();
 
         $now = Carbon::now();
         if (! $verificationCode) {
-
-            return json_encode(
-                [
-                    'success' => false,
-                    'msg' => 'Confirmation Code is INCORRECT.',
-                    'response' => null,
-                ]
-            );
-        } elseif ($verificationCode && $now->isAfter($verificationCode->expire_at)) {
-
-            return json_encode(
-                [
-                    'success' => false,
-                    'msg' => 'Your OTP has expired',
-                    'response' => null,
-                ]
-            );
-        }
-
-        $user = User::whereId($request->user_id)->first();
-
-        if ($user) {
-            // #check if user is new
-            // $total_cashin = Topups::where('user_id',$user->id)->where('status','success')->sum('amount');
-            // dd($total_cashin);
-            // Expire The OTP
-            $verificationCode->update([
-                'expire_at' => Carbon::now(),
+            throw ValidationException::withMessages([
+                'success' => false,
+                'msg' => 'Confirmation Code is INCORRECT.',
+                'response' => null,
             ]);
-            if ($user->is_new == 1) {
-                $user->is_new = 0;
-                $user->save();
-            } elseif (URL::to('/') == self::MOBILE_APP_URL) {
-                // first, check if user has already availed +50 credits
-                $has_availed_promo = Promos::where('user_id', $request->user_id)
-                    ->where('promo_type', self::PROMO_DOWNLOAD_APP)
-                    ->first();
-                if (! $has_availed_promo) {
-                    $current_amount = $credits->amount;
-                    $credits->amount = $current_amount + self::FREE_CREDITS;
-                    $credits->save();
-                }
-            }
-            Auth::login($user);
-
-            return redirect('/home');
         }
 
-        return redirect()->route('otp.login')->with('error', 'Your ONLINE SWERTRES-OTP Confirmation Code is INCORRECT.');
+        if ($verificationCode && $now->isAfter($verificationCode->expire_at)) {
+            // throw ValidationException::withMessages([
+            //     'success' => false,
+            //     'msg' => 'Your OTP has expired',
+            //     'response' => null,
+            // ]);
+            return Redirect::to('/login')
+                ->with('error', 'Your OTP has expired.');
+        }
+
+        if (! $user) {
+            return redirect()->route('otp.login')->with('error', 'Invalid user!');
+        }
+
+        $verificationCode->update([
+            'expire_at' => Carbon::now(),
+        ]);
+
+        if ($user->is_new == 1) {
+            $user->is_new = 0;
+            $user->save();
+        } elseif (URL::to('/') == self::MOBILE_APP_URL) {
+            // first, check if user has already availed +50 credits
+            $has_availed_promo = Promos::where('user_id', $request->user_id)
+                ->where('promo_type', self::PROMO_DOWNLOAD_APP)
+                ->first();
+            if (! $has_availed_promo) {
+                $current_amount = $credits->amount;
+                $credits->amount = $current_amount + self::FREE_CREDITS;
+                $credits->save();
+            }
+        }
+
+        // Congratulations!!!
+        Auth::login($user);
+
+        return Inertia::render('dashboard', [
+            'commonData' => [
+                'code' => $verificationCode,
+                'user' => Auth::user(),
+                'ip' => $this->ip_address,
+            ],
+        ]);
     }
 }
