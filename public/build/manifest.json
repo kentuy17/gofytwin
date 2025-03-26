@@ -1,0 +1,81 @@
+{
+  "_auth-layout-CyeJBUZ1.js": {
+    "file": "assets/auth-layout-CyeJBUZ1.js",
+    "name": "auth-layout",
+    "imports": [
+      "_vendor-BPO4dOSV.js"
+    ]
+  },
+  "_vendor-BPO4dOSV.js": {
+    "file": "assets/vendor-BPO4dOSV.js",
+    "name": "vendor",
+    "css": [
+      "assets/vendor-DpsRipQV.css"
+    ]
+  },
+  "_vendor-DpsRipQV.css": {
+    "file": "assets/vendor-DpsRipQV.css",
+    "src": "_vendor-DpsRipQV.css"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-5yNZHjGm.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.tsx": {
+    "file": "assets/app-Dnoc_UaO.js",
+    "name": "app",
+    "src": "resources/js/app.tsx",
+    "isEntry": true,
+    "imports": [
+      "_vendor-BPO4dOSV.js"
+    ],
+    "dynamicImports": [
+      "resources/js/pages/auth/flat-login.jsx",
+      "resources/js/pages/auth/login.jsx",
+      "resources/js/pages/auth/otp.jsx",
+      "resources/js/pages/welcome.jsx"
+    ],
+    "css": [
+      "assets/app-5yNZHjGm.css"
+    ]
+  },
+  "resources/js/pages/auth/flat-login.jsx": {
+    "file": "assets/flat-login-DM33yJwr.js",
+    "name": "flat-login",
+    "src": "resources/js/pages/auth/flat-login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-BPO4dOSV.js"
+    ]
+  },
+  "resources/js/pages/auth/login.jsx": {
+    "file": "assets/login-tVKdVUBG.js",
+    "name": "login",
+    "src": "resources/js/pages/auth/login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-BPO4dOSV.js",
+      "_auth-layout-CyeJBUZ1.js"
+    ]
+  },
+  "resources/js/pages/auth/otp.jsx": {
+    "file": "assets/otp-DMmdpkah.js",
+    "name": "otp",
+    "src": "resources/js/pages/auth/otp.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-BPO4dOSV.js",
+      "_auth-layout-CyeJBUZ1.js"
+    ]
+  },
+  "resources/js/pages/welcome.jsx": {
+    "file": "assets/welcome-ByfOu-mD.js",
+    "name": "welcome",
+    "src": "resources/js/pages/welcome.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-BPO4dOSV.js"
+    ]
+  }
+}
