@@ -149,6 +149,10 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
+.bg-image-login {
+  background-image: url('/images/hd-gold-black-legged.jpg');
+}
+
 @layer base {
   * {
     @apply border-border;

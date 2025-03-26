@@ -71,17 +71,11 @@ export function PhoneInputCountry({ inputStr }) {
   )
 }
 
-export function InputOtpDialog() {
-  return (
-    <div>InputOtpDialog</div>
-  )
-}
-
 function OtpDialog({ user }) {
   const submitRef = useRef(null)
   console.log(user, 'userData')
 
-  const { data, setData, post, errors } = useForm({
+  const { data, setData, post, errors, processing } = useForm({
     otp: '',
     user_id: user.id,
   })
@@ -127,6 +121,7 @@ function OtpDialog({ user }) {
               maxLength={4}
               value={data.otp}
               onChange={handleOnInput}
+              disabled={processing}
             >
               <InputOTPGroup>
                 <InputOTPSlot index={0} />

@@ -1,16 +1,18 @@
-import type { BreadcrumbItem } from '@/types'
+/* eslint-disable no-console */
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
 import AppLayout from '@/layouts/app-layout'
 import { Head } from '@inertiajs/react'
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = [
   {
     title: 'Dashboard',
     href: '/dashboard',
   },
 ]
 
-export default function Dashboard() {
+export default function Dashboard({ commonData }) {
+  console.log(commonData)
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />

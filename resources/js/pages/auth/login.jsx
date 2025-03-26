@@ -21,7 +21,7 @@ import AuthLayout from '@/layouts/auth-layout'
 // import AuthBlock from '@/layouts/auth/auth-block'
 
 import { cn } from '@/lib/utils'
-import { Head, useForm } from '@inertiajs/react'
+import { Head, useForm, usePage } from '@inertiajs/react'
 import { countries, getCountryFlagEmojiFromCountryCodeOrNameOrFlagEmoji } from 'country-codes-flags-phone-codes'
 import { LoaderCircle } from 'lucide-react'
 import { phone } from 'phone'
@@ -135,13 +135,21 @@ function LoginDialog() {
   )
 }
 
-export default function Login({ status, site }) {
+export default function Login({ site }) {
+  const { flash } = usePage().props
+  console.log(flash)
+
   console.log(site)
+
+  if (flash && flash.error) {
+    alert(flash.error)
+  }
+
   return (
     <AuthLayout>
       <Head title="Log in" />
       <LoginDialog />
-      {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+
     </AuthLayout>
   )
 }
