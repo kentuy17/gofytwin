@@ -130,14 +130,14 @@ class AuthOtpController extends Controller
                 ->with('msg', 'Check you Phone for your OTP.');
         }
 
-        $text_message = 'Ka-Number! Your OTP Confirmation Code is: {otp}.';
+        $text_message = 'Your OTP Confirmation Code is: {otp}.';
 
         // seme SMS
         $text = new TextBlast;
         $text->otpSend($request->mobile_no, $text_message, $verificationCode->otp);
-        $message = 'Your STL - OTP Login Code will be sent via SMS now. Thank You!'; // .$verificationCode->otp;
+        $message = 'Your OTP Login Code will be sent via SMS now. Thank You!'; // .$verificationCode->otp;
 
-        // Return With OTP Your STL verification code is 6086. Please do not share. Happy Betting!
+        // Return With OTP Your  verification code is 6086. Please do not share. Happy Betting!
 
         return Redirect::to('/otp/verification/'.$verificationCode->user_id);
 
