@@ -4,15 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Promos;
 use App\Models\Topups;
-use App\Models\Bets1ds;
-use App\Models\Bets2ds;
-use App\Models\Bets3ds;
-use App\Models\Bets4ds;
-use App\Models\Bets6ds;
 use App\Models\Credits;
-use App\Models\Pick2ds;
 use App\Models\UserCis;
 use App\Models\SubAgents;
 use App\Models\MasterAgents;
@@ -27,18 +20,23 @@ use Illuminate\Support\Facades\Hash;
 
 class AccountsController extends Controller
 {
+    const SUPER_ADMIN = 5000;
+    const ACCOUNTING = 2000;
+    const OPERATIONS = 1000;
+    const CSR = 50;
+    const BETTORS = 0;
     public function user_attempts(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
         $q = $request->q;
-        // $users = User::where('userlevel', 0)->where(function($query) use ($q) {
+        // $users = User::where('user_level', 0)->where(function($query) use ($q) {
         //     $query->where('id', 'LIKE', '%'.$q.'%')
         //         ->orWhere('mobile_no', 'LIKE', '%'.$q.'%')
         //         ->orWhere('ip', 'LIKE', '%'.$q.'%');
         // })->orderBy('id','desc')->paginate(50);
-        $users = User::where('userlevel', 0)->where('user_attepts',3)->whereNot('account_status','spam')->orderBy('id','desc')->paginate(100);
+        $users = User::where('user_level', 0)->where('user_attepts',3)->whereNot('account_status','spam')->orderBy('id','desc')->paginate(100);
 
         return view(
             'admin.users.attempts',[
@@ -49,64 +47,10 @@ class AccountsController extends Controller
             ]
         );
     }
-    public function promos(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
-            
-            return redirect('home');
-        }
-        $q = $request->q;
-        $from = isset($request->from) ? $request->from : date('Y-m-d');
-        $to = isset($request->to) ? $request->to : date('Y-m-d');
-        // $from = Carbon::createFromDate(date('Y-m-d'));
-        if($request->q){
-            
-            $user = User::select('id')->where('mobile_no', $q)->first();
-            $users = Promos::where('user_id', $user->id)->orderBy('id','desc')->paginate(100);
-
-        } else {
-            $users = Promos::whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to)->orderBy('id','desc')->paginate(100);
-        }
-        
-
-        return view(
-            'admin.users.promos',[
-                'users' => $users,
-                'q' => $q,
-                'topup_model' => new Topups,
-                'super_admin' => self::SUPER_ADMIN,
-            ]
-        );
-    }
-    public function registered_today(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
-            
-            return redirect('home');
-        }
-        $from = isset($request->from) ? $request->from : date('Y-m-d');
-        $to = isset($request->to) ? $request->to : date('Y-m-d');
-        
-        
-        $users = DB::select("SELECT cashins.user_id, 
-                    COUNT(cashins.user_id) as hits, 
-                    users.mobile_no as mobile_no, 
-                    users.website_register as website_register, 
-                    users.created_at  as created_at 
-                FROM
-                    users  
-                LEFT JOIN cashins ON users.id=cashins.user_id 
-
-                WHERE  users.created_at >= '".$from." 00:00:00' AND users.created_at <= '".$to." 23:59:59' GROUP BY users.mobile_no,users.created_at,users.website_register,cashins.user_id ORDER BY created_at desc");
-        
-        return view(
-            'admin.users.registered-today',[
-                'users' => $users,
-                'topup_model' => new Topups,
-                'super_admin' => self::SUPER_ADMIN,
-            ]
-        );
-    }
+    
+  
     public function cashin_today(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
@@ -133,7 +77,7 @@ class AccountsController extends Controller
         );
     }
     public function verification(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
@@ -160,17 +104,17 @@ class AccountsController extends Controller
         );
     }
     public function inactive(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
         $q = $request->q;
-        // $users = User::where('userlevel', 0)->where(function($query) use ($q) {
+        // $users = User::where('user_level', 0)->where(function($query) use ($q) {
         //     $query->where('id', 'LIKE', '%'.$q.'%')
         //         ->orWhere('mobile_no', 'LIKE', '%'.$q.'%')
         //         ->orWhere('ip', 'LIKE', '%'.$q.'%');
         // })->orderBy('id','desc')->paginate(50);
-        $users = User::where('userlevel', 0)->where('account_status','inactive')->orderBy('id','desc')->paginate(100);
+        $users = User::where('user_level', 0)->where('account_status','inactive')->orderBy('id','desc')->paginate(100);
 
         return view(
             'admin.users.spam',[
@@ -183,17 +127,17 @@ class AccountsController extends Controller
         );
     }
     public function spam(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
         $q = $request->q;
-        // $users = User::where('userlevel', 0)->where(function($query) use ($q) {
+        // $users = User::where('user_level', 0)->where(function($query) use ($q) {
         //     $query->where('id', 'LIKE', '%'.$q.'%')
         //         ->orWhere('mobile_no', 'LIKE', '%'.$q.'%')
         //         ->orWhere('ip', 'LIKE', '%'.$q.'%');
         // })->orderBy('id','desc')->paginate(50);
-        $users = User::where('userlevel', 0)->where('account_status','spam')->orderBy('id','desc')->paginate(100);
+        $users = User::where('user_level', 0)->where('account_status','spam')->orderBy('id','desc')->paginate(100);
 
         return view(
             'admin.users.spam',[
@@ -206,12 +150,12 @@ class AccountsController extends Controller
         );
     }
     public function user_cis(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
         $q = $request->q;
-        // $users = User::where('userlevel', 0)->where(function($query) use ($q) {
+        // $users = User::where('user_level', 0)->where(function($query) use ($q) {
         //     $query->where('id', 'LIKE', '%'.$q.'%')
         //         ->orWhere('mobile_no', 'LIKE', '%'.$q.'%')
         //         ->orWhere('ip', 'LIKE', '%'.$q.'%');
@@ -228,13 +172,13 @@ class AccountsController extends Controller
         );
     }
     public function users(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        // if(auth()->user()->user_level < self::ACCOUNTING){
             
-            return redirect('home');
-        }
+        //     return redirect('home');
+        // }
         $q = $request->q;
         $users = User::query()
-        ->where('userlevel', 0)->where(function($query) use ($q) {
+        ->where('user_level', 0)->where(function($query) use ($q) {
                 $query->where('id', 'LIKE', '%'.$q.'%')
                     ->orWhere('mobile_no', 'LIKE', '%'.$q.'%')
                     ->orWhere('ip', 'LIKE', '%'.$q.'%');
@@ -251,7 +195,7 @@ class AccountsController extends Controller
         );
     }
     public function user_info(Request $request){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
@@ -270,7 +214,7 @@ class AccountsController extends Controller
         );
     }
     public function agents(){
-        if(auth()->user()->userlevel < self::ACCOUNTING){
+        if(auth()->user()->user_level < self::ACCOUNTING){
             
             return redirect('home');
         }
@@ -278,7 +222,7 @@ class AccountsController extends Controller
             
             return redirect('home');
         }
-        $users = User::where('userlevel', 0)->whereNot('percentage',0);
+        $users = User::where('user_level', 0)->whereNot('percentage',0);
         $total_sales = $users->count();
 
         return view(
@@ -294,7 +238,7 @@ class AccountsController extends Controller
     public function editUser(Request $request){
         $id = $request->id;
         $ref_no = isset($request->ref_no)?$request->ref_no:null;
-        if(auth()->user()->userlevel < 5000){
+        if(auth()->user()->user_level < 5000){
             
             return redirect('home');
         }
@@ -377,7 +321,7 @@ class AccountsController extends Controller
     public function viewUserRole(Request $request){
         $id = $request->id;
         $ref_no = isset($request->ref_no)?$request->ref_no:null;
-        if(auth()->user()->userlevel < 5000){
+        if(auth()->user()->user_level < 5000){
             
             return redirect('home');
         }
@@ -414,7 +358,7 @@ class AccountsController extends Controller
         );
     }
     public function addMasterAgent(Request $request){
-        if(auth()->user()->userlevel < 5000){
+        if(auth()->user()->user_level < 5000){
             
             return redirect('home');
         }
@@ -465,7 +409,7 @@ class AccountsController extends Controller
     }
     public function editMasterAgent(Request $request){
         // dd($request->id);
-        if(auth()->user()->userlevel < 5000){
+        if(auth()->user()->user_level < 5000){
             
             return redirect('home');
         }
@@ -512,7 +456,7 @@ class AccountsController extends Controller
     }
     public function editSubAgent(Request $request){
         // dd($request->id);
-        if(auth()->user()->userlevel < 5000){
+        if(auth()->user()->user_level < 5000){
             
             return redirect('home');
         }
@@ -575,7 +519,7 @@ class AccountsController extends Controller
         );
     }
     public function saveSubAgent($id){
-        if(auth()->user()->userlevel < 50){
+        if(auth()->user()->user_level < 50){
             
             return redirect('home');
         }
@@ -620,7 +564,7 @@ class AccountsController extends Controller
         );
     }
     public function addSubAgent(Request $request){
-        if(auth()->user()->userlevel < 5000){
+        if(auth()->user()->user_level < 5000){
             
             return redirect('home');
         }
@@ -689,7 +633,7 @@ class AccountsController extends Controller
 
     public function masterAgents(){
         
-        if(auth()->user()->userlevel < self::OPERATIONS){
+        if(auth()->user()->user_level < self::OPERATIONS){
             
             return redirect('home');
         }
@@ -720,7 +664,7 @@ class AccountsController extends Controller
 
     }
     public function masterAgentsInfo(Request $request){
-        if(auth()->user()->userlevel < self::OPERATIONS){
+        if(auth()->user()->user_level < self::OPERATIONS){
             
             return redirect('home');
         }
@@ -782,7 +726,7 @@ class AccountsController extends Controller
 
     }
     public function subAgentsInfo(Request $request){
-        if(auth()->user()->userlevel < self::OPERATIONS){
+        if(auth()->user()->user_level < self::OPERATIONS){
             
             return redirect('home');
         }
@@ -838,7 +782,7 @@ class AccountsController extends Controller
 
     }
     public function subAgents(){
-        if(auth()->user()->userlevel < self::OPERATIONS){
+        if(auth()->user()->user_level < self::OPERATIONS){
             
             return redirect('home');
         }

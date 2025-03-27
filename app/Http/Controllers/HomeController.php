@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -12,5 +13,13 @@ class HomeController extends Controller
         return Inertia::render('dashboard', [
             'user' => Auth::user(),
         ]);
+    }
+
+    public function temporaryLogin(){
+        $user = User::find(1);
+        Auth::login($user);
+    }
+    public function temporaryLogout(){
+        Auth::logout();
     }
 }
