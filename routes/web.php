@@ -1,13 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthOtpController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\AuthOtpController;
+use App\Http\Controllers\Admin\AccountsController;
 
 Route::get('/', function () {
     return Redirect::to(route('login'));
 })->middleware('guest');
+Route::get('/users/list', [AccountsController::class, 'users'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
