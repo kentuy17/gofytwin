@@ -323,6 +323,7 @@ class AuthOtpController extends Controller
         }
 
         if (! $user) {
+            
             return redirect()->route('otp.login')->with('error', 'Invalid user!');
         }
 
