@@ -17,6 +17,21 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
   {
+    title: 'Users List',
+    url: '/admin/users/list',
+    icon: Folder,
+  },
+  {
+    title: 'Verification OTP Codes',
+    url: '/admin/users/otp/list',
+    icon: Folder,
+  },
+  {
+    title: 'Spam Players List',
+    url: '/admin/users/spam',
+    icon: Folder,
+  },
+  {
     title: 'Repository',
     url: 'https://github.com/laravel/react-starter-kit',
     icon: Folder,

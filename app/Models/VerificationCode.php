@@ -12,6 +12,7 @@ class VerificationCode extends Model
     protected $fillable = [
         'user_id',
         'otp',
+        'mobile_no',
         'expire_at',
     ];
 }

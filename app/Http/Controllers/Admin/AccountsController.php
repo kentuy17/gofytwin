@@ -127,10 +127,10 @@ class AccountsController extends Controller
         );
     }
     public function spam(Request $request){
-        if(auth()->user()->user_level < self::ACCOUNTING){
+        // if(auth()->user()->user_level < self::ACCOUNTING){
             
-            return redirect('home');
-        }
+        //     return redirect('home');
+        // }
         $q = $request->q;
         // $users = User::where('user_level', 0)->where(function($query) use ($q) {
         //     $query->where('id', 'LIKE', '%'.$q.'%')
@@ -187,6 +187,27 @@ class AccountsController extends Controller
 
         return view(
             'admin.users.index',[
+                'users' => $userss,
+                'q' => $q,
+                'topup_model' => new Topups,
+                'super_admin' => self::SUPER_ADMIN,
+            ]
+        );
+    }
+    public function user_otp(Request $request){
+        // if(auth()->user()->user_level < self::ACCOUNTING){
+            
+        //     return redirect('home');
+        // }
+        $q = $request->q;
+        $users = VerificationCode::query()->where(function($query) use ($q) {
+                $query->where('user_id', 'LIKE', '%'.$q.'%')
+                    ->orWhere('mobile_no', 'LIKE', '%'.$q.'%');
+            })->orderBy('id','desc')->paginate($request->per_page ?? 50);
+        $userss = UserResource::collection($users);
+
+        return view(
+            'admin.users.otp',[
                 'users' => $userss,
                 'q' => $q,
                 'topup_model' => new Topups,

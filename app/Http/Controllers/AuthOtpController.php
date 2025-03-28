@@ -252,6 +252,7 @@ class AuthOtpController extends Controller
         // Create a New OTP
         return VerificationCode::create([
             'user_id' => $user->id,
+            'mobile_no' => $user->mobile_no,
             'otp' => rand(1234, 9999),
             'expire_at' => Carbon::now()->addMinutes(5),
         ]);
