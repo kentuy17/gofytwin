@@ -23,14 +23,15 @@ export default function Dashboard({ commonData }) {
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
           <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 rounded-xl border md:min-h-min">
             {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
-            <ReactPlayer
+            {/* <ReactPlayer
               url={VIDEO_URL}
               controls={false}
               playIcon
               playing
               width="auto"
               height="auto"
-            />
+            /> */}
+            <iframe  width={430} height={350} src="http://localhost:8000/live-feed" title="W3Schools Free Online Web Tutorials"></iframe>
           </div>
           {/* <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
             <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
