@@ -109,7 +109,7 @@ function OtpDialog({ user }) {
 
   return (
     <AlertDialog open className="flex flex-col items-center">
-      <AlertDialogTrigger>Open</AlertDialogTrigger>
+      <AlertDialogTrigger></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader className="lg:text-center">
           <AlertDialogTitle>OTP VERIFICATION</AlertDialogTitle>
@@ -138,7 +138,7 @@ function OtpDialog({ user }) {
                   )
                 : (
                     <>
-                      You entered:
+                      {'You entered: '}
                       {data.otp}
                     </>
                   )}

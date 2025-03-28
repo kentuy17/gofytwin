@@ -34,5 +34,5 @@
     /* Completeness */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["*.config.ts", "resources/client/**/*.ts", "resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/pages/welcome.jsx", "resources/js/pages/auth/login.jsx", "resources/js/pages/dashboard.jsx"]
+  "include": ["*.config.ts", "resources/client/**/*.ts", "resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/pages/welcome.jsx", "resources/js/pages/auth/login.jsx", "resources/js/pages/dashboard.jsx", "resources/js/components/app-logo-icon.jsx"]
 }

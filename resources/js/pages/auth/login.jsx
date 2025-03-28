@@ -20,14 +20,11 @@ import { Input } from '@/components/ui/input'
 import AuthLayout from '@/layouts/auth-layout'
 // import AuthBlock from '@/layouts/auth/auth-block'
 
-import { cn } from '@/lib/utils'
 import { Head, useForm, usePage } from '@inertiajs/react'
 import { countries, getCountryFlagEmojiFromCountryCodeOrNameOrFlagEmoji } from 'country-codes-flags-phone-codes'
 import { LoaderCircle } from 'lucide-react'
-import { phone } from 'phone'
 
 import { useEffect, useRef, useState } from 'react'
-import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 
 export function PhoneInputCountry({ inputStr }) {
@@ -80,28 +77,34 @@ function LoginDialog() {
 
   const submit = (e) => {
     e.preventDefault()
-    const { isValid } = phone(data.mobile_no)
+    // const { isValid } = phone(data.mobile_no)
+    console.log(data.mobile_no)
 
-    if (!isValid) {
-      alert('Invalid format')
-      return
-    }
+    // if (!isValid) {
+    //   alert('Invalid format')
+    //   return
+    // }
 
     post(route('otp.generate'), {
       onFinish: () => reset('password'),
     })
   }
 
+  const handleMobileInput = (e) => {
+    const val = e.target.value
+    setData('mobile_no', val)
+  }
+
   return (
     <AlertDialog open>
-      <AlertDialogTrigger>Open</AlertDialogTrigger>
+      <AlertDialogTrigger></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Login</AlertDialogTitle>
+          <AlertDialogTitle>Login / Register Here:</AlertDialogTitle>
           <AlertDialogDescription></AlertDialogDescription>
         </AlertDialogHeader>
         <form onSubmit={submit}>
-          <PhoneInput
+          {/* <PhoneInput
             // international
             defaultCountry="PH"
             placeholder="Enter phone number"
@@ -113,6 +116,11 @@ function LoginDialog() {
               'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
               'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
             )}
+          /> */}
+          <Input
+            onChange={handleMobileInput}
+            value={data.mobile_no}
+            placeholder="09XX XXX XXXXX"
           />
           <Button type="submit" ref={submitRef} className="hidden" tabIndex={4} disabled={processing}>
             Log in
@@ -128,7 +136,7 @@ function LoginDialog() {
             disabled={processing}
           >
             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-            Continue
+            Submit
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

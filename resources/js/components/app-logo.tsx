@@ -1,7 +1,7 @@
 // import AppLogoIcon from './app-logo-icon'
 
 function ManokLogo() {
-  return <img src="/images/gamefowl-master-logo.jpg" />
+  return <img src="/images/gamefowl-master-logo-official.png" className="max-w-full" />
 }
 
 export default function AppLogo() {
