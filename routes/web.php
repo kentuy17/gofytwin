@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/users/view/{id}', [AccountsController::class, 'viewUser'])->name('view.user')->middleware('auth');
     Route::post('/winner/info', [ServerInfoController::class,'winner_info'])->name('winner.info')->middleware('auth');
 });
-
+// Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);
 Route::controller(AuthOtpController::class)->group(function(){
     Route::get('/login', 'login')->name('otp.login');
     Route::post('/otp/generate', 'generate')->name('otp.generate');

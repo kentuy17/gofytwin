@@ -179,6 +179,11 @@ class AuthOtpController extends Controller
         return $this->url_origin($s, $use_forwarded_host).$s['REQUEST_URI'];
     }
 
+    public function redirecToHome()
+    {
+        return Redirect::to('/home');
+    }
+
     public function generateOtp($request)
     {
         // return response()->json([
@@ -324,7 +329,7 @@ class AuthOtpController extends Controller
         }
 
         if (! $user) {
-            
+
             return redirect()->route('otp.login')->with('error', 'Invalid user!');
         }
 

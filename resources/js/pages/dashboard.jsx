@@ -25,7 +25,9 @@ export default function Dashboard({ commonData }) {
             {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
             {/* <ReactPlayer
               url={VIDEO_URL}
-              controls
+              controls={false}
+              playIcon
+              playing
               width="auto"
               height="auto"
             /> */}
