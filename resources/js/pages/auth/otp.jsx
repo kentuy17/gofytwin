@@ -1,5 +1,5 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-console */
-/* eslint-disable no-undef */
 
 // import TextLink from '@/components/text-link'
 
@@ -73,7 +73,6 @@ export function PhoneInputCountry({ inputStr }) {
 
 function OtpDialog({ user }) {
   const submitRef = useRef(null)
-  console.log(user, 'userData')
 
   const { data, setData, post, errors, processing } = useForm({
     otp: '',
@@ -82,23 +81,19 @@ function OtpDialog({ user }) {
 
   const submit = (e) => {
     e.preventDefault()
-    console.log(data.otp.length)
 
     if (data.otp.length !== 4) {
       console.log('Too small dick')
       return
     }
 
-    post(route('otp.getlogin'), {
+    post('/home', {
       onFinish: () => console.log('paksit'),
-      onError: err => console.log([err, errors, data]),
+      onError: () => alert(errors.msg),
     })
   }
 
-  const handleOnInput = (value) => {
-    console.log(value, 'valuy')
-    setData('otp', value)
-  }
+  const handleOnInput = value => setData('otp', value)
 
   useEffect(() => {
     if (data.otp.length === 4) {

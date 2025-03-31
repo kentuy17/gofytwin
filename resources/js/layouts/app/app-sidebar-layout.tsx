@@ -6,6 +6,10 @@ import { AppSidebar } from '@/components/app-sidebar'
 import { AppSidebarHeader } from '@/components/app-sidebar-header'
 import { ThemeProvider } from '@/components/theme-provider'
 
+function Banner() {
+  return <img src="/images/gamefowl-master-header-v2.gif" style={{ height: '55px' }} className="max-w-full" />
+}
+
 export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -13,6 +17,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
         <AppSidebar />
         <AppContent variant="sidebar">
           <AppSidebarHeader breadcrumbs={breadcrumbs} />
+          <Banner />
           {children}
         </AppContent>
       </AppShell>
