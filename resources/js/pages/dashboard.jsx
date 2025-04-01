@@ -28,6 +28,7 @@ export default function Dashboard({ commonData }) {
               controls
               width="auto"
               height="auto"
+															clasaName="md:w-[720px]"
             />
           </div>
           {/* <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
