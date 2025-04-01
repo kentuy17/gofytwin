@@ -8,7 +8,6 @@
     "dev": "vite",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "postinstall": "simple-git-hooks",
     "types": "tsc --noEmit"
   },
   "dependencies": {
@@ -66,9 +65,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "laravel-vite-plugin": "^1.2.0",
-    "lint-staged": "^15.5.0",
     "sass-embedded": "^1.86.0",
-    "simple-git-hooks": "^2.11.1",
     "typescript": "^5.8.2",
     "vite": "^6.2.2"
   },
@@ -79,20 +76,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild",
-      "simple-git-hooks"
-    ]
-  },
-  "simple-git-hooks": {
-    "commit-msg": "pnpm exec commitlint --edit $1",
-    "pre-commit": "pnpm exec lint-staged --allow-empty"
-  },
-  "lint-staged": {
-    "{app,database,tests}/**/*.php": [
-      "php vendor/bin/pint --preset laravel"
-    ],
-    "**/*.{css,json,js,jsx,ts,tsx}": [
-      "eslint --fix"
+      "esbuild"
     ]
   }
 }

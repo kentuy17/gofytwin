@@ -17,7 +17,7 @@ const breadcrumbs = [
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
 export default function Dashboard({ commonData }) {
-  console.log(commonData)
+  commonData && console.log(commonData)
 
   const playerRef = React.useRef(null)
 
@@ -25,7 +25,7 @@ export default function Dashboard({ commonData }) {
     autoplay: true,
     controls: true,
     responsive: true,
-    muted: true,
+    muted: false,
     fluid: true,
     sources: [{
       src: VIDEO_URL,
