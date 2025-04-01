@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\AuthOtpController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\AccountsController;
 
 Route::get('/', function () {
@@ -25,6 +26,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/user/cash-in/{id}',[AdminCashIn::class,'userCashin'])->middleware('auth')->name('admin.user.cashin');
     Route::get('/admin/users/view/{id}', [AccountsController::class, 'viewUser'])->name('view.user')->middleware('auth');
     Route::post('/winner/info', [ServerInfoController::class,'winner_info'])->name('winner.info')->middleware('auth');
+
+    Route::get('/admin/core/statistics', [ReportsController::class, 'statistics'])->middleware('auth')->name('statistics');
+    Route::get('/admin/core/statistics/gross-income', [ReportsController::class, 'grossIncome'])->middleware('auth')->name('gross');
+    Route::get('/admin/cash-in',[AdminCashIn::class,'index'])->middleware('auth')->name('admin.cashin');
 });
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);
 Route::controller(AuthOtpController::class)->group(function(){
