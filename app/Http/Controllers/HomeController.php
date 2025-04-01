@@ -22,4 +22,12 @@ class HomeController extends Controller
     public function temporaryLogout(){
         Auth::logout();
     }
+    public function live_feed(){
+        return view(
+            'live-feed',[
+                'user_phone' => 'wewewqew',
+                 'landing_page' => true,
+            ]
+        );
+    }
 }

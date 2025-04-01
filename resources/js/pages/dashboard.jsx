@@ -69,8 +69,10 @@ export default function Dashboard({ commonData }) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-around">
-                  <div className="text-red-400 text-2xl font-bold">₱45,455.66</div>
-                  <div className="text-green-400 text-2xl font-bold">₱40,231.89</div>
+                  {/* <div className="text-red-400 text-2xl font-bold">₱45,455.66</div> */}
+                  {/* <div className="text-green-400 text-2xl font-bold">₱40,231.89</div> */}
+                  <div className="text-red-400 text-2xl font-black">MERON</div>
+                  <div className="text-blue-400 text-2xl font-black">WALA</div>
                 </CardContent>
               </Card>
               {/* <Card>
