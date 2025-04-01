@@ -25,10 +25,10 @@ export default function Dashboard({ commonData }) {
     autoplay: true,
     controls: true,
     responsive: true,
+    muted: true,
     fluid: true,
     sources: [{
       src: VIDEO_URL,
-      // type: 'video/mp4',
       type: 'application/x-mpegURL',
     }],
   }
@@ -50,8 +50,8 @@ export default function Dashboard({ commonData }) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="flex h-full flex-1 flex-col gap-4 rounded-xl">
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 rounded-xl border md:min-h-min">
+        <div className="grid auto-rows-min gap-4 md:mx-6">
+          <div className="border-sidebar-border/70 dark:border-sidebar-border max-w-3xl relative min-h-[100vh] flex-1 rounded-xl border md:min-h-min">
             {/* <ReactPlayer
               url={VIDEO_URL}
               controls={false}
@@ -61,7 +61,7 @@ export default function Dashboard({ commonData }) {
               height="auto"
             /> */}
             <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
