@@ -107,7 +107,7 @@ function OtpDialog({ user }) {
       <AlertDialogTrigger></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader className="lg:text-center">
-          <AlertDialogTitle>OTP VERIFICATION</AlertDialogTitle>
+          <AlertDialogTitle className="text-yellow-500">OTP Verification:</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogDescription></AlertDialogDescription>
         <form onSubmit={submit}>
@@ -129,11 +129,11 @@ function OtpDialog({ user }) {
             <div className="text-center text-sm">
               {data.otp === ''
                 ? (
-                    <>Enter your one-time password.</>
+                    <span className="text-yellow-500">Enter your one-time password.</span>
                   )
                 : (
                     <>
-                      {'You entered: '}
+                      <span className="text-yellow-500 mr-1">You entered: </span>
                       {data.otp}
                     </>
                   )}
