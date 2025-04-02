@@ -10,8 +10,14 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $session = request()->session()->get('status');
+        if(!$session) {
+            Inertia::clearHistory();
+        }
+
         return Inertia::render('dashboard', [
             'user' => Auth::user(),
+            'session' => $session,
         ]);
     }
 
