@@ -44,7 +44,7 @@ interface SidebarContext {
 const SidebarCtx = React.createContext<SidebarContext | null>(null)
 
 function useSidebar() {
-  const context = React.useContext(SidebarCtx)
+  const context = React.use(SidebarCtx)
   if (!context) {
     throw new Error('useSidebar must be used within a SidebarProvider.')
   }
