@@ -69,7 +69,7 @@ export function InputOtpDialog() {
 
 function LoginDialog() {
   const submitRef = useRef(null)
-  const [submitDisabled, setSubmitDisabled] = useState(false)
+  const [submitDisabled, setSubmitDisabled] = useState(true)
   const { data, setData, post, processing, reset } = useForm({
     mobile_no: '',
     remember: true,
