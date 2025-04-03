@@ -45,7 +45,7 @@ export function PhoneInputCountry({ inputStr }) {
 
   useEffect(() => {
     const newFlag = countries.find(country => country.dialCode === inputStr)?.flag
-    setActiveIcon(newFlag)
+    return () => setActiveIcon(newFlag)
   }, [inputStr])
 
   return (
@@ -69,6 +69,7 @@ export function InputOtpDialog() {
 
 function LoginDialog() {
   const submitRef = useRef(null)
+  const [submitDisabled, setSubmitDisabled] = useState(false)
   const { data, setData, post, processing, reset } = useForm({
     mobile_no: '',
     remember: true,
@@ -96,6 +97,9 @@ function LoginDialog() {
   const handleMobileInput = (e) => {
     let val = e.target.value
     val = val.replace(/\D/g, '')
+    if (val.length > 11)
+      return
+    setSubmitDisabled(val.length !== 11)
     setData('mobile_no', val)
   }
 
@@ -134,7 +138,7 @@ function LoginDialog() {
           <Input
             onChange={handleMobileInput}
             value={data.mobile_no}
-            placeholder="09XX XXX XXXXX"
+            placeholder="09XXXXXXXXXX"
             className="bg-gradient-to-l from-white to-zinc-900 to-75%"
             style={inputGradient}
             tabIndex={1}
@@ -150,7 +154,7 @@ function LoginDialog() {
             onClick={() => submitRef.current.click()}
             type="submit"
             tabIndex={2}
-            disabled={processing}
+            disabled={processing || submitDisabled}
             className="bg-[var(--color-gofyt)] font-bold uppercase"
           >
             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
@@ -175,15 +179,16 @@ function LoginDialog() {
             variant="default"
             style={{ backgroundColor: '#0866FF', cursor: 'pointer' }}
             size="icon"
+            className="over-sized-btn rounded-full"
           >
-            <FacebookIcon tabIndex={6} fill="var(--color-primary)" color="var(--color-primary)" />
+            <FacebookIcon tabIndex={6} fill="var(--color-primary)" color="var(--color-primary)" className="over-sized-icon" />
           </Button>
           <Button
             onClick={handleMessengerClick()}
-            className="bg-gradient-to-r from-[#00c6ff] to-[#0072ff] cursor-pointer"
+            className="bg-gradient-to-r from-[#00c6ff] to-[#0072ff] cursor-pointer over-sized-btn rounded-full"
             size="icon"
           >
-            <svg tabIndex={7} role="img" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="over-sized-icon" tabIndex={7} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <title>Messenger</title>
               <path fill="var(--color-primary)" d="M12 0C5.24 0 0 4.952 0 11.64c0 3.499 1.434 6.521 3.769 8.61a.96.96 0 0 1 .323.683l.065 2.135a.96.96 0 0 0 1.347.85l2.381-1.053a.96.96 0 0 1 .641-.046A13 13 0 0 0 12 23.28c6.76 0 12-4.952 12-11.64S18.76 0 12 0m6.806 7.44c.522-.03.971.567.63 1.094l-4.178 6.457a.707.707 0 0 1-.977.208l-3.87-2.504a.44.44 0 0 0-.49.007l-4.363 3.01c-.637.438-1.415-.317-.995-.966l4.179-6.457a.706.706 0 0 1 .977-.21l3.87 2.505c.15.097.344.094.491-.007l4.362-3.008a.7.7 0 0 1 .364-.13" />
             </svg>

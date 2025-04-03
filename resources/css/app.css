@@ -165,6 +165,16 @@
   width: 100%;
 }
 
+.over-sized-btn {
+  height: 64px !important;
+  width: 64px !important;
+}
+
+.over-sized-icon {
+  height: 48px !important;
+  width: 48px !important;
+}
+
 @layer base {
   * {
     @apply border-border;
