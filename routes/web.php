@@ -24,7 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     Route::get('/test/logout',[HomeController::class,'temporaryLogout'])->name('testttest.logout');
-    Route::get('/admin/users/list', [AccountsController::class, 'users'])->name('users.list');
+    Route::get('/admin/users/list', [AccountsController::class, 'users'])->name('admin.users.list');
     Route::get('/admin/users/otp/list', [AccountsController::class, 'user_otp'])->name('users.otp.list');
     Route::get('/admin/users/spam', [AccountsController::class, 'spam'])->middleware('auth')->name('spam');
 
