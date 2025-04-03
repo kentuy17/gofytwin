@@ -19,6 +19,28 @@
 
     {{-- Nav item --}}
     <li class="nav-item">
+      <a class="nav-link" href="{{route('cashin')}}">
+        Cash-In
+      </a>
+    </li>
+    {{-- Nav item --}}
+    <li class="nav-item">
+      <a class="nav-link" href="{{route('admin.cashin')}}">
+        Admin Cash-In List
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{route('admin.net.income')}}">
+        Net Income
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{route('admin.total.gross')}}">
+        Total Gross
+      </a>
+    </li>
+    {{-- Nav item --}}
+    <li class="nav-item">
       <a class="nav-link" href="{{route('users.list')}}">
         Users List
       </a>

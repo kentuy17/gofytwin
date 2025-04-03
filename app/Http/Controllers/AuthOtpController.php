@@ -126,7 +126,7 @@ class AuthOtpController extends Controller
             $user->user_attempts = $next_attempt;
             $user->save();
 
-            return Redirect::to('/otp/verification/'.$verificationCode->user_id)
+            return Redirect::to('/otp/verification/' . $verificationCode->user_id)
                 ->with('msg', 'Check you Phone for your OTP.');
         }
 
@@ -139,13 +139,13 @@ class AuthOtpController extends Controller
 
         // Return With OTP Your  verification code is 6086. Please do not share. Happy Betting!
 
-        return Redirect::to('/otp/verification/'.$verificationCode->user_id);
+        return Redirect::to('/otp/verification/' . $verificationCode->user_id);
 
         return json_encode(
             [
                 'success' => true,
                 'msg' => 'Congratulations! Your account has been created.',
-                'redirect_url' => URL::to('/').'/otp/verification/'.$verificationCode->user_id,
+                'redirect_url' => URL::to('/') . '/otp/verification/' . $verificationCode->user_id,
                 'response' => null,
             ]
         );
@@ -165,18 +165,18 @@ class AuthOtpController extends Controller
     {
         $ssl = (! empty($s['HTTPS']) && $s['HTTPS'] == 'on');
         $sp = strtolower($s['SERVER_PROTOCOL']);
-        $protocol = substr($sp, 0, strpos($sp, '/')).(($ssl) ? 's' : '');
+        $protocol = substr($sp, 0, strpos($sp, '/')) . (($ssl) ? 's' : '');
         $port = $s['SERVER_PORT'];
-        $port = ((! $ssl && $port == '80') || ($ssl && $port == '443')) ? '' : ':'.$port;
+        $port = ((! $ssl && $port == '80') || ($ssl && $port == '443')) ? '' : ':' . $port;
         $host = ($use_forwarded_host && isset($s['HTTP_X_FORWARDED_HOST'])) ? $s['HTTP_X_FORWARDED_HOST'] : (isset($s['HTTP_HOST']) ? $s['HTTP_HOST'] : null);
-        $host = isset($host) ? $host : $s['SERVER_NAME'].$port;
+        $host = isset($host) ? $host : $s['SERVER_NAME'] . $port;
 
-        return $protocol.'://'.$host;
+        return $protocol . '://' . $host;
     }
 
     public function full_url($s, $use_forwarded_host = false)
     {
-        return $this->url_origin($s, $use_forwarded_host).$s['REQUEST_URI'];
+        return $this->url_origin($s, $use_forwarded_host) . $s['REQUEST_URI'];
     }
 
     public function redirecToHome()
@@ -222,7 +222,7 @@ class AuthOtpController extends Controller
                 'name' => $request->mobile_no,
                 'password' => $request->mobile_no,
                 'mobile_no' => $request->mobile_no,
-                'email' => $request->mobile_no.'@gmail.com',
+                'email' => $request->mobile_no . '@gmail.com',
                 'location' => $city,
                 'percentage' => 0,
                 'userlevel' => 0,
@@ -360,6 +360,7 @@ class AuthOtpController extends Controller
                 'code' => $verificationCode,
                 'user' => Auth::user(),
                 'ip' => $this->ip_address,
+                'session' => $request->session()->all()
             ],
         ]);
     }
