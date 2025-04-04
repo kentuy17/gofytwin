@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Cash Ins')
+@section('title','Total Gross')
 @section('styles')
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -28,12 +28,10 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>User ID.</th>
-                    <th>Contact No.</th>
-                    <th>Order No.</th>
-                    <th>Gateway</th>
-                    <th>Amount ($)</th>
-                    <th>PG</th>
+                    <th>Fight No.</th>
+                    <th>Bet Side</th>
+                    <th>Result</th>
+                    <th>Total Win ($)</th>
                     <th>Time</th>
                 </tr>
             </thead>
@@ -46,7 +44,25 @@
         <div class="col-12">
             <div class="d-flex flex-row justify-content-between">
                 <div>
-                    <p class="draw-label total-amounts">Total Sales: $<span class="text-success">{{number_format($total_sales,2,'.',',')}}</span></p>
+                    <p class="draw-label total-amounts">Total Gross: $<span class="text-success">{{number_format($total_sales,2,'.',',')}}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-row justify-content-between">
+                <div>
+                    <p class="draw-label total-amounts text-primary">Total Gross Meron: $<span class="text-success">{{number_format($total_sales,2,'.',',')}}</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-row justify-content-between">
+                <div>
+                    <p class="draw-label total-amounts text-danger">Total Gross Wala: $<span class="text-success">{{number_format($total_sales,2,'.',',')}}</span></p>
                 </div>
             </div>
         </div>
@@ -77,12 +93,10 @@
                 },
                 columns: [
                     {data: 'id'},
-                    {data: 'user_id'},
                     {data: 'mobile_no'},
                     {data: 'merchant_order_no'},
                     {data: 'gateway'},
                     {data: 'amount'},
-                    {data: 'sign'},
                     {data: 'created_at'}
                    
                 ],

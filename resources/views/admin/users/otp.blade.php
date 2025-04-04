@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Users')
+@section('title','OTP')
 @section('styles')
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection

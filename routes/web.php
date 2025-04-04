@@ -18,6 +18,7 @@ Route::get('/users/list', [AccountsController::class, 'users'])->name('users.lis
 Route::get('/admin/users/view/{id}', [AccountsController::class, 'viewUser'])->name('view.user')->middleware('auth');
 Route::get('/test/login',[HomeController::class,'temporaryLogin'])->name('testttest.login');
 Route::get('/live-feed',[HomeController::class,'live_feed'])->name('testttest.live.feed');
+Route::post('/webrequest/captcha', [AuthOtpController::class,'check'])->name('captcha');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
