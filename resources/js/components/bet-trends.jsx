@@ -3,10 +3,12 @@ import '../../css/bet-arnie.css'
 
 function BetTrends() {
   return (
-    <div className="trends limit-on-tab">
+    //  /* className="trends limit-on-tab" */
+    <div>
       <div>
-        <div className="g-header h6 m-0 rounded-top text-uppercase">
-          Trends ➼
+        <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-4">
+          <span className="text-black text-xl">Game Fight Results</span>
+          <div className="uppercase bg-black py-2 px-4 text-red-500">LAST CALL</div>
         </div>
         {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">

@@ -35,10 +35,7 @@ svg {
 table {
   border-collapse: collapse;
 }
-button {
-  border-radius: 0;
-}
-button:focus:not(:focus-visible) {
+/* button:focus:not(:focus-visible) {
   outline: 0;
 }
 button {
@@ -55,10 +52,10 @@ button {
 }
 button {
   -webkit-appearance: button;
-}
-button:not(:disabled) {
+} */
+/* button:not(:disabled) {
   cursor: pointer;
-}
+} */
 .h6 {
   font-weight: 500;
   line-height: 1.2;

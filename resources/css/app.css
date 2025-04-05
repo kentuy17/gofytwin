@@ -175,6 +175,18 @@
   width: 48px !important;
 }
 
+.bet-yellow {
+  background-color: #fedf5b;
+}
+
+.bet-red {
+  background-color: #ed1d13;
+}
+
+.bet-blue {
+  background-color: #4381e6;
+}
+
 @layer base {
   * {
     @apply border-border;
