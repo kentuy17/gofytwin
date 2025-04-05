@@ -1,5 +1,5 @@
-import './bootstrap';
-import '../css/app.css'; 
+import './bootstrap'
+import '../css/app.css'
 import '../sass/app.scss'
 // import Alpine from 'alpinejs';
 
@@ -18,7 +18,7 @@ import '../sass/app.scss'
 //     if(age < 1){
 //         return age+' years, '+m+' months';
 //     }
-    
+
 //     return age;
 // }
 // //  console.log('age: ' + getAge("1987/09/18"));
@@ -29,9 +29,9 @@ import '../sass/app.scss'
 //               url: "{{route('server.time')}}",
 //               data: { time: "trigger" }
 //                   })
-//               .success(function( msg ) {           
-//                   $('#servertime').text(msg.data);        
-//               });  
+//               .success(function( msg ) {
+//                   $('#servertime').text(msg.data);
+//               });
 //       },5000);
 //     $('#rumble_comb').click(function() {
 //         checkInputFields();
@@ -39,16 +39,16 @@ import '../sass/app.scss'
 //     $('#straight_com').click(function() {
 //         checkInputFields();
 //     });
-//     $('#draw_time_selector').change(function() { 
-//         checkInputFields(); 
+//     $('#draw_time_selector').change(function() {
+//         checkInputFields();
 //     });
-//     $('#draw_time_selector').blur(function() { 
+//     $('#draw_time_selector').blur(function() {
 //         let dr_time = this.value;
 //         if(dr_time==""){
 //             showErrs('Invalid selection.');
 //         }
 //         $("#draw_time").val(dr_time);
-//         checkInputFields(); 
+//         checkInputFields();
 //     });
 //     function checkInputFields(){
 //         let rumble_comb = $('#rumble_comb').is(':checked');
@@ -58,7 +58,7 @@ import '../sass/app.scss'
 //         let contact_no = $("#contact_no").val();
 //         // var let = $("#amount").val();
 //         let draw_time_selector = $('#draw_time_selector').val();
-        
+
 //         if(contact_no.length<10){
 //             showErrs('Invalid Mobile. Check Again.');
 
@@ -66,12 +66,12 @@ import '../sass/app.scss'
 //         }
 //         if(contact_no==""){
 //             showErrs('Contact No. is required');
-            
+
 //             return;
 //         }
 //         if(combination==""){
 //             showErrs('Enter a 3D No. Combination');
-            
+
 //             return;
 //         }
 //         if(combination.length<3){
@@ -82,7 +82,7 @@ import '../sass/app.scss'
 //         if(combination.length == 3 && combination[0] == combination[1] && combination[1] == combination[2]){
 //             if(rumble_comb===true){
 //                 showErrs('Cannot rumble combination.');
-//                 $('.add-bet').attr('disabled',true); 
+//                 $('.add-bet').attr('disabled',true);
 //                 $('#rumble_comb').prop('checked', false);
 //                 // $('#straight_com').prop('checked', false);
 //                 return;
@@ -115,14 +115,13 @@ import '../sass/app.scss'
 //             return;
 //         }
 //         showErrs('&nbsp;');
-//         $('.add-bet').attr('disabled',false); 
-//         $('.display-area').show(); 
+//         $('.add-bet').attr('disabled',false);
+//         $('.display-area').show();
 //     }
 //     function showErrs(errs){
 //         $(".irror").html(errs);
 //     }
-    
-        
+
 //     var table = $('.my-bets-table').DataTable({
 //         "language": {
 //             "emptyTable": "Your Bets are Place Here!"
@@ -147,14 +146,14 @@ import '../sass/app.scss'
 //         if (table.data().any()) {
 //             sum = table.column(2).data().reduce( function ( a, b ) {
 //                             return parseInt(a) + parseInt(b);
-//                         }); 
+//                         });
 //         } else {
-//             $('.proceed').attr('disabled',true); 
-//             $('#draw_time_selector').attr('disabled',false); 
+//             $('.proceed').attr('disabled',true);
+//             $('#draw_time_selector').attr('disabled',false);
 //         }
 //         $(".topay").html(parseInt(sum).toFixed(2));
 //     });
- 
+
 //     $("#contact_no,#combination,#amount").keyup(function(){
 //         checkInputFields();
 //     });

@@ -57,7 +57,7 @@ interface AppHeaderProps {
 }
 
 export function ManokLogo() {
-  return <img src="/images/gamefowl-master-logo-official.png" className="w-[100px] h-[100px]" />
+  return <img src="/images/gamefowl-master-logo-official.png" className="w-[231px] h-[227px]" />
 }
 
 export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {

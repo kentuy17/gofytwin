@@ -7,7 +7,7 @@ on:
     branches: [starter/*]
 
 env:
-  APP_ENV: ${{ vars.APP_ENV }}
+  APP_ENV: ${{ github.ref }}
 
 jobs:
   prepare:
@@ -21,14 +21,14 @@ jobs:
     name: Build
     needs: prepare
     uses: projek-xyz/actions/.github/workflows/build.yml@main
-    secrets:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+    # secrets:
+      # SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      # SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     with:
       branch: ${{ needs.prepare.outputs.target-branch }}
       composer-cache: ${{ needs.prepare.outputs.composer-cache }}
       composer-cache-key: ${{ needs.prepare.outputs.composer-cache-key }}
-      sentry-project: ${{ vars.SENTRY_PROJECT }}
+      # sentry-project: ${{ vars.SENTRY_PROJECT }}
 
   units:
     name: Unit Test with PHP ${{ matrix.php }}
