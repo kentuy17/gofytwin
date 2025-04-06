@@ -1,25 +1,40 @@
 {
-  "_auth-layout-SMpRvJ4T.js": {
-    "file": "assets/auth-layout-SMpRvJ4T.js",
-    "name": "auth-layout",
+  "_app-layout-6TzRgHii.css": {
+    "file": "assets/app-layout-6TzRgHii.css",
+    "src": "_app-layout-6TzRgHii.css"
+  },
+  "_app-layout-C_KIlajh.js": {
+    "file": "assets/app-layout-C_KIlajh.js",
+    "name": "app-layout",
     "imports": [
-      "_vendor-CSDo-upm.js",
-      "_theme-provider-BXt2dS6U.js"
+      "_vendor-BYljX-4W.js",
+      "_theme-provider-Swsykgkf.js"
+    ],
+    "css": [
+      "assets/app-layout-6TzRgHii.css"
     ]
   },
-  "_theme-provider-BXt2dS6U.js": {
-    "file": "assets/theme-provider-BXt2dS6U.js",
+  "_auth-layout-CuWa3bqZ.js": {
+    "file": "assets/auth-layout-CuWa3bqZ.js",
+    "name": "auth-layout",
+    "imports": [
+      "_vendor-BYljX-4W.js",
+      "_theme-provider-Swsykgkf.js"
+    ]
+  },
+  "_theme-provider-Swsykgkf.js": {
+    "file": "assets/theme-provider-Swsykgkf.js",
     "name": "theme-provider",
     "imports": [
-      "_vendor-CSDo-upm.js"
+      "_vendor-BYljX-4W.js"
     ]
   },
   "_vendor-BGiR1nSE.css": {
     "file": "assets/vendor-BGiR1nSE.css",
     "src": "_vendor-BGiR1nSE.css"
   },
-  "_vendor-CSDo-upm.js": {
-    "file": "assets/vendor-CSDo-upm.js",
+  "_vendor-BYljX-4W.js": {
+    "file": "assets/vendor-BYljX-4W.js",
     "name": "vendor",
     "css": [
       "assets/vendor-BGiR1nSE.css"
@@ -34,21 +49,21 @@
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-hvCy80ne.css",
+    "file": "assets/app-D1423x1D.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-DeKDUDZt.js",
+    "file": "assets/app-E9FC3GnK.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_vendor-CSDo-upm.js"
+      "_vendor-BYljX-4W.js"
     ],
     "css": [
-      "assets/app-DahOJ2KY.css",
-      "assets/app-hvCy80ne.css"
+      "assets/app-jxe9-56Q.css",
+      "assets/app-D1423x1D.css"
     ],
     "assets": [
       "assets/bootstrap-icons-BtvjY1KL.woff2",
@@ -56,76 +71,89 @@
     ]
   },
   "resources/js/app.tsx": {
-    "file": "assets/app-DXRrjgd3.js",
+    "file": "assets/app-BObNdOTF.js",
     "name": "app",
     "src": "resources/js/app.tsx",
     "isEntry": true,
     "imports": [
-      "_vendor-CSDo-upm.js"
+      "_vendor-BYljX-4W.js"
     ],
     "dynamicImports": [
       "resources/js/pages/auth/flat-login.jsx",
       "resources/js/pages/auth/login.jsx",
       "resources/js/pages/auth/otp.jsx",
       "resources/js/pages/dashboard.jsx",
+      "resources/js/pages/deposit.jsx",
       "resources/js/pages/welcome.jsx"
     ],
     "css": [
-      "assets/app-hvCy80ne.css"
+      "assets/app-D1423x1D.css"
     ]
   },
   "resources/js/pages/auth/flat-login.jsx": {
-    "file": "assets/flat-login-DpA8ZXXq.js",
+    "file": "assets/flat-login-BnZQzGZ3.js",
     "name": "flat-login",
     "src": "resources/js/pages/auth/flat-login.jsx",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-CSDo-upm.js"
+      "_vendor-BYljX-4W.js"
     ]
   },
   "resources/js/pages/auth/login.jsx": {
-    "file": "assets/login-_0nXMNa-.js",
+    "file": "assets/login-BNHQdL_z.js",
     "name": "login",
     "src": "resources/js/pages/auth/login.jsx",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-CSDo-upm.js",
-      "_auth-layout-SMpRvJ4T.js",
-      "_theme-provider-BXt2dS6U.js"
+      "_vendor-BYljX-4W.js",
+      "_auth-layout-CuWa3bqZ.js",
+      "_theme-provider-Swsykgkf.js"
     ]
   },
   "resources/js/pages/auth/otp.jsx": {
-    "file": "assets/otp-BLXNPFSb.js",
+    "file": "assets/otp-Be_gXydx.js",
     "name": "otp",
     "src": "resources/js/pages/auth/otp.jsx",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-CSDo-upm.js",
-      "_auth-layout-SMpRvJ4T.js",
-      "_theme-provider-BXt2dS6U.js"
+      "_vendor-BYljX-4W.js",
+      "_auth-layout-CuWa3bqZ.js",
+      "_theme-provider-Swsykgkf.js"
     ]
   },
   "resources/js/pages/dashboard.jsx": {
-    "file": "assets/dashboard-lhgzvD56.js",
+    "file": "assets/dashboard-D6Ujo-4X.js",
     "name": "dashboard",
     "src": "resources/js/pages/dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-CSDo-upm.js",
-      "_theme-provider-BXt2dS6U.js"
+      "_vendor-BYljX-4W.js",
+      "_app-layout-C_KIlajh.js",
+      "_theme-provider-Swsykgkf.js"
+    ]
+  },
+  "resources/js/pages/deposit.jsx": {
+    "file": "assets/deposit-DyrBzwOb.js",
+    "name": "deposit",
+    "src": "resources/js/pages/deposit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-BYljX-4W.js",
+      "_theme-provider-Swsykgkf.js",
+      "_app-layout-C_KIlajh.js"
     ]
   },
   "resources/js/pages/welcome.jsx": {
-    "file": "assets/welcome--ftqjLcY.js",
+    "file": "assets/welcome-C6Nv1-hY.js",
     "name": "welcome",
     "src": "resources/js/pages/welcome.jsx",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-CSDo-upm.js"
+      "_vendor-BYljX-4W.js"
     ]
   },
   "resources/sass/app.scss": {
-    "file": "assets/app-DahOJ2KY.css",
+    "file": "assets/app-jxe9-56Q.css",
     "src": "resources/sass/app.scss",
     "isEntry": true
   }
