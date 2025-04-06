@@ -35,27 +35,7 @@ svg {
 table {
   border-collapse: collapse;
 }
-/* button:focus:not(:focus-visible) {
-  outline: 0;
-}
-button {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  margin: 0;
-}
-button {
-  overflow: visible;
-}
-button {
-  text-transform: none;
-}
-button {
-  -webkit-appearance: button;
-} */
-/* button:not(:disabled) {
-  cursor: pointer;
-} */
+
 .h6 {
   font-weight: 500;
   line-height: 1.2;
@@ -405,3 +385,22 @@ button {
     transform: rotate(360deg);
   }
 }
+
+/*! CSS Used from: https://static.pinoyperya.app/vendor/bootstrap431/css/bootstrap.min.css */
+/*! CSS Used from: https://static.pinoyperya.app/css/app/base.css?v=12.95 */
+.btn-gold{background-color:rgba(78,106,181,.1)!important;border-color:rgba(255,193,7,.341)!important;color:#ffc107!important;}
+.btn-gold:hover{background-color:rgba(255,193,7,.1)!important;border-color:rgba(255,193,7,.3)!important;}
+.modal-content{background:#0e0f14;background-repeat:no-repeat;}
+.modal-header{border-bottom:1px solid rgba(172,181,207,.502)!important;}
+.clickable{cursor:pointer;}
+.gp-shadow-sm{box-shadow:0 2px 7px -2px hsla(0,0%,5%,.902);}
+/*! CSS Used from: https://static.pinoyperya.app/css/app/deposit.css?v=12.95 */
+.dep-tile-2{color:#000;margin-bottom:1rem;position:relative;}
+.dep-tile-2 .icn{align-self:center;flex:0 0 40px;}
+.dep-tile-2 .icn img{border-radius:50%;display:block;width:100%;}
+.dep-tile-2 .info{color:#fff;flex:1 0 40px;padding-left:1rem;}
+.dep-tile-2 .name{font-size:1rem;margin-bottom:2px;text-transform:uppercase;}
+.dep-tile-2 .desc{font-size:.75rem;line-height:1rem;}
+.play-button{background-color:rgba(10,11,12,.71);border-style:solid;color:#fff;font-size:20px;height:50px;left:50px;overflow:hidden;position:absolute;top:30px;width:90px;}
+/*! CSS Used keyframes */
+/* @keyframes pulse{0%{transform:scaleX(1);}50%{transform:scale3d(1.05,1.05,1.05);}to{transform:scaleX(1);}} */
