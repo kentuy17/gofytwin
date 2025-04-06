@@ -187,6 +187,16 @@
   background-color: #4381e6;
 }
 
+.animate-blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
