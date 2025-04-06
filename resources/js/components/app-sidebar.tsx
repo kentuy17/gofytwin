@@ -4,7 +4,7 @@ import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { Link } from '@inertiajs/react'
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react'
+import { BookOpen, CoinsIcon, Folder, LayoutGrid } from 'lucide-react'
 import AppLogo from './app-logo'
 
 const mainNavItems: NavItem[] = [
@@ -12,6 +12,11 @@ const mainNavItems: NavItem[] = [
     title: 'Home',
     url: '/home',
     icon: LayoutGrid,
+  },
+  {
+    title: 'Cashin',
+    url: '/player/deposit',
+    icon: CoinsIcon,
   },
 ]
 

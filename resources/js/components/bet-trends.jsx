@@ -6,7 +6,7 @@ function BetTrends() {
     //  /* className="trends limit-on-tab" */
     <div>
       <div>
-        <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-4">
+        <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
           <span className="text-black text-xl">Game Fight Results</span>
           <div className="uppercase bg-black py-2 px-4 text-red-500">LAST CALL</div>
         </div>

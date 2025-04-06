@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\AccountsController;
 use App\Http\Controllers\API\ServerInfoController;
 use App\Http\Controllers\Admin\CashinController as AdminCashIn;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return Redirect::to(route('login'));
@@ -52,7 +53,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/get-inactive', [ServerInfoController::class,'get_inactive'])->name('get.inactive')->middleware('auth');
     Route::get('/play/3d/receipt',[PlaythreeController::class,'pay'])->name('play.three.pay')->middleware('auth');
     Route::get('/winner/info/cashin', [ServerInfoController::class,'cashin_info_board'])->name('cashin.info')->middleware('auth');
+
+    // React/Inertia Front-end
+    Route::get('/player/deposit', [UserController::class, 'deposit'])->name('deposit');
 });
+
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);
 Route::controller(AuthOtpController::class)->group(function(){
     Route::get('/login', 'login')->name('otp.login');
