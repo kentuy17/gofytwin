@@ -23,7 +23,7 @@ storage/pail
 !public/
 public/*
 !public/build
-
+!public/images
 # Development files
 # --------------------------
 .env.*
