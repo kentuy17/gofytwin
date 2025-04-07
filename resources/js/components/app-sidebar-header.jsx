@@ -9,6 +9,7 @@ import { Button } from './ui/button'
 
 export function AppSidebarHeader({ breadcrumbs }) {
   const { auth } = usePage().props
+  const credits = formatMoney(auth?.user?.credits)
 
   return (
     <header className="justify-between items-center border-sidebar-border/50 flex h-16 shrink-0 gap-2 border-b px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
@@ -19,7 +20,7 @@ export function AppSidebarHeader({ breadcrumbs }) {
       <div className="flex space-between">
         <span className="pr-1 text-yellow-300 font-bold">Credits: </span>
         <span>
-          {formatMoney(auth.user.credits)}
+          {credits}
         </span>
       </div>
       <div className="">

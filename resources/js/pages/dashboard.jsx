@@ -4,11 +4,14 @@ import BetTrends from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
+import { echoInstance } from '@/echo'
 // import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
 import { Head, usePage } from '@inertiajs/react'
+import axios from 'axios'
+// import Echo from 'laravel-echo'
 import React, { useEffect, useState } from 'react'
 
 const breadcrumbs = [
@@ -20,14 +23,109 @@ const breadcrumbs = [
 
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
-function BetStats({ fight, meron, wala }) {
+async function addBet(params) {
+  try {
+    const { message, amount, side, credits } = params
+    if (message !== 'OPEN') {
+      alert('Cannot Bet')
+      return
+    }
+
+    if (amount < 10) {
+      alert('Minimum bet is 10.00')
+      return
+    }
+
+    if (amount > credits) {
+      alert('Insuficient Points')
+      return
+    }
+
+    if (amount > 1500) {
+      alert('Maximum bet is 1,500.00')
+      return
+    }
+
+    if (!confirm(`Bet ${formatMoney(amount)}?`)) {
+      return
+    }
+
+    const { data } = await axios.post('/bet/add', {
+      amount,
+      side,
+    })
+
+    // if (data.status === 'OK') {
+    //   this.player.points -= this.betAmount
+    //   side === 'M'
+    //     ? (this.player.bets.meron += this.betAmount)
+    //     : (this.player.bets.wala += this.betAmount)
+    //   this.clear()
+    // }
+    console.log(data)
+  }
+  catch (err) {
+    // alert(err.response.data.error)
+    console.error(err)
+  }
+}
+
+function PlaceBets({ setPlayerBet, playerBet }) {
+  const { auth } = usePage().props
+  const betMeron = Number.parseFloat(playerBet.meron)
+  const betWala = Number.parseFloat(playerBet.wala)
+
+  const handleOnlickMeron = () => {
+    const betAmount = prompt('Enter Amount:', 0)
+    addBet({
+      message: 'OPEN',
+      amount: betAmount,
+      side: 'M',
+      credits: auth.user.credits,
+    })
+
+    setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
+    console.log(betAmount)
+  }
+
+  const handleOnlickWala = () => {
+    const betAmount = prompt('Enter Amount:', 0)
+    addBet({
+      message: 'OPEN',
+      amount: Number.parseFloat(betAmount),
+      side: 'W',
+      credits: auth.user.credits,
+    })
+
+    // setPlayerBet(betWala + Number.parseFloat(betAmount))
+    setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(betAmount) })
+  }
+
+  return (
+    <div className="bg-black justify-around flex flex-row w-full p-2">
+      <div className="flex w-2/5 justify-center items-center">
+        <Button onClick={handleOnlickMeron} size="sm" className="text-red-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
+      </div>
+
+      <div className="w-1/5"></div>
+      <div className="flex w-2/5 justify-center items-center">
+        <Button onClick={handleOnlickWala} size="sm" className="text-blue-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
+      </div>
+
+    </div>
+  )
+}
+
+function BetStats({ fight, meron, wala, playerBet }) {
   const [cMeron, setCmeron] = useState(meron)
   const [cWala, setCwala] = useState(wala)
 
+  console.log(playerBet)
+
   const player = {
     bets: {
-      meron: 500,
-      wala: 0,
+      meron: playerBet.meron,
+      wala: playerBet.wala,
     },
   }
 
@@ -77,33 +175,12 @@ function BetStats({ fight, meron, wala }) {
   )
 }
 
-function PlaceBets() {
-  const handleOnlickMeron = () => {
-    const betAmount = prompt('Enter Amount:', 0)
-    console.log(betAmount)
-  }
-
-  const handleOnlickWala = () => {
-    const betAmount = prompt('Enter Amount:', 0)
-    console.log(betAmount)
-  }
-
-  return (
-    <div className="bg-black justify-around flex flex-row w-full p-2">
-      <div className="flex w-2/5 justify-center items-center">
-        <Button onClick={handleOnlickMeron} size="sm" className="text-red-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
-      </div>
-
-      <div className="w-1/5"></div>
-      <div className="flex w-2/5 justify-center items-center">
-        <Button onClick={handleOnlickWala} size="sm" className="text-blue-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
-      </div>
-
-    </div>
-  )
-}
-
 export default function Dashboard({ commonData }) {
+  const { meron, wala, fight_no } = commonData
+  const [totalMeron, setTotalMeron] = useState(meron)
+  const [totalWala, setTotalWala] = useState(wala)
+  const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
+
   commonData && console.log(commonData)
 
   // console.log(status)
@@ -139,6 +216,21 @@ export default function Dashboard({ commonData }) {
     })
   }
 
+  useEffect(() => {
+    echoInstance.private('bet-channel')
+      .listen('BetEvent', async (e) => {
+        const { amount, side } = e.securedBet
+        console.log(e)
+        if (side === 'M') {
+          setTotalMeron(prev => prev + amount)
+        }
+
+        if (side === 'W') {
+          setTotalWala(prev => prev + amount)
+        }
+      })
+  }, [])
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
@@ -150,8 +242,8 @@ export default function Dashboard({ commonData }) {
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
-          <BetStats fight={250} meron={88888} wala={88888} />
-          <PlaceBets />
+          <BetStats fight={fight_no} meron={totalMeron} wala={totalWala} playerBet={playerBet} />
+          <PlaceBets setPlayerBet={setPlayerBet} playerBet={playerBet} />
         </div>
         <BetTrends />
         {/* </div> */}

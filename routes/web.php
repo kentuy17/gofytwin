@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\AccountsController;
 use App\Http\Controllers\API\ServerInfoController;
 use App\Http\Controllers\Admin\CashinController as AdminCashIn;
+use App\Http\Controllers\BetController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -56,6 +57,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // React/Inertia Front-end
     Route::get('/player/deposit', [UserController::class, 'deposit'])->name('deposit');
+
+    // Betting
+    Route::post('/bet/add', [BetController::class, 'addBet'])->name('add.bet');
 });
 
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);
