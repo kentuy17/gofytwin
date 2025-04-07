@@ -30,7 +30,7 @@ export function formatMoney(value: any, peso: boolean = true) {
   if (!peso) {
     return Number.isNaN(value)
       ? '0.00'
-      : new Intl.NumberFormat().format(value)
+      : new Intl.NumberFormat().format(value.toFixed(2))
   }
 
   const php = Intl.NumberFormat('en-US', {

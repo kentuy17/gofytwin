@@ -62,7 +62,8 @@ async function addBet(params) {
     //     : (this.player.bets.wala += this.betAmount)
     //   this.clear()
     // }
-    console.log(data)
+    // console.log(data)
+    return data.status
   }
   catch (err) {
     // alert(err.response.data.error)
@@ -75,30 +76,39 @@ function PlaceBets({ setPlayerBet, playerBet }) {
   const betMeron = Number.parseFloat(playerBet.meron)
   const betWala = Number.parseFloat(playerBet.wala)
 
-  const handleOnlickMeron = () => {
+  const handleOnlickMeron = async () => {
     const betAmount = prompt('Enter Amount:', 0)
-    addBet({
+    if (!betAmount)
+      return
+
+    const resp = await addBet({
       message: 'OPEN',
       amount: betAmount,
       side: 'M',
       credits: auth.user.credits,
     })
 
-    setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
-    console.log(betAmount)
+    if (resp === 'OK') {
+      setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
+      console.log(betAmount)
+    }
   }
 
-  const handleOnlickWala = () => {
+  const handleOnlickWala = async () => {
     const betAmount = prompt('Enter Amount:', 0)
-    addBet({
+    if (!betAmount)
+      return
+
+    const resp = await addBet({
       message: 'OPEN',
       amount: Number.parseFloat(betAmount),
       side: 'W',
       credits: auth.user.credits,
     })
 
-    // setPlayerBet(betWala + Number.parseFloat(betAmount))
-    setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(betAmount) })
+    if (resp === 'OK') {
+      setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(betAmount) })
+    }
   }
 
   return (
@@ -175,13 +185,14 @@ function BetStats({ fight, meron, wala, playerBet }) {
   )
 }
 
-export default function Dashboard({ commonData }) {
+export default function Dashboard({ commonData, user }) {
   const { meron, wala, fight_no } = commonData
   const [totalMeron, setTotalMeron] = useState(meron)
   const [totalWala, setTotalWala] = useState(wala)
   const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
 
   commonData && console.log(commonData)
+  console.log(user)
 
   // console.log(status)
   const { flash } = usePage().props
@@ -219,8 +230,11 @@ export default function Dashboard({ commonData }) {
   useEffect(() => {
     echoInstance.private('bet-channel')
       .listen('BetEvent', async (e) => {
-        const { amount, side } = e.securedBet
-        console.log(e)
+        const { amount, side, user_id } = e.securedBet
+        if (user.id === user_id)
+          return
+
+        console.log(e, 'reverb')
         if (side === 'M') {
           setTotalMeron(prev => prev + amount)
         }
@@ -229,7 +243,7 @@ export default function Dashboard({ commonData }) {
           setTotalWala(prev => prev + amount)
         }
       })
-  }, [])
+  }, [user.id])
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
