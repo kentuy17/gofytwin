@@ -28,6 +28,7 @@
     "react-dom": "^19.0.0",
     "react-phone-number-input": "^3.4.12",
     "react-player": "^2.16.0",
+    "styled-components": "^6.1.17",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.14",
     "tailwindcss-animate": "^1.0.7",
@@ -64,7 +65,9 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "laravel-echo": "^2.0.2",
     "laravel-vite-plugin": "^1.2.0",
+    "pusher-js": "^8.4.0",
     "sass-embedded": "^1.86.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.2"

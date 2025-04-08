@@ -4,11 +4,15 @@ import BetTrends from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
+import { echoInstance } from '@/echo'
 // import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
 import AppLayout from '@/layouts/app-layout'
+import { Banner } from '@/layouts/app/app-sidebar-layout'
+import { formatMoney } from '@/lib/utils'
 import { Head, usePage } from '@inertiajs/react'
+import axios from 'axios'
+// import Echo from 'laravel-echo'
 import React, { useEffect, useState } from 'react'
-// import ReactPlayer from 'react-player'
 
 const breadcrumbs = [
   {
@@ -19,20 +23,119 @@ const breadcrumbs = [
 
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
-function formatMoney(value) {
-  return Number.isNaN(value)
-    ? '0.00'
-    : new Intl.NumberFormat('en-US').format(value.toFixed(2))
+async function addBet(params) {
+  try {
+    const { message, amount, side, credits } = params
+    if (message !== 'OPEN') {
+      alert('Cannot Bet')
+      return
+    }
+
+    if (amount < 10) {
+      alert('Minimum bet is 10.00')
+      return
+    }
+
+    if (amount > credits) {
+      alert('Insuficient Points')
+      return
+    }
+
+    if (amount > 1500) {
+      alert('Maximum bet is 1,500.00')
+      return
+    }
+
+    if (!confirm(`Bet ${formatMoney(amount)}?`)) {
+      return
+    }
+
+    const { data } = await axios.post('/bet/add', {
+      amount,
+      side,
+    })
+
+    // if (data.status === 'OK') {
+    //   this.player.points -= this.betAmount
+    //   side === 'M'
+    //     ? (this.player.bets.meron += this.betAmount)
+    //     : (this.player.bets.wala += this.betAmount)
+    //   this.clear()
+    // }
+    // console.log(data)
+    return data.status
+  }
+  catch (err) {
+    // alert(err.response.data.error)
+    console.error(err)
+  }
 }
 
-function BetStats({ fight, meron, wala }) {
+function PlaceBets({ setPlayerBet, playerBet }) {
+  const { auth } = usePage().props
+  const betMeron = Number.parseFloat(playerBet.meron)
+  const betWala = Number.parseFloat(playerBet.wala)
+
+  const handleOnlickMeron = async () => {
+    const betAmount = prompt('Enter Amount:', 0)
+    if (!betAmount)
+      return
+
+    const resp = await addBet({
+      message: 'OPEN',
+      amount: betAmount,
+      side: 'M',
+      credits: auth.user.credits,
+    })
+
+    if (resp === 'OK') {
+      setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
+      console.log(betAmount)
+    }
+  }
+
+  const handleOnlickWala = async () => {
+    const betAmount = prompt('Enter Amount:', 0)
+    if (!betAmount)
+      return
+
+    const resp = await addBet({
+      message: 'OPEN',
+      amount: Number.parseFloat(betAmount),
+      side: 'W',
+      credits: auth.user.credits,
+    })
+
+    if (resp === 'OK') {
+      setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(betAmount) })
+    }
+  }
+
+  return (
+    <div className="bg-black justify-around flex flex-row w-full p-2">
+      <div className="flex w-2/5 justify-center items-center">
+        <Button onClick={handleOnlickMeron} size="sm" className="text-red-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
+      </div>
+
+      <div className="w-1/5"></div>
+      <div className="flex w-2/5 justify-center items-center">
+        <Button onClick={handleOnlickWala} size="sm" className="text-blue-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
+      </div>
+
+    </div>
+  )
+}
+
+function BetStats({ fight, meron, wala, playerBet }) {
   const [cMeron, setCmeron] = useState(meron)
   const [cWala, setCwala] = useState(wala)
 
+  console.log(playerBet)
+
   const player = {
     bets: {
-      meron: 500,
-      wala: 0,
+      meron: playerBet.meron,
+      wala: playerBet.wala,
     },
   }
 
@@ -60,10 +163,10 @@ function BetStats({ fight, meron, wala }) {
   return (
     <div className="leading-none flex justify-around w-full">
       <div className="bet-red flex flex-col w-2/5 justify-center items-center p-2">
-        <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black">MERON</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-300 text-xl">{formatMoney(cMeron)}</div>
-        <div>{`(${formatMoney(percentage(cMeron))}%)`}</div>
-        <div>{`${formatMoney(player.bets.meron)} = ${formatMoney(meronWinAmount())}`}</div>
+        <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">MERON</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cMeron)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(cMeron), false)}%)`}</div>
+        <div>{`${formatMoney(player.bets.meron, false)} = ${formatMoney(meronWinAmount(), false)}`}</div>
       </div>
       <div className="px-4 bet-yellow flex flex-col justify-center items-center w-1/5">
         <span className="text-black">GAME</span>
@@ -72,41 +175,28 @@ function BetStats({ fight, meron, wala }) {
         </span>
         <div className="font-black text-3xl">{fight}</div>
       </div>
-      <div className="bet-blue flex flex-col w-2/5 justify-center items-center">
-        <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black">WALA</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-300 text-xl">{formatMoney(cWala)}</div>
-        <div>{`(${formatMoney(percentage(cWala))}%)`}</div>
-        <div>{`${formatMoney(player.bets.wala)} = ${formatMoney(walaWinAmount())}`}</div>
+      <div className="bet-blue flex flex-col w-2/5 justify-center items-center p-2">
+        <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">WALA</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cWala)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(cWala), false)}%)`}</div>
+        <div>{`${formatMoney(player.bets.wala, false)} = ${formatMoney(walaWinAmount(), false)}`}</div>
       </div>
     </div>
   )
 }
 
-function PlaceBets() {
-  const handleOnlickMeron = () => {
-    const betAmount = prompt('Enter Amount:', 0)
-    console.log(betAmount)
-  }
+export default function Dashboard({ commonData, user }) {
+  const { meron, wala, fight_no } = commonData
+  const [totalMeron, setTotalMeron] = useState(meron)
+  const [totalWala, setTotalWala] = useState(wala)
+  const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
 
-  const handleOnlickWala = () => {
-    const betAmount = prompt('Enter Amount:', 0)
-    console.log(betAmount)
-  }
-
-  return (
-    <div className="bg-black justify-around flex flex-row w-full p-2">
-      <Button onClick={handleOnlickMeron} className="rounded-lg p-2">Place Bet</Button>
-      <Button onClick={handleOnlickWala} className="rounded-lg p-2">Place Bet</Button>
-    </div>
-  )
-}
-
-export default function Dashboard({ commonData }) {
   commonData && console.log(commonData)
+  console.log(user)
 
   // console.log(status)
   const { flash } = usePage().props
-  console.log(flash)
+  flash.message && console.log(flash)
 
   const playerRef = React.useRef(null)
   const autoplay = !import.meta.env.VITE_AUTO_PLAY
@@ -137,18 +227,37 @@ export default function Dashboard({ commonData }) {
     })
   }
 
+  useEffect(() => {
+    echoInstance.private('bet-channel')
+      .listen('BetEvent', async (e) => {
+        const { amount, side, user_id } = e.securedBet
+        if (user.id === user_id)
+          return
+
+        console.log(e, 'reverb')
+        if (side === 'M') {
+          setTotalMeron(prev => prev + amount)
+        }
+
+        if (side === 'W') {
+          setTotalWala(prev => prev + amount)
+        }
+      })
+  }, [user.id])
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
+      <Banner />
       <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
         {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
-        <div className="border-sidebar-border/70 dark:border-sidebar-border md:max-w-2xl max-w-100 relative  flex-1 rounded-xl border">
+        <div className="border-sidebar-border/70">
           <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
-          <BetStats fight={250} meron={88888} wala={88888} />
-          <PlaceBets />
+          <BetStats fight={fight_no} meron={totalMeron} wala={totalWala} playerBet={playerBet} />
+          <PlaceBets setPlayerBet={setPlayerBet} playerBet={playerBet} />
         </div>
         <BetTrends />
         {/* </div> */}

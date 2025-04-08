@@ -1,5 +1,6 @@
 import type { ClassValue } from 'clsx'
 import { clsx } from 'clsx'
+
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -23,4 +24,21 @@ export function isValidPhoneNumber(phoneNumber: any) {
 
 export function removeSpaces(str: any) {
   return str.replace(/\s+/g, '')
+}
+
+export function formatMoney(value: any, peso: boolean = true) {
+  if (!peso) {
+    return Number.isNaN(value)
+      ? '0.00'
+      : new Intl.NumberFormat().format(value.toFixed(2))
+  }
+
+  const php = Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'PHP',
+  })
+
+  return Number.isNaN(value)
+    ? '0.00'
+    : php.format(value)
 }
