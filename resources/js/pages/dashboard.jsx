@@ -9,7 +9,7 @@ import { echoInstance } from '@/echo'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
-import { Head, usePage } from '@inertiajs/react'
+import { Head, usePage, usePoll } from '@inertiajs/react'
 import axios from 'axios'
 // import Echo from 'laravel-echo'
 import React, { useEffect, useState } from 'react'
@@ -193,6 +193,15 @@ export default function Dashboard({ commonData, user }) {
 
   commonData && console.log(commonData)
   console.log(user)
+
+  usePoll(2000, {
+    onPrefetched() {
+      console.log('prefetch')
+    },
+    onFinish() {
+      console.log('finish')
+    },
+  }, { keepAlive: true })
 
   // console.log(status)
   const { flash } = usePage().props

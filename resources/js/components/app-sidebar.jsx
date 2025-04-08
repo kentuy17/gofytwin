@@ -1,26 +1,34 @@
-import type { NavItem } from '@/types'
+// import type { NavItem } from '@/types'
 import { NavFooter } from '@/components/nav-footer'
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
-import { Link } from '@inertiajs/react'
-import { BookOpen, CoinsIcon, Folder, LayoutGrid } from 'lucide-react'
+import { Link, usePage } from '@inertiajs/react'
+import { BookOpen, CoinsIcon, Folder, Joystick, LayoutGrid } from 'lucide-react'
 import AppLogo from './app-logo'
 
-const mainNavItems: NavItem[] = [
+const mainNavItems = [
   {
     title: 'Home',
     url: '/home',
     icon: LayoutGrid,
+    level: 0,
   },
   {
     title: 'Cashin',
     url: '/player/deposit',
     icon: CoinsIcon,
+    level: 0,
+  },
+  {
+    title: 'Operator',
+    url: '/operator',
+    icon: Joystick,
+    level: 1,
   },
 ]
 
-const footerNavItems: NavItem[] = [
+const footerNavItems = [
   {
     title: 'Users List',
     url: '/admin/users/list',
@@ -49,6 +57,9 @@ const footerNavItems: NavItem[] = [
 ]
 
 export function AppSidebar() {
+  const { auth } = usePage().props
+  const filterNav = mainNavItems.filter(item => auth.user.user_level >= item.level)
+
   return (
     <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader>
@@ -64,7 +75,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={mainNavItems} />
+        <NavMain items={filterNav} />
       </SidebarContent>
 
       <SidebarFooter>

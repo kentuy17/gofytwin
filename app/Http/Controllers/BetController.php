@@ -18,14 +18,14 @@ class BetController extends Controller
     private $current_event;
     private $current_fight;
 
-    public function __construct(EventGame $event, Fight $fight)
+    public function __construct()
     {
-        $this->current_event = $event->where('status','ACTIVE')
+        $this->current_event = EventGame::where('status','ACTIVE')
             ->orderBy('id','DESC')
             ->first();
 
-        $this->current_fight = $fight->where('event_id', $event->id)
-            ->where('status', 'OPEN')
+        $this->current_fight = Fight::where('event_id', $event->id)
+            // ->where('status', 'OPEN')
             ->orderBy('id', 'DESC')
             ->first();
     }
@@ -36,7 +36,7 @@ class BetController extends Controller
             $points_before_bet = Auth::user()->credits;
 
             $this->current_fight = Fight::where('event_id', $this->current_event->id)
-                ->where('status', 'OPEN')
+                // ->where('status', 'OPEN')
                 ->orderBy('id', 'DESC')
                 ->first();
 
