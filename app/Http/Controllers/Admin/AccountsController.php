@@ -265,27 +265,15 @@ class AccountsController extends Controller
         }
         $user = User::find($id);
         $total_ci = Topups::where('user_id',$user->id)->where('status','success')->sum('amount');
-        $total_pick2 = Pick2ds::where('user_id',$user->id)->sum('amount');
-        $total_bets1ds = Bets1ds::where('user_id',$user->id)->sum('amount');
-        $total_bets2ds = Bets2ds::where('user_id',$user->id)->sum('amount');
-        $total_bets3ds = Bets3ds::where('user_id',$user->id)->sum('amount');
-        $total_bets4ds = Bets4ds::where('user_id',$user->id)->sum('amount');
-        $total_bets6ds = Bets6ds::where('user_id',$user->id)->sum('amount');
-        $total_sales = $total_bets2ds + $total_bets3ds + $total_bets4ds + $total_bets6ds + $total_pick2 + $total_bets1ds;
+        $total_sales = 0;
         $number_of_ips = User::where('ip',$user->ip)->count();
         if($post = $_POST) {
             $user->name = $post['name'];
-            $user->email = $post['mobile_no'];
+            $user->email = $post['mobile_no']."@gmail.com";
             $user->percentage = $post['percentage'];
             $user->account_status = $post['account_status'];
-            $user->user_attepts = $post['user_attepts'];
-            $user->three_d_bet_limit = $post['three_d_bet_limit'];
-            $user->two_d_bet_limit = $post['two_d_bet_limit'];
-
-            $creds = Credits::where('user_id', $id)->first();
-            $creds->amount = $post['credits'];
-            $creds->save();
-
+            $user->user_attempts = $post['user_attempts'];
+            $user->credits = $post['credits'];
             
             if(isset($post['password'])){
                 if(Auth::user()->account_type=='super_admin'){

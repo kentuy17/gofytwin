@@ -174,4 +174,15 @@ abstract class Controller
     protected $settings;
 
     protected $background_image = "images/site-bg.png";
+    public function record($activity,$data){
+        $record = null;
+        $data = json_encode($data);
+        $full_data = [
+                      'user_id'=>auth()->user()->id,          
+                      'user_name'=>auth()->user()->name,          
+                      'action'=>$activity,          
+                      'data'=>$data,          
+                    ];
+        $record = ActivityLogs::create($full_data);
+    }
 }
