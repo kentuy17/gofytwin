@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AccountsController;
 use App\Http\Controllers\API\ServerInfoController;
 use App\Http\Controllers\Admin\CashinController as AdminCashIn;
 use App\Http\Controllers\BetController;
+use App\Http\Controllers\FightController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -33,6 +34,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route::get('/admin/user/cash-in/{id}',[AdminCashIn::class,'userCashin'])->middleware('auth')->name('admin.user.cashin');
     Route::get('/admin/users/view/{id}', [AccountsController::class, 'viewUser'])->name('view.user')->middleware('auth');
+    Route::get('/admin/users/edit/{id}', [AccountsController::class, 'editUser'])->name('edit.user')->middleware('auth');
+    Route::post('/admin/users/edit/{id}', [AccountsController::class, 'editUser'])->middleware('auth');
+
+
     Route::post('/winner/info', [ServerInfoController::class,'winner_info'])->name('winner.info')->middleware('auth');
 
     Route::get('/admin/core/statistics', [ReportsController::class, 'statistics'])->middleware('auth')->name('statistics');
@@ -60,6 +65,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Betting
     Route::post('/bet/add', [BetController::class, 'addBet'])->name('add.bet');
+    Route::get('/fight/update', [FightController::class, 'updateFight'])->name('update.fight');
+    Route::get('/operator', [FightController::class, 'operator'])->name('operator');
 });
 
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);

@@ -16,7 +16,7 @@ class Fight extends Model
         'fight_no',
         'user_id',
         'game_winner',
-        'status',
+        'status', // 'WAITING','OPEN','CLOSED','DONE'
         'created_at',
         'updated_at',
         'event_id'

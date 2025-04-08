@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
@@ -50,5 +51,21 @@ class EventGame extends Model
     public  function previous()
     {
         return $this->where('id', '<', $this->id)->orderBy('id', 'desc')->first();
+    }
+
+    public function active()
+    {
+        $check = $this->where('status', 'ACTIVE')->orderBy('id', 'desc')->first();
+        if(!$check) {
+            return $this->create([
+                'name' => 'EVENT GAMEFOWL MASTER',
+                'event_date' => Carbon::now(),
+                'time_start' => '08:00:00',
+                'status' => 'ACTIVE',
+                'added_by' => 1,
+            ]);
+        }
+
+        return $check;
     }
 }

@@ -1,15 +1,141 @@
-// import React from 'react'
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { usePage } from '@inertiajs/react'
+import { useEffect, useState } from 'react'
+import { Button } from './ui/button'
+import { Label } from './ui/label'
+import { Switch } from './ui/switch'
 import '../../css/bet-arnie.css'
 
-function BetTrends() {
+function StatusBar({ status, last }) {
+  const [isLastCall, setIsLastCall] = useState(last)
+
+  const statuses = {
+    OPEN: {
+      backgroundColor: 'bg-green-500',
+      textColor: 'text-white',
+      isBlink: false,
+      text: 'OPEN',
+    },
+    CLOSED: {
+      backgroundColor: 'bg-red-500',
+      textColor: 'text-white',
+      isBlink: false,
+      text: 'CLOSED',
+    },
+  }
+
+  const blink = statuses[status].isBlink ? 'animate-blink' : ''
+
+  useEffect(() => {
+    setIsLastCall(last)
+  }, [last])
+
   return (
-    //  /* className="trends limit-on-tab" */
+
+    <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
+      <span className="text-black text-xl">Game Fight Results</span>
+      {isLastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
+      <div className={`${blink} uppercase ${statuses[status].backgroundColor} py-2 px-4 ${statuses[status].textColor}`}>{statuses[status].text}</div>
+
+    </div>
+  )
+}
+
+function PopUpSelectResult() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const walaWins = () => {
+    alert('wala wens')
+  }
+
+  const meronWins = () => {
+    alert('wens wens')
+  }
+
+  const handleDraw = () => {
+    console.log('draw')
+    setIsDialogOpen(false)
+  }
+
+  const handleCanceled = () => {
+    console.log('cancelled')
+    setIsDialogOpen(false)
+  }
+
+  return (
+    <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} allowOutside>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline" className="bg-blue-400">DONE</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Sino nanalo?</AlertDialogTitle>
+          <AlertDialogDescription>
+            {/* This action cannot be undone. This will permanently delete your account
+            and remove your data from our servers. */}
+          </AlertDialogDescription>
+
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Back</AlertDialogCancel>
+          <Button onClick={() => handleCanceled()} variant="secondary">CANCELLED</Button>
+          <Button onClick={() => handleDraw()} variant="default" className="bg-yellow-500">DRAW</Button>
+          <AlertDialogCancel onClick={walaWins} className="bg-blue-500 text-white font-bold">WALA</AlertDialogCancel>
+          <AlertDialogAction onClick={meronWins} className="bg-red-500 text-white font-bold">MERON</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+
+function OperatorControls() {
+  const [toggled, setToggled] = useState(false)
+  return (
+    <div className="grid gap-4 md:grid-cols-4 grid-cols-2 p-6">
+      <Button variant="secondary" className="bg-green-400">OPEN</Button>
+      <Button variant="destructive">CLOSED</Button>
+      {/* <Toggle className="w-full" defaultPressed={false}><Button variant="secondary">LAST CALL</Button></Toggle> */}
+      <div className="flex items-center space-x-2">
+        <Switch id="airplane-mode" defaultChecked={toggled} onCheckedChange={() => setToggled(prev => !prev)} />
+        {
+          toggled
+            ? (
+                <Label className="animate-blink text-red-500" htmlFor="airplane-mode">LAST CALL</Label>
+              )
+            : (
+                <Label htmlFor="airplane-mode">LAST CALL</Label>
+              )
+        }
+      </div>
+      <PopUpSelectResult />
+    </div>
+  )
+}
+
+function BetTrends({ status }) {
+  const { auth } = usePage().props
+  return (
     <div>
       <div>
-        <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
-          <span className="text-black text-xl">Game Fight Results</span>
-          <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>
-        </div>
+        {window.location.pathname === '/operator'
+          ? (
+              <OperatorControls />
+            )
+          : (
+              <StatusBar status={status} />
+            )}
         {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">
           <div className="bad-cont d-inline-flex align-items-center mr-1">
