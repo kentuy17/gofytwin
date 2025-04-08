@@ -31,8 +31,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/users/otp/list', [AccountsController::class, 'user_otp'])->name('users.otp.list');
     Route::get('/admin/users/spam', [AccountsController::class, 'spam'])->middleware('auth')->name('spam');
 
-    // Route::get('/admin/user/cash-in/{id}',[AdminCashIn::class,'userCashin'])->middleware('auth')->name('admin.user.cashin');
+    Route::get('/admin/user/cash-in/{id}',[AdminCashIn::class,'userCashin'])->middleware('auth')->name('admin.user.cashin');
     Route::get('/admin/users/view/{id}', [AccountsController::class, 'viewUser'])->name('view.user')->middleware('auth');
+    Route::get('/admin/users/edit/{id}', [AccountsController::class, 'editUser'])->name('edit.user')->middleware('auth');
+    Route::post('/admin/users/edit/{id}', [AccountsController::class, 'editUser'])->middleware('auth');
+
+    
     Route::post('/winner/info', [ServerInfoController::class,'winner_info'])->name('winner.info')->middleware('auth');
 
     Route::get('/admin/core/statistics', [ReportsController::class, 'statistics'])->middleware('auth')->name('statistics');

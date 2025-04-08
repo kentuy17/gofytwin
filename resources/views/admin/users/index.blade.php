@@ -82,12 +82,6 @@
                                         <a  href="{{url('admin/users/edit')}}/{{$user->id}}" 
                                             class="btn btn-success mx-1"><i 
                                             class="bi bi-pencil"></i> Edit</a>
-                                        <a  href="{{url('/admin/master-agent/add')}}/{{$user->id}}" 
-                                            class="btn btn-danger mx-1"><i 
-                                            class="bi bi-person"></i> Add as MA</a>
-                                        <a  href="{{url('/admin/sub-agent/add')}}/{{$user->id}}" 
-                                            class="btn btn-primary mx-1"><i 
-                                            class="bi bi-person"></i> Add as SA</a>    
                                     {{-- @endif --}}
                                 </td>
                             </tr>
