@@ -68,6 +68,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/fight/update', [FightController::class, 'updateFight'])->name('post.update.fight');
     Route::get('/operator', [FightController::class, 'operator'])->name('operator');
 
+    Route::get('/player/current', [HomeController::class, 'getCurrentData'])->name('current.data');
+
 });
 
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);

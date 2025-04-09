@@ -89,6 +89,7 @@ class HomeController extends Controller
             'status' => $fight->status,
         ];
 
+        // dd($data);
         return $data;
     }
 

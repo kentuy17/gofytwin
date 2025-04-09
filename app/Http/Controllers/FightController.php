@@ -26,6 +26,14 @@ class FightController extends Controller
             ->first();
     }
 
+    // public function fetchCurrentData(Request $request)
+    // {
+    //     $data = [
+    //         // meron, wala, fight_no, status
+    //         'meron' =>
+    //     ];
+    // }
+
     public function updateFight(Request $request)
     {
         try {

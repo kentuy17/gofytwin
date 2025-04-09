@@ -165,7 +165,7 @@ function OperatorControls() {
   )
 }
 
-function BetTrends({ status, last }) {
+function BetTrends({ status = 'WAITING', last }) {
   // const { auth } = usePage().props
   return (
     <div>

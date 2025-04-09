@@ -127,6 +127,7 @@ function PlaceBets({ setPlayerBet, playerBet }) {
 }
 
 function BetStats({ fight, meron, wala, playerBet }) {
+  // usePoll(1000, {}, { keepAlive: true })
   const [cMeron, setCmeron] = useState(meron)
   const [cWala, setCwala] = useState(wala)
 
@@ -183,15 +184,52 @@ function BetStats({ fight, meron, wala, playerBet }) {
   )
 }
 
-export default function Dashboard({ commonData, player }) {
-  const { meron, wala, fight_no, status } = commonData
-  const [totalMeron, setTotalMeron] = useState(meron)
-  const [totalWala, setTotalWala] = useState(wala)
+function useApiPolling(apiFunction, delay) {
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiFunction()
+        console.log(response)
+
+        setData(response)
+      }
+      catch (error) {
+        console.error(error)
+      }
+    }
+
+    const intervalId = setInterval(fetchData, delay)
+
+    // Clear the interval on unmount
+    return () => clearInterval(intervalId)
+  }, [apiFunction, delay])
+
+  return data
+}
+
+async function getDataFromApi() {
+  try {
+    const response = await fetch('/player/current')
+    const data = await response.json()
+    return data
+  }
+  catch (error) {
+    console.error(error)
+  }
+}
+
+export default function Dashboard({ commonData }) {
+  const data = useApiPolling(getDataFromApi, 1000)
+  console.log(data)
+
+  const [totalMeron, setTotalMeron] = useState(commonData.meron)
+  const [totalWala, setTotalWala] = useState(commonData.wala)
   const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
+  const [fightNo, setFightNo] = useState(commonData.fight_no)
+  const [status, setStatus] = useState(commonData.status)
 
-  usePoll(1000, {}, { keepAlive: true })
-
-  // console.log(status)
   const { flash } = usePage().props
   flash.message && console.log(flash)
 
@@ -225,13 +263,13 @@ export default function Dashboard({ commonData, player }) {
   }
 
   useEffect(() => {
-    setTotalMeron(commonData.meron)
-    setTotalWala(commonData.wala)
-    setPlayerBet({
-      meron: player.bets.meron,
-      wala: player.bets.wala,
-    })
-  }, [commonData, player])
+    console.log(data, 'data')
+
+    setTotalMeron(data.meron)
+    setTotalWala(data.wala)
+    setFightNo(data.fight_no)
+    setStatus(data.status)
+  }, [data])
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -244,7 +282,7 @@ export default function Dashboard({ commonData, player }) {
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
-          <BetStats fight={fight_no} meron={totalMeron} wala={totalWala} playerBet={playerBet} />
+          <BetStats fight={fightNo} meron={totalMeron} wala={totalWala} playerBet={playerBet} />
           <PlaceBets setPlayerBet={setPlayerBet} playerBet={playerBet} />
         </div>
         <BetTrends status={status} />
