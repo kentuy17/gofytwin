@@ -183,7 +183,7 @@ function BetStats({ fight, meron, wala, playerBet }) {
   )
 }
 
-export default function Dashboard({ commonData, player }) {
+export default function Operator({ commonData, player }) {
   const { meron, wala, fight_no, status } = commonData
   const [totalMeron, setTotalMeron] = useState(meron)
   const [totalWala, setTotalWala] = useState(wala)

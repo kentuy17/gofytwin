@@ -24,7 +24,7 @@ class BetController extends Controller
             ->orderBy('id','DESC')
             ->first();
 
-        $this->current_fight = Fight::where('event_id', $event->id)
+        $this->current_fight = Fight::where('event_id', $this->current_event->id)
             // ->where('status', 'OPEN')
             ->orderBy('id', 'DESC')
             ->first();

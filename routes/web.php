@@ -65,7 +65,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Betting
     Route::post('/bet/add', [BetController::class, 'addBet'])->name('add.bet');
     Route::get('/fight/update', [FightController::class, 'updateFight'])->name('update.fight');
+    Route::post('/fight/update', [FightController::class, 'updateFight'])->name('post.update.fight');
     Route::get('/operator', [FightController::class, 'operator'])->name('operator');
+
 });
 
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);

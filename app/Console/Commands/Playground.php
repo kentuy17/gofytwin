@@ -53,21 +53,21 @@ class Playground extends Command
         // ]);
 
         // MANUAL CLOSE FIGHT
-        // $prev = Fight::find(1);
-        // $new = Fight::create([
-        //     'fight_no' => $prev->id + 1,
-        //     'user_id' => 15,
-        //     'status' => 'WAITING',
-        //     'event_id' =>$event->id,
-        //     'time_start' => Carbon::now()->toTimeString()
-        // ]);
-        // Redis::set('fight', $new);
+        $prev = Fight::find(1);
+        $new = Fight::create([
+             'fight_no' => $prev->id + 1,
+             'user_id' => 15,
+             'status' => 'WAITING',
+             'event_id' =>$event->id,
+             'time_start' => Carbon::now()->toTimeString()
+         ]);
+         Redis::set('fight', $new);
 
         // SET ALL USER_LEVEL to 1
-        $new = User::where('user_level', 0)
-            ->update([
-                'user_level' => 1
-            ]);
+        // $new = User::where('user_level', 0)
+           // ->update([
+           //     'user_level' => 1
+           // ]);
 
 
         $this->info(json_encode($new));

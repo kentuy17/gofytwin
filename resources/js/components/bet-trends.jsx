@@ -12,31 +12,37 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { usePage } from '@inertiajs/react'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Switch } from './ui/switch'
 import '../../css/bet-arnie.css'
 
+const statuses = {
+  OPEN: {
+    backgroundColor: 'bg-green-500',
+    textColor: 'text-white',
+    isBlink: false,
+    text: 'OPEN',
+  },
+  CLOSED: {
+    backgroundColor: 'bg-red-500',
+    textColor: 'text-white',
+    isBlink: false,
+    text: 'CLOSED',
+  },
+  WAITING: {
+    backgroundColor: 'bg-white',
+    textColor: 'text-black',
+    isBlink: false,
+    text: 'WAITING',
+  },
+}
+
 function StatusBar({ status, last }) {
   const [isLastCall, setIsLastCall] = useState(last)
-
-  const statuses = {
-    OPEN: {
-      backgroundColor: 'bg-green-500',
-      textColor: 'text-white',
-      isBlink: false,
-      text: 'OPEN',
-    },
-    CLOSED: {
-      backgroundColor: 'bg-red-500',
-      textColor: 'text-white',
-      isBlink: false,
-      text: 'CLOSED',
-    },
-  }
-
-  const blink = statuses[status].isBlink ? 'animate-blink' : ''
 
   useEffect(() => {
     setIsLastCall(last)
@@ -47,10 +53,27 @@ function StatusBar({ status, last }) {
     <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
       <span className="text-black text-xl">Game Fight Results</span>
       {isLastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
-      <div className={`${blink} uppercase ${statuses[status].backgroundColor} py-2 px-4 ${statuses[status].textColor}`}>{statuses[status].text}</div>
+      <div className={`uppercase ${statuses[status].backgroundColor} py-2 px-4 ${statuses[status].textColor}`}>{statuses[status].text}</div>
 
     </div>
   )
+}
+
+async function updateResult(result) {
+  const { data } = await axios.post('/fight/update', {
+    status: 'DONE',
+    result,
+  })
+  console.log(data)
+}
+
+async function updateStatus(status) {
+  const { data } = await axios.post('/fight/update', {
+    status,
+    result: null,
+  })
+
+  console.log(data)
 }
 
 function PopUpSelectResult() {
@@ -58,19 +81,23 @@ function PopUpSelectResult() {
 
   const walaWins = () => {
     alert('wala wens')
+    updateResult('W')
   }
 
   const meronWins = () => {
     alert('wens wens')
+    updateResult('M')
   }
 
   const handleDraw = () => {
     console.log('draw')
+    updateResult('X')
     setIsDialogOpen(false)
   }
 
   const handleCanceled = () => {
     console.log('cancelled')
+    updateResult('C')
     setIsDialogOpen(false)
   }
 
@@ -86,7 +113,6 @@ function PopUpSelectResult() {
             {/* This action cannot be undone. This will permanently delete your account
             and remove your data from our servers. */}
           </AlertDialogDescription>
-
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Back</AlertDialogCancel>
@@ -102,30 +128,45 @@ function PopUpSelectResult() {
 
 function OperatorControls() {
   const [toggled, setToggled] = useState(false)
+  const { globals } = usePage().props
+  const fightStatus = globals.fight.status
+
+  const handleOpen = () => {
+    return () => updateStatus('OPEN')
+  }
+
+  const handleClosed = () => {
+    return () => updateStatus('CLOSED')
+  }
+
   return (
-    <div className="grid gap-4 md:grid-cols-4 grid-cols-2 p-6">
-      <Button variant="secondary" className="bg-green-400">OPEN</Button>
-      <Button variant="destructive">CLOSED</Button>
-      {/* <Toggle className="w-full" defaultPressed={false}><Button variant="secondary">LAST CALL</Button></Toggle> */}
-      <div className="flex items-center space-x-2">
-        <Switch id="airplane-mode" defaultChecked={toggled} onCheckedChange={() => setToggled(prev => !prev)} />
-        {
-          toggled
-            ? (
-                <Label className="animate-blink text-red-500" htmlFor="airplane-mode">LAST CALL</Label>
-              )
-            : (
-                <Label htmlFor="airplane-mode">LAST CALL</Label>
-              )
-        }
+    <div className="grid">
+      <div className="flex w-full items-center justify-around">
+        <Badge className={`uppercase ${statuses[fightStatus].backgroundColor} ${statuses[fightStatus].textColor}`}>{fightStatus}</Badge>
       </div>
-      <PopUpSelectResult />
+      <div className="grid gap-4 md:grid-cols-4 grid-cols-2 p-6">
+        <Button onClick={handleOpen()} variant="secondary" className="bg-green-400 cursor-pointer">OPEN</Button>
+        <Button onClick={handleClosed()} variant="destructive" className="cursor-pointer">CLOSED</Button>
+        <div className="flex items-center space-x-2">
+          <Switch id="airplane-mode" defaultChecked={toggled} onCheckedChange={() => setToggled(prev => !prev)} />
+          {
+            toggled
+              ? (
+                  <Label className="animate-blink text-red-500" htmlFor="airplane-mode">LAST CALL</Label>
+                )
+              : (
+                  <Label htmlFor="airplane-mode">LAST CALL</Label>
+                )
+          }
+        </div>
+        <PopUpSelectResult />
+      </div>
     </div>
   )
 }
 
-function BetTrends({ status }) {
-  const { auth } = usePage().props
+function BetTrends({ status, last }) {
+  // const { auth } = usePage().props
   return (
     <div>
       <div>
@@ -134,7 +175,7 @@ function BetTrends({ status }) {
               <OperatorControls />
             )
           : (
-              <StatusBar status={status} />
+              <StatusBar last={last} status={status} />
             )}
         {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">

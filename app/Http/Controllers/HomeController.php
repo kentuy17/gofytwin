@@ -46,7 +46,7 @@ class HomeController extends Controller
         ]);
     }
 
-    private function getUserTotalBets($side, $fight_id)
+    public function getUserTotalBets($side, $fight_id)
     {
         return Bet::where('fight_id', $fight_id)
             ->where('user_id', Auth::user()->id)
@@ -54,14 +54,14 @@ class HomeController extends Controller
             ->sum('amount');
     }
 
-    private function getSideBetsPerFight($side, $fight_id)
+    public function getSideBetsPerFight($side, $fight_id)
     {
         return Bet::where('fight_id', $fight_id)
             ->where('side', $side)
             ->sum('amount');
     }
 
-    private function getCurrentData()
+    public function getCurrentData()
     {
         $fight = Redis::get('fight');
         if (!$fight) {

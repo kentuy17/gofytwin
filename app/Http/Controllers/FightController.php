@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 use App\Http\Controllers\BetController;
 use App\Http\Controllers\HomeController;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
@@ -44,21 +45,40 @@ class FightController extends Controller
             //     throw new \ErrorException('Invalid request');
             // }
 
-            $updated = $fight->update(['status' => $request->status]);
+            $updated = $fight->update([
+                'game_winner' => $request->result,
+                'status' => $request->status
+            ]);
+
             if ($updated) {
                 // event(new FightEvent($fight));
                 Redis::set('fight', $fight);
+            }
+
+            if($request->status === 'DONE') {
+                $new = Fight::create([
+                    'fight_no' => $fight->fight_no + 1,
+                    'user_id' => Auth::user()->id,
+                    'status' => 'WAITING',
+                    'event_id' => $fight->event_id,
+                    'time_start' => Carbon::now()->toTimeString(),
+                ]);
+
+                Redis::set('fight', $new);
             }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
 
-        return $fight;
+        return [
+            'new' => $new ?? $updated,
+            'redist' => json_decode(Redis::get('fight')),
+        ];
     }
 
     public function operator(Request $request)
     {
-        if($request->user()->level === 0) {
+        if($request->user()->user_level === 0) {
             return Redirect::to('/home');
         }
 
