@@ -4,7 +4,7 @@ import BetTrends from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
-import { echoInstance } from '@/echo'
+// import { echoInstance } from '@/echo'
 // import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
@@ -237,13 +237,15 @@ export default function Dashboard({ commonData, user }) {
   }
 
   useEffect(() => {
-    echoInstance.private('bet-channel')
+    console.log('otin')
+
+    window.Echo.private('bet-channel')
       .listen('BetEvent', async (e) => {
         const { amount, side, user_id } = e.securedBet
         if (user.id === user_id)
           return
 
-        console.log(e, 'reverb')
+        console.log(e, 'pusher')
         if (side === 'M') {
           setTotalMeron(prev => prev + amount)
         }

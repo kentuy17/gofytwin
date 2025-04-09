@@ -14,10 +14,12 @@ class BetEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $securedBet;
+
     /**
      * Create a new event instance.
      */
-    public function __construct(public $securedBet)
+    public function __construct($securedBet)
     {
         $this->securedBet = $securedBet;
     }
@@ -29,8 +31,11 @@ class BetEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [
-            new PrivateChannel('bet-channel'),
-        ];
+        return ['bet-channel'];
+    }
+
+    public function broadcastAs()
+    {
+        return 'bet-event';
     }
 }

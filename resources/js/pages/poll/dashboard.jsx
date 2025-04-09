@@ -4,15 +4,16 @@ import BetTrends from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
+// import Echo from 'laravel-echo'
+// import { pusher } from '@/echo'
 // import { echoInstance } from '@/echo'
 // import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
-import { Head, usePage, usePoll } from '@inertiajs/react'
+import { Head, usePage } from '@inertiajs/react'
 import axios from 'axios'
-// import Echo from 'laravel-echo'
-import { echoPusher } from '@/echo'
+import Pusher from 'pusher-js'
 import React, { useEffect, useState } from 'react'
 
 const breadcrumbs = [
@@ -189,8 +190,8 @@ export default function Dashboard({ commonData, player }) {
   const [totalMeron, setTotalMeron] = useState(meron)
   const [totalWala, setTotalWala] = useState(wala)
   const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
-  const { auth } = usePage().props
-  const user = auth.user
+  // const { auth } = usePage().props
+  // const user = auth.user
 
   // usePoll(1000, {}, { keepAlive: true })
 
@@ -227,23 +228,56 @@ export default function Dashboard({ commonData, player }) {
     })
   }
 
+  // useEffect(() => {
+  //   Echo.private('bet-channel')
+  //     .listen('BetEvent', async (e) => {
+  //       const { amount, side, user_id } = e.securedBet
+  //       if (user.id === user_id)
+  //         return
+
+  //       console.log(e, 'pusher')
+  //       if (side === 'M') {
+  //         setTotalMeron(prev => prev + amount)
+  //       }
+
+  //       if (side === 'W') {
+  //         setTotalWala(prev => prev + amount)
+  //       }
+  //     })
+  // }, [user.id])
+
+  // const pusher = new window.Pusher('1ac728eb26e770e7b87d', {
+  //   cluster: 'ap1',
+  // })
+
+  const pusher = new Pusher('1ac728eb26e770e7b87d', {
+    cluster: 'ap1',
+  })
+
+  // Pusher.logToConsole = true
+
+  // const channel = pusher.subscribe('bet-channel')
+  // channel.bind('bet-event', (data) => {
+  //   alert(JSON.stringify(data))
+  // })
+
+  const channel = pusher.subscribe('bet-channel')
+
   useEffect(() => {
-    echoPusher.private('bet-channel')
-      .listen('BetEvent', async (e) => {
-        const { amount, side, user_id } = e.securedBet
-        if (user.id === user_id)
-          return
+    channel.bind('bet-event', (e) => {
+      const { amount, side } = e.securedBet
 
-        console.log(e, 'pusher')
-        if (side === 'M') {
-          setTotalMeron(prev => prev + amount)
-        }
+      if (side === 'M') {
+        setTotalMeron(prev => prev + amount)
+      }
 
-        if (side === 'W') {
-          setTotalWala(prev => prev + amount)
-        }
-      })
-  }, [user.id])
+      if (side === 'W') {
+        setTotalWala(prev => prev + amount)
+      }
+      console.log(e, 'pusher')
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     setTotalMeron(commonData.meron)

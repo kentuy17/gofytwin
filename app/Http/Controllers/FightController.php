@@ -51,7 +51,7 @@ class FightController extends Controller
             ]);
 
             if ($updated) {
-                // event(new FightEvent($fight));
+                event(new FightEvent($fight));
                 Redis::set('fight', $fight);
             }
 

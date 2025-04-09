@@ -189,7 +189,7 @@ export default function Operator({ commonData, player }) {
   const [totalWala, setTotalWala] = useState(wala)
   const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
 
-  usePoll(1000, {}, { keepAlive: true })
+  // usePoll(1000, {}, { keepAlive: true })
 
   // console.log(status)
   const { flash } = usePage().props
