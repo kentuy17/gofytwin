@@ -12,6 +12,7 @@ import { formatMoney } from '@/lib/utils'
 import { Head, usePage, usePoll } from '@inertiajs/react'
 import axios from 'axios'
 // import Echo from 'laravel-echo'
+import { echoPusher } from '@/echo'
 import React, { useEffect, useState } from 'react'
 
 const breadcrumbs = [
@@ -188,8 +189,10 @@ export default function Dashboard({ commonData, player }) {
   const [totalMeron, setTotalMeron] = useState(meron)
   const [totalWala, setTotalWala] = useState(wala)
   const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
+  const { auth } = usePage().props
+  const user = auth.user
 
-  usePoll(1000, {}, { keepAlive: true })
+  // usePoll(1000, {}, { keepAlive: true })
 
   // console.log(status)
   const { flash } = usePage().props
@@ -223,6 +226,24 @@ export default function Dashboard({ commonData, player }) {
       console.log('player will dispose')
     })
   }
+
+  useEffect(() => {
+    echoPusher.private('bet-channel')
+      .listen('BetEvent', async (e) => {
+        const { amount, side, user_id } = e.securedBet
+        if (user.id === user_id)
+          return
+
+        console.log(e, 'pusher')
+        if (side === 'M') {
+          setTotalMeron(prev => prev + amount)
+        }
+
+        if (side === 'W') {
+          setTotalWala(prev => prev + amount)
+        }
+      })
+  }, [user.id])
 
   useEffect(() => {
     setTotalMeron(commonData.meron)
