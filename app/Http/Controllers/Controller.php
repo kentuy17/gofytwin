@@ -39,6 +39,7 @@ use App\Models\DailyActiveBettorGrid;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Redis;
 
 abstract class Controller
 {
@@ -178,11 +179,17 @@ abstract class Controller
         $record = null;
         $data = json_encode($data);
         $full_data = [
-                      'user_id'=>auth()->user()->id,          
-                      'user_name'=>auth()->user()->name,          
-                      'action'=>$activity,          
-                      'data'=>$data,          
+                      'user_id'=>auth()->user()->id,
+                      'user_name'=>auth()->user()->name,
+                      'action'=>$activity,
+                      'data'=>$data,
                     ];
         $record = ActivityLogs::create($full_data);
+    }
+
+    public function retrieve($key)
+    {
+        $data = Redis::get($key);
+        return json_decode($data);
     }
 }

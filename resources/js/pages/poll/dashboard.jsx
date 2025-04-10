@@ -254,13 +254,6 @@ export default function Dashboard({ commonData, player }) {
     cluster: 'ap1',
   })
 
-  // Pusher.logToConsole = true
-
-  // const channel = pusher.subscribe('bet-channel')
-  // channel.bind('bet-event', (data) => {
-  //   alert(JSON.stringify(data))
-  // })
-
   const channel = pusher.subscribe('bet-channel')
 
   useEffect(() => {

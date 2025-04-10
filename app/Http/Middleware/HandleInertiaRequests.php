@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Bet;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Middleware;
 
@@ -38,6 +40,9 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+        $fight = json_decode(Redis::get('fight'));
+        $activeBets = Bet::where('fight_id', $fight->id)->get();
+        $playerActiveBets = $activeBets->where('user_id', Auth::user()->id);
 
         return [
             ...parent::share($request),
@@ -48,7 +53,15 @@ class HandleInertiaRequests extends Middleware
                 'session' => $request->session()->all(),
             ],
             'globals' => [
-                'fight' => json_decode(Redis::get('fight')),
+                'fight' => $fight,
+                'player' => [
+                    'meron' => $playerActiveBets->where('side','M')->sum('amount'),
+                    'wala' => $playerActiveBets->where('side','W')->sum('amount'),
+                ],
+                'total' => [
+                    'meron' => $activeBets->where('side','M')->sum('amount'),
+                    'wala' => $activeBets->where('side','W')->sum('amount'),
+                ],
             ],
             'user' => $request->user(),
             'flash' => [

@@ -11,8 +11,11 @@ import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
 import { Head, usePage, usePoll } from '@inertiajs/react'
 import axios from 'axios'
-// import Echo from 'laravel-echo'
-import React, { useEffect, useState } from 'react'
+import Pusher from 'pusher-js'
+import React, { useContext, useEffect, useState } from 'react'
+import { useOperatorContext } from '../../context/operator-context'
+
+
 
 const breadcrumbs = [
   {
@@ -183,23 +186,18 @@ function BetStats({ fight, meron, wala, playerBet }) {
   )
 }
 
-export default function Operator({ commonData, player }) {
-  const { meron, wala, fight_no, status } = commonData
-  const [totalMeron, setTotalMeron] = useState(meron)
-  const [totalWala, setTotalWala] = useState(wala)
-  const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
+export default function Operator() {
+  const {
+    meron, wala, fight, playerBet, setPlayerBet, setMeron, setWala, setFight} = useOperatorContext()
 
-  // usePoll(1000, {}, { keepAlive: true })
-
-  // console.log(status)
-  const { flash } = usePage().props
+  const { flash, user } = usePage().props
   flash.message && console.log(flash)
+  const [status, setStatus] = useState('WAITING')
 
   const playerRef = React.useRef(null)
-  const autoplay = !import.meta.env.VITE_AUTO_PLAY
 
   const videoJsOptions = {
-    autoplay,
+    autoplay:true,
     controls: true,
     responsive: true,
     muted: false,
@@ -224,14 +222,43 @@ export default function Operator({ commonData, player }) {
     })
   }
 
+  const pusher = new Pusher('1ac728eb26e770e7b87d', {
+    cluster: 'ap1',
+  })
+
+  const betChannel = pusher.subscribe('bet-channel')
+  const fightChannel = pusher.subscribe('fight-channel')
+
   useEffect(() => {
-    setTotalMeron(commonData.meron)
-    setTotalWala(commonData.wala)
-    setPlayerBet({
-      meron: player.bets.meron,
-      wala: player.bets.wala,
+    betChannel.bind('bet-event', (e) => {
+      const { amount, side, user_id } = e.securedBet
+
+      if(user_id === user.id) {
+        if (side === 'M') {
+          setPlayerBet({...playerBet.wala, meron: (prev) => prev.meron + amount})
+        } else {
+          setPlayerBet({...playerBet.meron, wala: (prev) => prev.wala + amount})
+        }
+      }
+
+      if (side === 'M') {
+        setMeron(prev => prev + amount)
+      }
+
+      if (side === 'W') {
+        setWala(prev => prev + amount)
+      }
+
+      console.log(e, 'pusher')
     })
-  }, [commonData, player])
+
+    fightChannel.bind('fight-event', (e) => {
+      setFight(e.currentFight.fight_no)
+      setStatus(e.currentFight.status)
+      console.log(e, 'fight');
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -244,8 +271,8 @@ export default function Operator({ commonData, player }) {
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
-          <BetStats fight={fight_no} meron={totalMeron} wala={totalWala} playerBet={playerBet} />
-          <PlaceBets setPlayerBet={setPlayerBet} playerBet={playerBet} />
+          <BetStats fight={fight} meron={meron} wala={wala} playerBet={playerBet} />
+          <PlaceBets playerBet={playerBet} />
         </div>
         <BetTrends status={status} />
         {/* </div> */}
