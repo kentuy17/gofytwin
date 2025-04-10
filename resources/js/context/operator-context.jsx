@@ -1,15 +1,16 @@
 import { usePage } from '@inertiajs/react'
-import React, { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
-const { globals } = usePage().props
+// const OperatorContext = createContext()
+// const { globals } = usePage().props
 
 const OperatorContext = createContext({
-  fight: globals.fight_no,
-  meron: globals.total.meron,
-  wala: globals.total.wala,
+  fight: null,
+  meron: null,
+  wala: null,
   playerBet: {
-    meron: globals.player.meron,
-    wala: globals.player.wala
+    meron: 0,
+    wala: 0,
   },
   setFight: () => { },
   setMeron: () => { },
@@ -17,17 +18,18 @@ const OperatorContext = createContext({
   setPlayerBet: () => { },
 })
 
-const OperatorProvider = ({children}) => {
-  const [fight, setFight] = useState(globals.fight_no)
+export function OperatorProvider({ children }) {
+  const { globals } = usePage().props
+  const [fight, setFight] = useState(globals.fight.fight_no)
   const [meron, setMeron] = useState(globals.total.meron)
   const [wala, setWala] = useState(globals.total.wala)
   const [playerBet, setPlayerBet] = useState({
     meron: globals.player.meron,
-    wala: globals.player.wala
+    wala: globals.player.wala,
   })
 
   return (
-    <OperatorContext.Provider
+    <OperatorContext
       value={{
         fight,
         meron,
@@ -40,7 +42,7 @@ const OperatorProvider = ({children}) => {
       }}
     >
       {children}
-    </OperatorContext.Provider>
+    </OperatorContext>
   )
 }
 

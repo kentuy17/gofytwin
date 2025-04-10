@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FightEvent;
 use App\Models\EventGame;
 use App\Models\Fight;
 use Illuminate\Http\Request;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Redirect;
 
 class FightController extends Controller
 {
+    private $currentFight;
+
     private function currenctMatch()
     {
         $this->current_event = EventGame::where('status', 'ACTIVE')
@@ -29,7 +32,7 @@ class FightController extends Controller
     public function updateFight(Request $request)
     {
         try {
-            $fight = $this->currenctMatch();
+            $this->currentFight = $this->currenctMatch();
 
             // if (request()->has('is_operator') && $request->is_operator) {
             //     throw new Exception('Manual update is disabled', 401);
@@ -45,22 +48,24 @@ class FightController extends Controller
             //     throw new \ErrorException('Invalid request');
             // }
 
-            $updated = $fight->update([
+            $updated = $this->currentFight->update([
                 'game_winner' => $request->result,
                 'status' => $request->status
             ]);
 
             if ($updated) {
-                event(new FightEvent($fight));
-                Redis::set('fight', $fight);
+                // dd($this->currentFight);
+                event(new FightEvent($updated));
+                // event(new BetEvent($bet));
+                Redis::set('fight', $this->currentFight);
             }
 
             if($request->status === 'DONE') {
                 $new = Fight::create([
-                    'fight_no' => $fight->fight_no + 1,
+                    'fight_no' => $this->currentFight->fight_no + 1,
                     'user_id' => Auth::user()->id,
                     'status' => 'WAITING',
-                    'event_id' => $fight->event_id,
+                    'event_id' => $this->currentFight->event_id,
                     'time_start' => Carbon::now()->toTimeString(),
                 ]);
 

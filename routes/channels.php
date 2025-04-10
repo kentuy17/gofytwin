@@ -14,4 +14,5 @@ Broadcast::channel('bet-channel', function ($user) {
 
 Broadcast::channel('fight-channel', function ($user) {
     return Auth::check() && (int)$user->id === Auth::id();
+    // return true;
 });

@@ -9,13 +9,11 @@ import VideoJS from '@/components/videojs'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
-import { Head, usePage, usePoll } from '@inertiajs/react'
+import { Head, usePage } from '@inertiajs/react'
 import axios from 'axios'
 import Pusher from 'pusher-js'
-import React, { useContext, useEffect, useState } from 'react'
-import { useOperatorContext } from '../../context/operator-context'
-
-
+import React, { useEffect, useState } from 'react'
+import { OperatorProvider, useOperatorContext } from '../../context/operator-context'
 
 const breadcrumbs = [
   {
@@ -129,18 +127,21 @@ function PlaceBets({ setPlayerBet, playerBet }) {
   )
 }
 
-function BetStats({ fight, meron, wala, playerBet }) {
-  const [cMeron, setCmeron] = useState(meron)
-  const [cWala, setCwala] = useState(wala)
+function BetStats() {
+  // const [cMeron, setCmeron] = useState(meron)
+  // const [cWala, setCwala] = useState(wala)
 
-  const player = {
-    bets: {
-      meron: playerBet.meron,
-      wala: playerBet.wala,
-    },
-  }
+  const { fight, meron, wala, playerBet } = useOperatorContext()
+  console.log([fight, meron, wala, playerBet])
 
-  const totalSum = cMeron + cWala
+  // const player = {
+  //   bets: {
+  //     meron: playerBet.meron,
+  //     wala: playerBet.wala,
+  //   },
+  // }
+
+  const totalSum = meron + wala
 
   const percentage = (side) => {
     const comm = side => (side * 15) / 100
@@ -149,25 +150,25 @@ function BetStats({ fight, meron, wala, playerBet }) {
   }
 
   const meronWinAmount = () => {
-    return (player.bets.meron * percentage(cMeron)) / 100
+    return (playerBet.meron * percentage(meron)) / 100
   }
 
   const walaWinAmount = () => {
-    return (player.bets.wala * percentage(cWala)) / 100
+    return (playerBet.wala * percentage(wala)) / 100
   }
 
-  useEffect(() => {
-    setCmeron(meron)
-    setCwala(wala)
-  }, [meron, wala])
+  // useEffect(() => {
+  //   setCmeron(meron)
+  //   setCwala(wala)
+  // }, [meron, wala])
 
   return (
     <div className="leading-none flex justify-around w-full">
       <div className="bet-red flex flex-col w-2/5 justify-center items-center p-2">
         <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">MERON</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cMeron)}</div>
-        <div className="pb-2">{`(${formatMoney(percentage(cMeron), false)}%)`}</div>
-        <div>{`${formatMoney(player.bets.meron, false)} = ${formatMoney(meronWinAmount(), false)}`}</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(meron)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(meron), false)}%)`}</div>
+        <div>{`${formatMoney(playerBet.meron, false)} = ${formatMoney(meronWinAmount(), false)}`}</div>
       </div>
       <div className="px-4 bet-yellow flex flex-col justify-center items-center w-1/5">
         <span className="text-black">GAME</span>
@@ -178,17 +179,32 @@ function BetStats({ fight, meron, wala, playerBet }) {
       </div>
       <div className="bet-blue flex flex-col w-2/5 justify-center items-center p-2">
         <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">WALA</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cWala)}</div>
-        <div className="pb-2">{`(${formatMoney(percentage(cWala), false)}%)`}</div>
-        <div>{`${formatMoney(player.bets.wala, false)} = ${formatMoney(walaWinAmount(), false)}`}</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(wala)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(wala), false)}%)`}</div>
+        <div>{`${formatMoney(playerBet.wala, false)} = ${formatMoney(walaWinAmount(), false)}`}</div>
       </div>
     </div>
   )
 }
 
-export default function Operator() {
+export default function Operator({ player, commonData }) {
   const {
-    meron, wala, fight, playerBet, setPlayerBet, setMeron, setWala, setFight} = useOperatorContext()
+    meron,
+    wala,
+    fight,
+    playerBet,
+    setPlayerBet,
+    setMeron,
+    setWala,
+    setFight,
+  } = useOperatorContext()
+
+  setPlayerBet(player.bets)
+  setMeron(commonData.meron)
+  setWala(commonData.wala)
+  setFight(commonData.fight_no)
+
+  // console.log([meron, wala, fight, playerBet])
 
   const { flash, user } = usePage().props
   flash.message && console.log(flash)
@@ -197,7 +213,7 @@ export default function Operator() {
   const playerRef = React.useRef(null)
 
   const videoJsOptions = {
-    autoplay:true,
+    autoplay: true,
     controls: true,
     responsive: true,
     muted: false,
@@ -226,57 +242,72 @@ export default function Operator() {
     cluster: 'ap1',
   })
 
-  const betChannel = pusher.subscribe('bet-channel')
+  // const fightPush = new Pusher('1ac728eb26e770e7b87d', {
+  //   cluster: 'ap1',
+  // })
+
+  Pusher.logToConsole = true
+
+  // const betChannel = pusher.subscribe('bet-channel')
   const fightChannel = pusher.subscribe('fight-channel')
 
+  // useEffect(() => {
+  //   betChannel.bind('bet-event', (e) => {
+  //     const { amount, side, user_id } = e.securedBet
+  //     // console.log(e)
+
+  //     if (user_id === user.id) {
+  //       if (side === 'M') {
+  //         setPlayerBet({ ...playerBet.wala, meron: prev => prev.meron + amount })
+  //       }
+  //       else {
+  //         setPlayerBet({ ...playerBet.meron, wala: prev => prev.wala + amount })
+  //       }
+  //     }
+
+  //     if (side === 'M') {
+  //       setMeron(prev => prev + amount)
+  //     }
+
+  //     if (side === 'W') {
+  //       // setWala(prev => prev + amount)
+  //       setWala(amount)
+  //     }
+
+  //     console.log(e, 'pusher')
+  //   })
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
+
   useEffect(() => {
-    betChannel.bind('bet-event', (e) => {
-      const { amount, side, user_id } = e.securedBet
-
-      if(user_id === user.id) {
-        if (side === 'M') {
-          setPlayerBet({...playerBet.wala, meron: (prev) => prev.meron + amount})
-        } else {
-          setPlayerBet({...playerBet.meron, wala: (prev) => prev.wala + amount})
-        }
-      }
-
-      if (side === 'M') {
-        setMeron(prev => prev + amount)
-      }
-
-      if (side === 'W') {
-        setWala(prev => prev + amount)
-      }
-
-      console.log(e, 'pusher')
-    })
-
     fightChannel.bind('fight-event', (e) => {
+      // console.log(e, 'fight')
       setFight(e.currentFight.fight_no)
       setStatus(e.currentFight.status)
-      console.log(e, 'fight');
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Dashboard" />
-      <Banner />
-      <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
-        {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
-        <div className="border-sidebar-border/70">
-          <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
-          <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
-            Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
+    <OperatorProvider>
+      <AppLayout breadcrumbs={breadcrumbs}>
+        <Head title="Dashboard" />
+        <Banner />
+        <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
+          {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
+          <div className="border-sidebar-border/70">
+            <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
+            <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
+              Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
+            </div>
+            <BetStats fight={fight} meron={meron} wala={wala} playerBet={playerBet} />
+            <PlaceBets playerBet={playerBet} />
           </div>
-          <BetStats fight={fight} meron={meron} wala={wala} playerBet={playerBet} />
-          <PlaceBets playerBet={playerBet} />
+          <BetTrends status={status} />
+          {/* </div> */}
         </div>
-        <BetTrends status={status} />
-        {/* </div> */}
-      </div>
-    </AppLayout>
+      </AppLayout>
+    </OperatorProvider>
   )
 }
