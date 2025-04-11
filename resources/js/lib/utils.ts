@@ -10,8 +10,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function isValidPhoneNumber(phoneNumber: any) {
-  // const phoneRegex = /^\+?[1-9]\d{0,2}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/
-  // return phoneRegex.test(phoneNumber)
   const num = removeSpaces(phoneNumber)
   if (num.startsWith('+639')) {
     return num.length === 13

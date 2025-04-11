@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-alert */
 import {
   AlertDialog,
@@ -15,7 +14,6 @@ import { OperatorContext } from '@/context/operator-context'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { pusher } from '../echo'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
@@ -70,10 +68,28 @@ function StatusBar({ last }) {
     <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
       <span className="text-black text-xl">Game Fight Results</span>
       {isLastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
-      <div className={`${blink} uppercase ${statuses[status].backgroundColor} py-2 px-4 ${statuses[status].textColor}`}>{statuses[status].text}</div>
+      <div className={`uppercase ${statuses[status] && statuses[status].backgroundColor} py-2 px-4 ${status && statuses[status].textColor}`}>
+        {status && statuses[status].text}
+      </div>
 
     </div>
   )
+}
+
+async function updateResult(result) {
+  const { data } = await axios.post('/fight/update', {
+    status: 'DONE',
+    result,
+  })
+  return data
+}
+
+async function updateStatus(status) {
+  const { data } = await axios.post('/fight/update', {
+    status,
+    result: null,
+  })
+  return data
 }
 
 function PopUpSelectResult() {
@@ -81,26 +97,28 @@ function PopUpSelectResult() {
 
   const walaWins = () => {
     alert('wala wens')
+    updateResult('W')
   }
 
   const meronWins = () => {
-    alert('wens wens')
+    alert('meron wins')
+    updateResult('M')
   }
 
   const handleDraw = () => {
-    console.log('draw')
+    updateResult('X')
     setIsDialogOpen(false)
   }
 
   const handleCanceled = () => {
-    console.log('cancelled')
+    updateResult('C')
     setIsDialogOpen(false)
   }
 
   return (
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} allowOutside>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="bg-blue-400">DONE</Button>
+        <Button variant="outline" className="bg-blue-400 cursor-pointer">DONE</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -125,25 +143,57 @@ function PopUpSelectResult() {
 
 function OperatorControls() {
   const [toggled, setToggled] = useState(false)
+  const { status } = useContext(OperatorContext)
+
+  const handleOpen = () => {
+    return () => updateStatus('OPEN')
+  }
+
+  const handleClosed = () => {
+    return () => updateStatus('CLOSED')
+  }
+
   return (
-    <div className="grid gap-4 md:grid-cols-4 grid-cols-2 p-6">
-      <Button variant="secondary" className="bg-green-400">OPEN</Button>
-      <Button variant="destructive">CLOSED</Button>
-      {/* <Toggle className="w-full" defaultPressed={false}><Button variant="secondary">LAST CALL</Button></Toggle> */}
-      <div className="flex items-center space-x-2">
-        <Switch id="airplane-mode" defaultChecked={toggled} onCheckedChange={() => setToggled(prev => !prev)} />
-        {
-          toggled
-            ? (
-                <Label className="animate-blink text-red-500" htmlFor="airplane-mode">LAST CALL</Label>
-              )
-            : (
-                <Label htmlFor="airplane-mode">LAST CALL</Label>
-              )
-        }
+    <div className="grid">
+      <div className="flex w-full items-center justify-around">
+        <Badge className={`uppercase ${status && statuses[status].backgroundColor} ${status && statuses[status].textColor}`}>
+          {status && statuses[status].text}
+        </Badge>
       </div>
-      <PopUpSelectResult />
+      <div className="grid gap-4 md:grid-cols-4 grid-cols-2 p-6">
+        <Button
+          onClick={handleOpen()}
+          disabled={!['WAITING', 'CLOSED', 'DONE'].includes(status)}
+          variant="secondary"
+          className="bg-green-400 cursor-pointer"
+        >
+          OPEN
+        </Button>
+        <Button
+          onClick={handleClosed()}
+          disabled={status === 'CLOSED'}
+          variant="destructive"
+          className="cursor-pointer"
+        >
+          CLOSED
+        </Button>
+        {/* <Toggle className="w-full" defaultPressed={false}><Button variant="secondary">LAST CALL</Button></Toggle> */}
+        <div className="flex items-center space-x-2">
+          <Switch id="airplane-mode" defaultChecked={toggled} onCheckedChange={() => setToggled(prev => !prev)} />
+          {
+            toggled
+              ? (
+                  <Label className="animate-blink text-red-500" htmlFor="airplane-mode">LAST CALL</Label>
+                )
+              : (
+                  <Label htmlFor="airplane-mode">LAST CALL</Label>
+                )
+          }
+        </div>
+        <PopUpSelectResult />
+      </div>
     </div>
+
   )
 }
 
@@ -174,7 +224,6 @@ function reconstructTrend(talpak, lastResult) {
   let prevResult = null
   let prevPosition = { x: 0, y: 1 }
   let c = 1 // consecutive
-
 
   for (let index = 0; index < fights.length; index++) {
     const element = fights[index]
@@ -225,7 +274,7 @@ function createFightArray(results) {
 }
 
 function BetTrends({ last }) {
-  const { status, lastResult } = useContext(OperatorContext)
+  const { lastResult } = useContext(OperatorContext)
   const { globals } = usePage().props
   const fightArray = createFightArray(globals.trend.results)
   const formattedFights = useMemo(
@@ -245,7 +294,7 @@ function BetTrends({ last }) {
               <OperatorControls />
             )
           : (
-              <StatusBar status={status} />
+              <StatusBar last={last} />
             )}
         {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">
