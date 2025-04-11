@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FightEvent;
+use App\Events\ResultEvent;
 use App\Models\EventGame;
 use App\Models\Fight;
 use Illuminate\Http\Request;
@@ -46,8 +48,23 @@ class FightController extends Controller
 
             $updated = $fight->update(['status' => $request->status]);
             if ($updated) {
-                // event(new FightEvent($fight));
-                Redis::set('fight', $fight);
+                // dd($this->currentFight);
+                event(new FightEvent($this->currentFight));
+                // event(new BetEvent($bet));
+                Redis::set('fight', $this->currentFight);
+            }
+
+            if ($request->status === 'DONE') {
+                event(new ResultEvent($this->currentFight));
+                $new = Fight::create([
+                    'fight_no' => $this->currentFight->fight_no + 1,
+                    'user_id' => Auth::user()->id,
+                    'status' => 'WAITING',
+                    'event_id' => $this->currentFight->event_id,
+                    'time_start' => Carbon::now()->toTimeString(),
+                ]);
+
+                Redis::set('fight', $new);
             }
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -76,5 +93,64 @@ class FightController extends Controller
                 'credits' => Auth::user()->credits,
             ],
         ]);
+    }
+
+    public function getFightTrends(Request $request)
+    {
+        $event = $this->activeEvent();
+        $fights = Fight::where('event_id', $event->id)
+            ->whereNot('game_winner', null)
+            ->get();
+
+        $results = [];
+        foreach ($fights as $fight) {
+            # code...
+            $results[] =  [
+                'fight_no' => $fight->fight_no,
+                'result' => $fight->game_winner,
+            ];
+        }
+
+        $trends = [
+            'results' => $results,
+            'summary' => [
+                [
+                    'label' => 'Meron',
+                    'count' => $fights->where('game_winner', 'M')->count(),
+                    'class' => 'trend-meron'
+                ],[
+                    'label' => 'Wala',
+                    'count' => $fights->where('game_winner', 'W')->count(),
+                    'class' => 'trend-wala'
+                ],[
+                    'label' => 'Draw',
+                    'count' => $fights->where('game_winner', 'X')->count(),
+                    'class' => 'trend-draw'
+                ],[
+                    'label' => 'Cancelled',
+                    'count' => $fights->where('game_winner', 'C')->count(),
+                    'class' => 'bg-secondary'
+                ],
+            ],
+            'groupings' => $fights->groupBy('game_winner'),
+        ];
+
+        return $trends;
+    }
+
+    private function activeEvent()
+    {
+        $check = EventGame::where('status', 'ACTIVE')->orderBy('id', 'desc')->first();
+        if (!$check) {
+            return $this->create([
+                'name' => 'EVENT GAMEFOWL MASTER',
+                'event_date' => Carbon::now(),
+                'time_start' => '08:00:00',
+                'status' => 'ACTIVE',
+                'added_by' => 1,
+            ]);
+        }
+
+        return $check;
     }
 }

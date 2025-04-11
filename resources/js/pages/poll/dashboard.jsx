@@ -1,6 +1,5 @@
 /* eslint-disable no-alert */
-/* eslint-disable no-console */
-import BetTrends from '@/components/bet-trends'
+import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
@@ -184,25 +183,26 @@ function BetStats({ fight, meron, wala, playerBet }) {
 }
 
 export default function Dashboard({ commonData, player }) {
-  const { meron, wala, fight_no, status } = commonData
-  const [totalMeron, setTotalMeron] = useState(meron)
-  const [totalWala, setTotalWala] = useState(wala)
-  const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
+  const {
+    setPlayerBet,
+    setMeron,
+    setWala,
+    setFight,
+    setStatus,
+    setCredits,
+    setLastResult
+  } = useContext(OperatorContext)
 
-  usePoll(1000, {}, { keepAlive: true })
-
-  // console.log(status)
   const { flash } = usePage().props
   flash.message && console.log(flash)
 
   const playerRef = React.useRef(null)
-  const autoplay = !import.meta.env.VITE_AUTO_PLAY
 
   const videoJsOptions = {
-    autoplay,
+    autoplay: true,
     controls: true,
     responsive: true,
-    muted: false,
+    muted: true,
     fluid: true,
     sources: [{
       src: VIDEO_URL,
@@ -225,8 +225,49 @@ export default function Dashboard({ commonData, player }) {
   }
 
   useEffect(() => {
-    setTotalMeron(commonData.meron)
-    setTotalWala(commonData.wala)
+    pusher.unbind_all()
+    pusher.bind('bet-event', (e) => {
+      const { amount, side } = e.securedBet
+
+      if (side === 'M') {
+        setMeron(prev => prev + amount)
+      }
+
+      if (side === 'W') {
+        setWala(prev => prev + amount)
+      }
+    })
+
+    pusher.bind('fight-event', (e) => {
+      const { fight_no, status } = e.currentFight
+      setFight(fight_no)
+      setStatus(status)
+
+      if (status === 'DONE') {
+        // Clean-up here
+        setMeron(0)
+        setWala(0)
+        setPlayerBet({
+          meron: 0,
+          wala: 0,
+        })
+      }
+    })
+
+    pusher.bind('result-event', (e) => {
+      const { fight_no, game_winner } = e.fightResult
+      const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
+      setLastResult(old => [...old, res])
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    setMeron(commonData.meron)
+    setWala(commonData.wala)
+    setFight(commonData.fight_no)
+    setStatus(commonData.status)
+    setCredits(player.credits)
     setPlayerBet({
       meron: player.bets.meron,
       wala: player.bets.wala,

@@ -1,6 +1,5 @@
 /* eslint-disable no-alert */
-/* eslint-disable no-console */
-import BetTrends from '@/components/bet-trends'
+import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 // import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
@@ -54,15 +53,6 @@ async function addBet(params) {
       amount,
       side,
     })
-
-    // if (data.status === 'OK') {
-    //   this.player.points -= this.betAmount
-    //   side === 'M'
-    //     ? (this.player.bets.meron += this.betAmount)
-    //     : (this.player.bets.wala += this.betAmount)
-    //   this.clear()
-    // }
-    // console.log(data)
     return data.status
   }
   catch (err) {
@@ -90,7 +80,6 @@ function PlaceBets({ setPlayerBet, playerBet }) {
 
     if (resp === 'OK') {
       setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
-      console.log(betAmount)
     }
   }
 
@@ -183,15 +172,16 @@ function BetStats({ fight, meron, wala, playerBet }) {
   )
 }
 
-export default function Dashboard({ commonData, player }) {
-  const { meron, wala, fight_no, status } = commonData
-  const [totalMeron, setTotalMeron] = useState(meron)
-  const [totalWala, setTotalWala] = useState(wala)
-  const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
+export default function Operator({ player, commonData }) {
+  const {
+    setPlayerBet,
+    setMeron,
+    setWala,
+    setFight,
+    setStatus,
+    setLastResult
+  } = useContext(OperatorContext)
 
-  usePoll(1000, {}, { keepAlive: true })
-
-  // console.log(status)
   const { flash } = usePage().props
   flash.message && console.log(flash)
 
@@ -202,7 +192,7 @@ export default function Dashboard({ commonData, player }) {
     autoplay,
     controls: true,
     responsive: true,
-    muted: false,
+    muted: true,
     fluid: true,
     sources: [{
       src: VIDEO_URL,
@@ -225,8 +215,43 @@ export default function Dashboard({ commonData, player }) {
   }
 
   useEffect(() => {
-    setTotalMeron(commonData.meron)
-    setTotalWala(commonData.wala)
+    pusher.unbind_all()
+    pusher.bind('bet-event', (e) => {
+      const { amount, side } = e.securedBet
+      side === 'M'
+        ? setMeron(prev => prev + amount)
+        : setWala(prev => prev + amount)
+    })
+
+    pusher.bind('fight-event', (e) => {
+      const { fight_no, status } = e.currentFight
+      setFight(fight_no)
+      setStatus(status)
+
+      if (status === 'DONE') {
+        setFight(fight_no + 1)
+        setMeron(0)
+        setWala(0)
+        setPlayerBet({
+          meron: 0,
+          wala: 0,
+        })
+      }
+    })
+
+    pusher.bind('result-event', (e) => {
+      const { fight_no, game_winner } = e.fightResult
+      const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
+      setLastResult(old => [...old, res])
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    setMeron(commonData.meron)
+    setWala(commonData.wala)
+    setFight(commonData.fight_no)
+    setStatus(commonData.status)
     setPlayerBet({
       meron: player.bets.meron,
       wala: player.bets.wala,

@@ -11,3 +11,13 @@ Broadcast::channel('bet-channel', function ($user) {
     // return (int) $user->id === (int) $id;
     return Auth::check() && (int)$user->id === Auth::id();
 });
+
+Broadcast::channel('fight-channel', function ($user) {
+    return Auth::check() && (int)$user->id === Auth::id();
+    // return true;
+});
+
+Broadcast::channel('result-channel', function ($user) {
+    return Auth::check() && (int)$user->id === Auth::id();
+    // return true;
+});
