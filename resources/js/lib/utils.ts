@@ -53,3 +53,7 @@ export function formatMoney(value: any, peso: boolean = true) {
     ? '0.00'
     : php.format(value)
 }
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise<void>(resolve => setTimeout(resolve, ms))
+}

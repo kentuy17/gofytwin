@@ -1,15 +1,17 @@
 /* eslint-disable no-alert */
-import BetTrends from '@/components/bet-trends'
+import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
-import { OperatorContext } from '@/context/operator-context'
+// import { echoInstance } from '@/echo'
+// import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
-import { Head, usePage } from '@inertiajs/react'
+import { Head, usePage, usePoll } from '@inertiajs/react'
 import axios from 'axios'
-import React, { useContext, useEffect } from 'react'
-import { pusher } from '../../echo'
+// import Echo from 'laravel-echo'
+import React, { useEffect, useState } from 'react'
 
 const breadcrumbs = [
   {
@@ -52,6 +54,13 @@ async function addBet(params) {
       side,
     })
 
+    // if (data.status === 'OK') {
+    //   this.player.points -= this.betAmount
+    //   side === 'M'
+    //     ? (this.player.bets.meron += this.betAmount)
+    //     : (this.player.bets.wala += this.betAmount)
+    //   this.clear()
+    // }
     // console.log(data)
     return data.status
   }
@@ -61,18 +70,12 @@ async function addBet(params) {
   }
 }
 
-function PlaceBets() {
+function PlaceBets({ setPlayerBet, playerBet }) {
   const { auth } = usePage().props
-  const { playerBet, setPlayerBet, setCredits, status } = useContext(OperatorContext)
   const betMeron = Number.parseFloat(playerBet.meron)
   const betWala = Number.parseFloat(playerBet.wala)
 
   const handleOnlickMeron = async () => {
-    if (status !== 'OPEN') {
-      alert(`Cannot bet.`)
-      return
-    }
-
     const betAmount = prompt('Enter Amount:', 0)
     if (!betAmount)
       return
@@ -86,16 +89,11 @@ function PlaceBets() {
 
     if (resp === 'OK') {
       setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
-      setCredits(prev => prev - betAmount)
+      console.log(betAmount)
     }
   }
 
   const handleOnlickWala = async () => {
-    if (status !== 'OPEN') {
-      alert(`Cannot bet.`)
-      return
-    }
-
     const betAmount = prompt('Enter Amount:', 0)
     if (!betAmount)
       return
@@ -109,7 +107,6 @@ function PlaceBets() {
 
     if (resp === 'OK') {
       setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(betAmount) })
-      setCredits(prev => prev - betAmount)
     }
   }
 
@@ -128,10 +125,18 @@ function PlaceBets() {
   )
 }
 
-function BetStats() {
-  const { meron, wala, fight, playerBet } = useContext(OperatorContext)
+function BetStats({ fight, meron, wala, playerBet }) {
+  const [cMeron, setCmeron] = useState(meron)
+  const [cWala, setCwala] = useState(wala)
 
-  const totalSum = meron + wala
+  const player = {
+    bets: {
+      meron: playerBet.meron,
+      wala: playerBet.wala,
+    },
+  }
+
+  const totalSum = cMeron + cWala
 
   const percentage = (side) => {
     const comm = side => (side * 15) / 100
@@ -140,33 +145,38 @@ function BetStats() {
   }
 
   const meronWinAmount = () => {
-    return (playerBet.meron * percentage(meron)) / 100
+    return (player.bets.meron * percentage(cMeron)) / 100
   }
 
   const walaWinAmount = () => {
-    return (playerBet.wala * percentage(wala)) / 100
+    return (player.bets.wala * percentage(cWala)) / 100
   }
+
+  useEffect(() => {
+    setCmeron(meron)
+    setCwala(wala)
+  }, [meron, wala])
 
   return (
     <div className="leading-none flex justify-around w-full">
       <div className="bet-red flex flex-col w-2/5 justify-center items-center p-2">
         <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">MERON</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(meron)}</div>
-        <div className="pb-2">{`(${formatMoney(percentage(meron), false)}%)`}</div>
-        <div>{`${formatMoney(playerBet.meron, false)} = ${formatMoney(meronWinAmount(), false)}`}</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cMeron)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(cMeron), false)}%)`}</div>
+        <div>{`${formatMoney(player.bets.meron, false)} = ${formatMoney(meronWinAmount(), false)}`}</div>
       </div>
       <div className="px-4 bet-yellow flex flex-col justify-center items-center w-1/5">
-        <span className="text-black">FIGHT</span>
-        <span className="text-black text-sm">
-          NUMBER
+        <span className="text-black">GAME</span>
+        <span className="text-black">
+          FIGHT
         </span>
         <div className="font-black text-3xl">{fight}</div>
       </div>
       <div className="bet-blue flex flex-col w-2/5 justify-center items-center p-2">
         <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">WALA</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(wala)}</div>
-        <div className="pb-2">{`(${formatMoney(percentage(wala), false)}%)`}</div>
-        <div>{`${formatMoney(playerBet.wala, false)} = ${formatMoney(walaWinAmount(), false)}`}</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cWala)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(cWala), false)}%)`}</div>
+        <div>{`${formatMoney(player.bets.wala, false)} = ${formatMoney(walaWinAmount(), false)}`}</div>
       </div>
     </div>
   )
@@ -180,20 +190,19 @@ export default function Dashboard({ commonData, player }) {
     setFight,
     setStatus,
     setCredits,
+    setLastResult
   } = useContext(OperatorContext)
 
   const { flash } = usePage().props
-  // eslint-disable-next-line no-console
   flash.message && console.log(flash)
 
   const playerRef = React.useRef(null)
-  const autoplay = !import.meta.env.VITE_AUTO_PLAY
 
   const videoJsOptions = {
-    autoplay,
+    autoplay: true,
     controls: true,
     responsive: true,
-    muted: false,
+    muted: true,
     fluid: true,
     sources: [{
       src: VIDEO_URL,
@@ -204,14 +213,14 @@ export default function Dashboard({ commonData, player }) {
   const handlePlayerReady = (player) => {
     playerRef.current = player
 
+    // You can handle player events here, for example:
     player.on('waiting', () => {
-      // eslint-disable-next-line no-console
-      console.debug('player is wating')
+      // videojs.log('player is waiting')
+      console.log('player is wating')
     })
 
     player.on('dispose', () => {
-      // eslint-disable-next-line no-console
-      console.debug('player will dispose')
+      console.log('player will dispose')
     })
   }
 
@@ -245,6 +254,11 @@ export default function Dashboard({ commonData, player }) {
       }
     })
 
+    pusher.bind('result-event', (e) => {
+      const { fight_no, game_winner } = e.fightResult
+      const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
+      setLastResult(old => [...old, res])
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -258,11 +272,9 @@ export default function Dashboard({ commonData, player }) {
       meron: player.bets.meron,
       wala: player.bets.wala,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commonData, player])
 
   return (
-
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <Banner />
@@ -273,13 +285,12 @@ export default function Dashboard({ commonData, player }) {
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
-          <BetStats />
-          <PlaceBets />
+          <BetStats fight={fight_no} meron={totalMeron} wala={totalWala} playerBet={playerBet} />
+          <PlaceBets setPlayerBet={setPlayerBet} playerBet={playerBet} />
         </div>
-        <BetTrends />
+        <BetTrends status={status} />
         {/* </div> */}
       </div>
     </AppLayout>
-
   )
 }

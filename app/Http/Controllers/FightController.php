@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\FightEvent;
+use App\Events\ResultEvent;
 use App\Models\EventGame;
 use App\Models\Fight;
 use Illuminate\Http\Request;
@@ -61,6 +62,7 @@ class FightController extends Controller
             }
 
             if ($request->status === 'DONE') {
+                event(new ResultEvent($this->currentFight));
                 $new = Fight::create([
                     'fight_no' => $this->currentFight->fight_no + 1,
                     'user_id' => Auth::user()->id,
@@ -111,7 +113,7 @@ class FightController extends Controller
             ->get();
 
         $results = [];
-        foreach ($fights as $key => $fight) {
+        foreach ($fights as $fight) {
             # code...
             $results[] =  [
                 'fight_no' => $fight->fight_no,

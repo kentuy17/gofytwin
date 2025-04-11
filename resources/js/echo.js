@@ -1,12 +1,7 @@
-// import Echo from 'laravel-echo'
+import Echo from 'laravel-echo'
 
 import Pusher from 'pusher-js'
 
-// const options = {
-//   broadcaster: 'pusher',
-//   key: '1ac728eb26e770e7b87d',
-//   cluster: 'ap1',
-// }
 window.Pusher = Pusher
 
 // window.Pusher = new Pusher('1ac728eb26e770e7b87d', options)
@@ -21,6 +16,7 @@ export const pusher = new Pusher('1ac728eb26e770e7b87d', {
 
 pusher.subscribe('bet-channel')
 pusher.subscribe('fight-channel')
+pusher.subscribe('result-channel')
 
 // window.Pusher = require('pusher-js')
 
