@@ -192,7 +192,7 @@ function TrendRowItem({bg,fightNo}) {
 function TrendRows() {
   const rows = []
   for (let index = 1; index < 45; index++) {
-    rows.push(<TrendRowItem bg={'trend-meron'} fightNo={index} />)
+    rows.push(<TrendRowItem key={index} bg={'trend-meron'} fightNo={index} />)
   }
 
   return <tr>{rows}</tr>
