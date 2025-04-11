@@ -1,20 +1,15 @@
 /* eslint-disable no-alert */
-/* eslint-disable no-console */
 import BetTrends from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
-// import Echo from 'laravel-echo'
-// import { pusher } from '@/echo'
-// import { echoInstance } from '@/echo'
-// import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
+import { OperatorContext } from '@/context/operator-context'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
 import { Head, usePage } from '@inertiajs/react'
 import axios from 'axios'
-import Pusher from 'pusher-js'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
+import { pusher } from '../../echo'
 
 const breadcrumbs = [
   {
@@ -57,13 +52,6 @@ async function addBet(params) {
       side,
     })
 
-    // if (data.status === 'OK') {
-    //   this.player.points -= this.betAmount
-    //   side === 'M'
-    //     ? (this.player.bets.meron += this.betAmount)
-    //     : (this.player.bets.wala += this.betAmount)
-    //   this.clear()
-    // }
     // console.log(data)
     return data.status
   }
@@ -73,12 +61,18 @@ async function addBet(params) {
   }
 }
 
-function PlaceBets({ setPlayerBet, playerBet }) {
+function PlaceBets() {
   const { auth } = usePage().props
+  const { playerBet, setPlayerBet, setCredits, status } = useContext(OperatorContext)
   const betMeron = Number.parseFloat(playerBet.meron)
   const betWala = Number.parseFloat(playerBet.wala)
 
   const handleOnlickMeron = async () => {
+    if (status !== 'OPEN') {
+      alert(`Cannot bet.`)
+      return
+    }
+
     const betAmount = prompt('Enter Amount:', 0)
     if (!betAmount)
       return
@@ -92,11 +86,16 @@ function PlaceBets({ setPlayerBet, playerBet }) {
 
     if (resp === 'OK') {
       setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
-      console.log(betAmount)
+      setCredits(prev => prev - betAmount)
     }
   }
 
   const handleOnlickWala = async () => {
+    if (status !== 'OPEN') {
+      alert(`Cannot bet.`)
+      return
+    }
+
     const betAmount = prompt('Enter Amount:', 0)
     if (!betAmount)
       return
@@ -110,6 +109,7 @@ function PlaceBets({ setPlayerBet, playerBet }) {
 
     if (resp === 'OK') {
       setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(betAmount) })
+      setCredits(prev => prev - betAmount)
     }
   }
 
@@ -128,18 +128,10 @@ function PlaceBets({ setPlayerBet, playerBet }) {
   )
 }
 
-function BetStats({ fight, meron, wala, playerBet }) {
-  const [cMeron, setCmeron] = useState(meron)
-  const [cWala, setCwala] = useState(wala)
+function BetStats() {
+  const { meron, wala, fight, playerBet } = useContext(OperatorContext)
 
-  const player = {
-    bets: {
-      meron: playerBet.meron,
-      wala: playerBet.wala,
-    },
-  }
-
-  const totalSum = cMeron + cWala
+  const totalSum = meron + wala
 
   const percentage = (side) => {
     const comm = side => (side * 15) / 100
@@ -148,55 +140,50 @@ function BetStats({ fight, meron, wala, playerBet }) {
   }
 
   const meronWinAmount = () => {
-    return (player.bets.meron * percentage(cMeron)) / 100
+    return (playerBet.meron * percentage(meron)) / 100
   }
 
   const walaWinAmount = () => {
-    return (player.bets.wala * percentage(cWala)) / 100
+    return (playerBet.wala * percentage(wala)) / 100
   }
-
-  useEffect(() => {
-    setCmeron(meron)
-    setCwala(wala)
-  }, [meron, wala])
 
   return (
     <div className="leading-none flex justify-around w-full">
       <div className="bet-red flex flex-col w-2/5 justify-center items-center p-2">
         <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">MERON</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cMeron)}</div>
-        <div className="pb-2">{`(${formatMoney(percentage(cMeron), false)}%)`}</div>
-        <div>{`${formatMoney(player.bets.meron, false)} = ${formatMoney(meronWinAmount(), false)}`}</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(meron)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(meron), false)}%)`}</div>
+        <div>{`${formatMoney(playerBet.meron, false)} = ${formatMoney(meronWinAmount(), false)}`}</div>
       </div>
       <div className="px-4 bet-yellow flex flex-col justify-center items-center w-1/5">
-        <span className="text-black">GAME</span>
-        <span className="text-black">
-          FIGHT
+        <span className="text-black">FIGHT</span>
+        <span className="text-black text-sm">
+          NUMBER
         </span>
         <div className="font-black text-3xl">{fight}</div>
       </div>
       <div className="bet-blue flex flex-col w-2/5 justify-center items-center p-2">
         <div style={{ lineHeight: 1 }} className="text-white-400 text-2xl font-black pb-2">WALA</div>
-        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(cWala)}</div>
-        <div className="pb-2">{`(${formatMoney(percentage(cWala), false)}%)`}</div>
-        <div>{`${formatMoney(player.bets.wala, false)} = ${formatMoney(walaWinAmount(), false)}`}</div>
+        <div style={{ lineHeight: 1 }} className="text-yellow-200 text-xl font-black">{formatMoney(wala)}</div>
+        <div className="pb-2">{`(${formatMoney(percentage(wala), false)}%)`}</div>
+        <div>{`${formatMoney(playerBet.wala, false)} = ${formatMoney(walaWinAmount(), false)}`}</div>
       </div>
     </div>
   )
 }
 
 export default function Dashboard({ commonData, player }) {
-  const { meron, wala, fight_no, status } = commonData
-  const [totalMeron, setTotalMeron] = useState(meron)
-  const [totalWala, setTotalWala] = useState(wala)
-  const [playerBet, setPlayerBet] = useState({ meron: 0, wala: 0 })
-  // const { auth } = usePage().props
-  // const user = auth.user
+  const {
+    setPlayerBet,
+    setMeron,
+    setWala,
+    setFight,
+    setStatus,
+    setCredits,
+  } = useContext(OperatorContext)
 
-  // usePoll(1000, {}, { keepAlive: true })
-
-  // console.log(status)
   const { flash } = usePage().props
+  // eslint-disable-next-line no-console
   flash.message && console.log(flash)
 
   const playerRef = React.useRef(null)
@@ -217,71 +204,65 @@ export default function Dashboard({ commonData, player }) {
   const handlePlayerReady = (player) => {
     playerRef.current = player
 
-    // You can handle player events here, for example:
     player.on('waiting', () => {
-      // videojs.log('player is waiting')
-      console.log('player is wating')
+      // eslint-disable-next-line no-console
+      console.debug('player is wating')
     })
 
     player.on('dispose', () => {
-      console.log('player will dispose')
+      // eslint-disable-next-line no-console
+      console.debug('player will dispose')
     })
   }
 
-  // useEffect(() => {
-  //   Echo.private('bet-channel')
-  //     .listen('BetEvent', async (e) => {
-  //       const { amount, side, user_id } = e.securedBet
-  //       if (user.id === user_id)
-  //         return
-
-  //       console.log(e, 'pusher')
-  //       if (side === 'M') {
-  //         setTotalMeron(prev => prev + amount)
-  //       }
-
-  //       if (side === 'W') {
-  //         setTotalWala(prev => prev + amount)
-  //       }
-  //     })
-  // }, [user.id])
-
-  // const pusher = new window.Pusher('1ac728eb26e770e7b87d', {
-  //   cluster: 'ap1',
-  // })
-
-  const pusher = new Pusher('1ac728eb26e770e7b87d', {
-    cluster: 'ap1',
-  })
-
-  const channel = pusher.subscribe('bet-channel')
-
   useEffect(() => {
-    channel.bind('bet-event', (e) => {
+    pusher.unbind_all()
+    pusher.bind('bet-event', (e) => {
       const { amount, side } = e.securedBet
 
       if (side === 'M') {
-        setTotalMeron(prev => prev + amount)
+        setMeron(prev => prev + amount)
       }
 
       if (side === 'W') {
-        setTotalWala(prev => prev + amount)
+        setWala(prev => prev + amount)
       }
-      console.log(e, 'pusher')
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    pusher.bind('fight-event', (e) => {
+      const { fight_no, status } = e.currentFight
+      setFight(fight_no)
+      setStatus(status)
+
+      if (status === 'DONE') {
+        // Clean-up here
+        setMeron(0)
+        setWala(0)
+        setPlayerBet({
+          meron: 0,
+          wala: 0,
+        })
+      }
+    })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    setTotalMeron(commonData.meron)
-    setTotalWala(commonData.wala)
+    setMeron(commonData.meron)
+    setWala(commonData.wala)
+    setFight(commonData.fight_no)
+    setStatus(commonData.status)
+    setCredits(player.credits)
     setPlayerBet({
       meron: player.bets.meron,
       wala: player.bets.wala,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commonData, player])
 
   return (
+
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <Banner />
@@ -292,12 +273,13 @@ export default function Dashboard({ commonData, player }) {
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
-          <BetStats fight={fight_no} meron={totalMeron} wala={totalWala} playerBet={playerBet} />
-          <PlaceBets setPlayerBet={setPlayerBet} playerBet={playerBet} />
+          <BetStats />
+          <PlaceBets />
         </div>
-        <BetTrends status={status} />
+        <BetTrends />
         {/* </div> */}
       </div>
     </AppLayout>
+
   )
 }

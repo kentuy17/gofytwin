@@ -4,6 +4,7 @@ import { createInertiaApp } from '@inertiajs/react'
 import { withProfiler } from '@sentry/react'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createRoot } from 'react-dom/client'
+import OperatorProvider from './context/operator-context'
 import { initializeTheme } from './hooks/use-appearance'
 import { initializeSentry } from './sentry'
 import '../css/app.css'
@@ -22,7 +23,7 @@ void createInertiaApp({
 
     withProfiler(App)
 
-    root.render(<App {...props} />)
+    root.render(<OperatorProvider><App {...props} /></OperatorProvider>)
   },
   progress: {
     color: '#4B5563',

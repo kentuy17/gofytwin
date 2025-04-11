@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
 import type { ClassValue } from 'clsx'
 import { clsx } from 'clsx'
 
@@ -27,15 +29,24 @@ export function removeSpaces(str: any) {
 }
 
 export function formatMoney(value: any, peso: boolean = true) {
+  Number.parseFloat(value)
+  if (value === undefined) {
+    console.log(value)
+
+    alert('undefined')
+    return
+  }
+
   if (!peso) {
     return Number.isNaN(value)
       ? '0.00'
-      : new Intl.NumberFormat().format(value.toFixed(2))
+      : new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value)
   }
 
   const php = Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'PHP',
+    maximumFractionDigits: 2,
   })
 
   return Number.isNaN(value)

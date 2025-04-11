@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Middleware;
+use App\Http\Controllers\FightController;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -40,19 +41,15 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-        $fight = json_decode(Redis::get('fight'));
-        $activeBets = Bet::where('fight_id', $fight->id)->get();
-        $playerActiveBets = $activeBets->where('user_id', Auth::user()->id);
+        $global = [];
 
-        return [
-            ...parent::share($request),
-            'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
-            'auth' => [
-                'user' => $request->user(),
-                'session' => $request->session()->all(),
-            ],
-            'globals' => [
+        if(Auth::check()) {
+            $fight = json_decode(Redis::get('fight'));
+            $activeBets = Bet::where('fight_id', $fight->id)->get();
+            $playerActiveBets = $activeBets->where('user_id', Auth::user()->id);
+            $fightController = new FightController();
+
+            $global = [
                 'fight' => $fight,
                 'player' => [
                     'meron' => $playerActiveBets->where('side','M')->sum('amount'),
@@ -62,7 +59,19 @@ class HandleInertiaRequests extends Middleware
                     'meron' => $activeBets->where('side','M')->sum('amount'),
                     'wala' => $activeBets->where('side','W')->sum('amount'),
                 ],
+                'trend' => $fightController->getFightTrends($request),
+            ];
+        }
+
+        return [
+            ...parent::share($request),
+            'name' => config('app.name'),
+            'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'auth' => [
+                'user' => $request->user(),
+                'session' => $request->session()->all(),
             ],
+            'globals' => $global,
             'user' => $request->user(),
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),

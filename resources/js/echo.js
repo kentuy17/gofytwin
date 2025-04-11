@@ -1,4 +1,4 @@
-import Echo from 'laravel-echo'
+// import Echo from 'laravel-echo'
 
 import Pusher from 'pusher-js'
 
@@ -10,11 +10,17 @@ import Pusher from 'pusher-js'
 window.Pusher = Pusher
 
 // window.Pusher = new Pusher('1ac728eb26e770e7b87d', options)
-Pusher.logToConsole = true
+// Pusher.logToConsole = true
+
+// const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY
+// const pusherCluster = import.meta.env.VITE_PUSHER_APP_CLUSTER
 
 export const pusher = new Pusher('1ac728eb26e770e7b87d', {
   cluster: 'ap1',
 })
+
+pusher.subscribe('bet-channel')
+pusher.subscribe('fight-channel')
 
 // window.Pusher = require('pusher-js')
 
@@ -52,14 +58,14 @@ export const pusher = new Pusher('1ac728eb26e770e7b87d', {
 //   enabledTransports: ['ws', 'wss'],
 // })
 
-export const echoInstance = new Echo({
-  broadcaster: 'reverb',
-  key: import.meta.env.VITE_REVERB_APP_KEY,
-  wsHost: import.meta.env.VITE_REVERB_HOST,
-  wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-  wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-  forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-  enabledTransports: ['ws', 'wss'],
-})
+// export const echoInstance = new Echo({
+//   broadcaster: 'reverb',
+//   key: import.meta.env.VITE_REVERB_APP_KEY,
+//   wsHost: import.meta.env.VITE_REVERB_HOST,
+//   wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
+//   wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+//   forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+//   enabledTransports: ['ws', 'wss'],
+// })
 
 // import.meta.env.VITE_FB_SUP_LINK

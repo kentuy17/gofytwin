@@ -1,19 +1,15 @@
 /* eslint-disable no-alert */
-/* eslint-disable no-console */
 import BetTrends from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import VideoJS from '@/components/videojs'
-// import { echoInstance } from '@/echo'
-// import { PlaceholderPattern } from '@/components/ui/placeholder-pattern'
+import { OperatorContext } from '@/context/operator-context'
 import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
 import { Head, usePage } from '@inertiajs/react'
 import axios from 'axios'
-import Pusher from 'pusher-js'
-import React, { useEffect, useState } from 'react'
-import { OperatorProvider, useOperatorContext } from '../../context/operator-context'
+import React, { useContext, useEffect } from 'react'
+import { pusher } from '../../echo'
 
 const breadcrumbs = [
   {
@@ -42,10 +38,10 @@ async function addBet(params) {
       return
     }
 
-    if (amount > 1500) {
-      alert('Maximum bet is 1,500.00')
-      return
-    }
+    // if (amount > 1500) {
+    //   alert('Maximum bet is 1,500.00')
+    //   return
+    // }
 
     if (!confirm(`Bet ${formatMoney(amount)}?`)) {
       return
@@ -72,8 +68,9 @@ async function addBet(params) {
   }
 }
 
-function PlaceBets({ setPlayerBet, playerBet }) {
+function PlaceBets() {
   const { auth } = usePage().props
+  const { setPlayerBet, playerBet } = useContext(OperatorContext)
   const betMeron = Number.parseFloat(playerBet.meron)
   const betWala = Number.parseFloat(playerBet.wala)
 
@@ -91,7 +88,6 @@ function PlaceBets({ setPlayerBet, playerBet }) {
 
     if (resp === 'OK') {
       setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
-      console.log(betAmount)
     }
   }
 
@@ -128,19 +124,7 @@ function PlaceBets({ setPlayerBet, playerBet }) {
 }
 
 function BetStats() {
-  // const [cMeron, setCmeron] = useState(meron)
-  // const [cWala, setCwala] = useState(wala)
-
-  const { fight, meron, wala, playerBet } = useOperatorContext()
-  console.log([fight, meron, wala, playerBet])
-
-  // const player = {
-  //   bets: {
-  //     meron: playerBet.meron,
-  //     wala: playerBet.wala,
-  //   },
-  // }
-
+  const { fight, meron, wala, playerBet } = useContext(OperatorContext)
   const totalSum = meron + wala
 
   const percentage = (side) => {
@@ -156,11 +140,6 @@ function BetStats() {
   const walaWinAmount = () => {
     return (playerBet.wala * percentage(wala)) / 100
   }
-
-  // useEffect(() => {
-  //   setCmeron(meron)
-  //   setCwala(wala)
-  // }, [meron, wala])
 
   return (
     <div className="leading-none flex justify-around w-full">
@@ -189,26 +168,16 @@ function BetStats() {
 
 export default function Operator({ player, commonData }) {
   const {
-    meron,
-    wala,
-    fight,
-    playerBet,
     setPlayerBet,
     setMeron,
     setWala,
     setFight,
-  } = useOperatorContext()
+    setStatus,
+  } = useContext(OperatorContext)
 
-  setPlayerBet(player.bets)
-  setMeron(commonData.meron)
-  setWala(commonData.wala)
-  setFight(commonData.fight_no)
-
-  // console.log([meron, wala, fight, playerBet])
-
-  const { flash, user } = usePage().props
+  const { flash } = usePage().props
+  // eslint-disable-next-line no-console
   flash.message && console.log(flash)
-  const [status, setStatus] = useState('WAITING')
 
   const playerRef = React.useRef(null)
 
@@ -230,84 +199,68 @@ export default function Operator({ player, commonData }) {
     // You can handle player events here, for example:
     player.on('waiting', () => {
       // videojs.log('player is waiting')
-      console.log('player is wating')
     })
 
     player.on('dispose', () => {
-      console.log('player will dispose')
+      // eslint-disable-next-line no-console
+      console.debug('player will dispose')
     })
   }
 
-  const pusher = new Pusher('1ac728eb26e770e7b87d', {
-    cluster: 'ap1',
-  })
-
-  // const fightPush = new Pusher('1ac728eb26e770e7b87d', {
-  //   cluster: 'ap1',
-  // })
-
-  Pusher.logToConsole = true
-
-  // const betChannel = pusher.subscribe('bet-channel')
-  const fightChannel = pusher.subscribe('fight-channel')
-
-  // useEffect(() => {
-  //   betChannel.bind('bet-event', (e) => {
-  //     const { amount, side, user_id } = e.securedBet
-  //     // console.log(e)
-
-  //     if (user_id === user.id) {
-  //       if (side === 'M') {
-  //         setPlayerBet({ ...playerBet.wala, meron: prev => prev.meron + amount })
-  //       }
-  //       else {
-  //         setPlayerBet({ ...playerBet.meron, wala: prev => prev.wala + amount })
-  //       }
-  //     }
-
-  //     if (side === 'M') {
-  //       setMeron(prev => prev + amount)
-  //     }
-
-  //     if (side === 'W') {
-  //       // setWala(prev => prev + amount)
-  //       setWala(amount)
-  //     }
-
-  //     console.log(e, 'pusher')
-  //   })
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
-
   useEffect(() => {
-    fightChannel.bind('fight-event', (e) => {
-      // console.log(e, 'fight')
-      setFight(e.currentFight.fight_no)
-      setStatus(e.currentFight.status)
+    pusher.unbind_all()
+    pusher.bind('bet-event', (e) => {
+      const { amount, side } = e.securedBet
+      side === 'M'
+        ? setMeron(prev => prev + amount)
+        : setWala(prev => prev + amount)
     })
+
+    pusher.bind('fight-event', (e) => {
+      const { fight_no, status } = e.currentFight
+      setFight(fight_no)
+      setStatus(status)
+
+      if (status === 'DONE') {
+        setMeron(0)
+        setWala(0)
+        setPlayerBet({
+          meron: 0,
+          wala: 0,
+        })
+      }
+    })
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    setMeron(commonData.meron)
+    setWala(commonData.wala)
+    setFight(commonData.fight_no)
+    setStatus(commonData.status)
+    setPlayerBet({
+      meron: player.bets.meron,
+      wala: player.bets.wala,
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commonData, player])
+
   return (
-    <OperatorProvider>
-      <AppLayout breadcrumbs={breadcrumbs}>
-        <Head title="Dashboard" />
-        <Banner />
-        <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
-          {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
-          <div className="border-sidebar-border/70">
-            <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
-            <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
-              Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
-            </div>
-            <BetStats fight={fight} meron={meron} wala={wala} playerBet={playerBet} />
-            <PlaceBets playerBet={playerBet} />
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Dashboard" />
+      <Banner />
+      <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
+        <div className="border-sidebar-border/70">
+          <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
+          <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
+            Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
-          <BetTrends status={status} />
-          {/* </div> */}
+          <BetStats />
+          <PlaceBets />
         </div>
-      </AppLayout>
-    </OperatorProvider>
+        <BetTrends />
+      </div>
+    </AppLayout>
   )
 }

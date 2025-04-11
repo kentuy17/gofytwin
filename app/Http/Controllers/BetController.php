@@ -80,7 +80,7 @@ class BetController extends Controller
             event(new BetEvent($bet));
             // event(new BetEvent('hello world'));
 
-            if (Auth::user()->level === 0) {
+            if (Auth::user()->user_level < 3) {
                 Auth::user()->decrement('credits', $request->amount);
 
                 $points_after_bet = Auth::user()->credits;

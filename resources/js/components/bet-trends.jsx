@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-alert */
 import {
   AlertDialog,
@@ -11,14 +10,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { usePage } from '@inertiajs/react'
+import { OperatorContext } from '@/context/operator-context'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Switch } from './ui/switch'
 import '../../css/bet-arnie.css'
+import { usePage } from '@inertiajs/react'
 
 const statuses = {
   OPEN: {
@@ -39,22 +39,30 @@ const statuses = {
     isBlink: false,
     text: 'WAITING',
   },
+  DONE: {
+    backgroundColor: 'bg-white',
+    textColor: 'text-black',
+    isBlink: false,
+    text: 'WAITING',
+  },
 }
 
-function StatusBar({ status, last }) {
+function StatusBar({ last }) {
   const [isLastCall, setIsLastCall] = useState(last)
+
+  const { status } = useContext(OperatorContext)
 
   useEffect(() => {
     setIsLastCall(last)
   }, [last])
 
   return (
-
     <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
       <span className="text-black text-xl">Game Fight Results</span>
       {isLastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
-      <div className={`uppercase ${statuses[status].backgroundColor} py-2 px-4 ${statuses[status].textColor}`}>{statuses[status].text}</div>
-
+      <div className={`uppercase ${statuses[status] && statuses[status].backgroundColor} py-2 px-4 ${status && statuses[status].textColor}`}>
+        {status && statuses[status].text}
+      </div>
     </div>
   )
 }
@@ -64,7 +72,7 @@ async function updateResult(result) {
     status: 'DONE',
     result,
   })
-  console.log(data)
+  return data
 }
 
 async function updateStatus(status) {
@@ -72,8 +80,7 @@ async function updateStatus(status) {
     status,
     result: null,
   })
-
-  console.log(data)
+  return data
 }
 
 function PopUpSelectResult() {
@@ -85,18 +92,16 @@ function PopUpSelectResult() {
   }
 
   const meronWins = () => {
-    alert('wens wens')
+    alert('meron wins')
     updateResult('M')
   }
 
   const handleDraw = () => {
-    console.log('draw')
     updateResult('X')
     setIsDialogOpen(false)
   }
 
   const handleCanceled = () => {
-    console.log('cancelled')
     updateResult('C')
     setIsDialogOpen(false)
   }
@@ -104,7 +109,7 @@ function PopUpSelectResult() {
   return (
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} allowOutside>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="bg-blue-400">DONE</Button>
+        <Button variant="outline" className="bg-blue-400 cursor-pointer">DONE</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -128,8 +133,7 @@ function PopUpSelectResult() {
 
 function OperatorControls() {
   const [toggled, setToggled] = useState(false)
-  const { globals } = usePage().props
-  const fightStatus = globals.fight.status
+  const { status } = useContext(OperatorContext)
 
   const handleOpen = () => {
     return () => updateStatus('OPEN')
@@ -142,11 +146,27 @@ function OperatorControls() {
   return (
     <div className="grid">
       <div className="flex w-full items-center justify-around">
-        <Badge className={`uppercase ${statuses[fightStatus].backgroundColor} ${statuses[fightStatus].textColor}`}>{fightStatus}</Badge>
+        <Badge className={`uppercase ${status && statuses[status].backgroundColor} ${status && statuses[status].textColor}`}>
+          {status && statuses[status].text}
+        </Badge>
       </div>
       <div className="grid gap-4 md:grid-cols-4 grid-cols-2 p-6">
-        <Button onClick={handleOpen()} variant="secondary" className="bg-green-400 cursor-pointer">OPEN</Button>
-        <Button onClick={handleClosed()} variant="destructive" className="cursor-pointer">CLOSED</Button>
+        <Button
+          onClick={handleOpen()}
+          disabled={!['WAITING', 'CLOSED', 'DONE'].includes(status)}
+          variant="secondary"
+          className="bg-green-400 cursor-pointer"
+        >
+          OPEN
+        </Button>
+        <Button
+          onClick={handleClosed()}
+          disabled={status === 'CLOSED'}
+          variant="destructive"
+          className="cursor-pointer"
+        >
+          CLOSED
+        </Button>
         <div className="flex items-center space-x-2">
           <Switch id="airplane-mode" defaultChecked={toggled} onCheckedChange={() => setToggled(prev => !prev)} />
           {
@@ -165,8 +185,64 @@ function OperatorControls() {
   )
 }
 
-function BetTrends({ status, last }) {
-  // const { auth } = usePage().props
+function TrendRowItem({bg,fightNo}) {
+  return <td><div className={`trend-item ${bg}`}>{fightNo}</div></td>
+}
+
+function TrendRows() {
+  const rows = []
+  for (let index = 1; index < 45; index++) {
+    rows.push(<TrendRowItem bg={'trend-meron'} fightNo={index} />)
+  }
+
+  return <tr>{rows}</tr>
+}
+
+function reconstructTrend(fights) {
+  let prevResult = 'M'
+  let prevPosition = {x:1,y:1}
+  let formatted = {
+    row1: [],
+    row2: [],
+    row3: [],
+    row4: [],
+    row5: []
+  }
+
+  // formatted.row1.push(fights[0])
+
+  console.log(fights);
+
+  for (let index = 0; index < fights.length; index++) {
+    const element = fights[index];
+    let {x, y} = prevPosition
+    let a = 1
+    let b = y
+    if(element.result === prevResult) {
+      a = x + 1
+      for (let i = x+1; i <= 5; i++) {
+        formatted['row'+i].push('skip-'+element.fight_no)
+      }
+      formatted['row'+a].push(element)
+    } else {
+      b = y + 1
+      formatted['row1'].push(element)
+    }
+
+    prevResult = element.result
+    prevPosition = {x:a, y:b}
+    // console.log(prevPosition, prevResult + '----fyt#' + element.fight_no);
+  }
+
+  return formatted
+}
+
+function BetTrends({ last }) {
+  const { status } = useContext(OperatorContext)
+  const { globals } = usePage().props
+
+  console.log(reconstructTrend(globals.trend.results.slice(0,10)));
+
   return (
     <div>
       <div>
@@ -175,39 +251,23 @@ function BetTrends({ status, last }) {
               <OperatorControls />
             )
           : (
-              <StatusBar last={last} status={status} />
+              <StatusBar status={status} last={last} />
             )}
-        {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">
-          <div className="bad-cont d-inline-flex align-items-center mr-1">
-            <span className="count rounded-circle trend-meron">65</span>
-            {' '}
-            <p className="mb-0 count-label">Meron</p>
-          </div>
-          {' '}
-          <div className="bad-cont d-inline-flex align-items-center mr-1">
-            <span className="count rounded-circle trend-wala">55</span>
-            {' '}
-            <p className="mb-0 count-label">Wala</p>
-          </div>
-          {' '}
-          <div className="bad-cont d-inline-flex align-items-center mr-1">
-            <span className="count rounded-circle trend-draw">1</span>
-            {' '}
-            <p className="mb-0 count-label">Draw</p>
-          </div>
-          {' '}
-          <div className="bad-cont d-inline-flex align-items-center">
-            <span className="count rounded-circle bg-secondary">4</span>
-            {' '}
-            <p className="mb-0 count-label">Cancelled</p>
-          </div>
+          {globals.trend.summary.map((item) => {
+            return (
+              <div className="bad-cont d-inline-flex align-items-center mr-1">
+                <span className={`count rounded-circle ${item.class}`}>{item.count}</span>
+                <p className="mb-0 count-label">{item.label}</p>
+              </div>
+            )
+          })}
         </div>
-        {' '}
         <div className="px-3 pb-3 gp-panel-bg rounded-bottom landscape-trend" style={{ position: 'relative' }}>
           <div className="table-responsive pb-3 gp-scroll">
             <table className="trend-table">
               <tbody>
+                <TrendRows />
                 <tr>
                   <td><div className="trend-item trend-meron">46</div></td>
                   <td><div className="trend-item trend-meron">50</div></td>
@@ -394,6 +454,7 @@ function BetTrends({ status, last }) {
         </div>
       </div>
     </div>
+
   )
 }
 

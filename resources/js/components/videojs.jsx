@@ -19,6 +19,10 @@ const VideoJS = React.memo((props) => {
       const player = playerRef.current = videojs(videoElement, options, () => {
         videojs.log('player is ready')
         onReady && onReady(player)
+
+        // player.on('timeupdate', () => {
+        //   setTimestamp1(player.currentTime())
+        // })
       })
 
     // You could update an existing player in the `else` block here
@@ -30,7 +34,7 @@ const VideoJS = React.memo((props) => {
       player.autoplay(options.autoplay)
       player.src(options.sources)
     }
-  }, [options, videoRef, onReady])
+  }, [])
 
   // Dispose the Video.js player when the functional component unmounts
   React.useEffect(() => {

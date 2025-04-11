@@ -1,31 +1,37 @@
-import { usePage } from '@inertiajs/react'
-import { createContext, useContext, useState } from 'react'
+// import { usePage } from '@inertiajs/react'
+import { createContext, useState } from 'react'
 
-// const OperatorContext = createContext()
+// export const OperatorContext = createContext()
 // const { globals } = usePage().props
 
-const OperatorContext = createContext({
+export const OperatorContext = createContext({
   fight: null,
   meron: null,
   wala: null,
+  credits: 0,
   playerBet: {
     meron: 0,
     wala: 0,
   },
+  status: null,
   setFight: () => { },
   setMeron: () => { },
   setWala: () => { },
   setPlayerBet: () => { },
+  setStatus: () => { },
+  setCredits: () => {},
 })
 
-export function OperatorProvider({ children }) {
-  const { globals } = usePage().props
-  const [fight, setFight] = useState(globals.fight.fight_no)
-  const [meron, setMeron] = useState(globals.total.meron)
-  const [wala, setWala] = useState(globals.total.wala)
+function OperatorProvider({ children }) {
+  // const { globals } = usePage().props
+  const [fight, setFight] = useState('')
+  const [meron, setMeron] = useState('')
+  const [wala, setWala] = useState('')
+  const [status, setStatus] = useState('')
+  const [credits, setCredits] = useState(0)
   const [playerBet, setPlayerBet] = useState({
-    meron: globals.player.meron,
-    wala: globals.player.wala,
+    meron: 0,
+    wala: 0,
   })
 
   return (
@@ -35,10 +41,14 @@ export function OperatorProvider({ children }) {
         meron,
         wala,
         playerBet,
+        status,
+        credits,
         setFight,
         setMeron,
         setWala,
         setPlayerBet,
+        setStatus,
+        setCredits,
       }}
     >
       {children}
@@ -46,5 +56,7 @@ export function OperatorProvider({ children }) {
   )
 }
 
-export const useOperatorContext = () => useContext(OperatorContext)
+export default OperatorProvider
+
+// export const useOperatorContext = () => useContext(OperatorContext)
 // export const useStateContext = () => useContext(StateContext);
