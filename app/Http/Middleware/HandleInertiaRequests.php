@@ -71,6 +71,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'session' => $request->session()->all(),
             ],
+            'csrf_token' => csrf_token(),
             'globals' => $global,
             'user' => $request->user(),
             'flash' => [

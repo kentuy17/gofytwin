@@ -1,4 +1,5 @@
 /* eslint-disable no-alert */
+import { BetDialog } from '@/components/bet-dialog'
 import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 import VideoJS from '@/components/videojs'
@@ -10,6 +11,7 @@ import { Head, usePage } from '@inertiajs/react'
 import axios from 'axios'
 import React, { useContext, useEffect } from 'react'
 import { pusher } from '../../echo'
+import { PlusCircleIcon } from 'lucide-react'
 
 const breadcrumbs = [
   {
@@ -43,9 +45,9 @@ async function addBet(params) {
       return
     }
 
-    if (!confirm(`Bet ${formatMoney(amount)}?`)) {
-      return
-    }
+    // if (!confirm(`Bet ${formatMoney(amount)}?`)) {
+    //   return
+    // }
 
     const { data } = await axios.post('/bet/add', {
       amount,
@@ -61,32 +63,8 @@ async function addBet(params) {
 
 function PlaceBets() {
   const { auth } = usePage().props
-  const { playerBet, setPlayerBet, setCredits, status } = useContext(OperatorContext)
-  const betMeron = Number.parseFloat(playerBet.meron)
+  const { playerBet, setPlayerBet,  status } = useContext(OperatorContext)
   const betWala = Number.parseFloat(playerBet.wala)
-
-  const handleOnlickMeron = async () => {
-    if (status !== 'OPEN') {
-      alert(`Cannot bet.`)
-      return
-    }
-
-    const betAmount = prompt('Enter Amount:', 0)
-    if (!betAmount)
-      return
-
-    const resp = await addBet({
-      message: 'OPEN',
-      amount: betAmount,
-      side: 'M',
-      credits: auth.user.credits,
-    })
-
-    if (resp === 'OK') {
-      setPlayerBet({ ...playerBet, meron: betMeron + Number.parseFloat(betAmount) })
-      setCredits(prev => prev - betAmount)
-    }
-  }
 
   const handleOnlickWala = async () => {
     if (status !== 'OPEN') {
@@ -113,12 +91,20 @@ function PlaceBets() {
   return (
     <div className="bg-black justify-around flex flex-row w-full p-2">
       <div className="flex w-2/5 justify-center items-center">
-        <Button onClick={handleOnlickMeron} size="sm" className="text-red-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
+        <BetDialog side='M'>
+          <Button size="sm" className="text-white bg-red-500 font-bold">
+            <PlusCircleIcon />BET MERON
+          </Button>
+        </BetDialog>
       </div>
 
       <div className="w-1/5"></div>
       <div className="flex w-2/5 justify-center items-center">
-        <Button onClick={handleOnlickWala} size="sm" className="text-blue-500 bg-yellow-200 font-bold rounded-xl">Place Bet</Button>
+        <BetDialog side='W'>
+          <Button size="sm" className="text-white bg-blue-500 font-bold">
+            <PlusCircleIcon />BET WALA
+          </Button>
+        </BetDialog>
       </div>
 
     </div>

@@ -7,11 +7,15 @@ window.Pusher = Pusher
 // window.Pusher = new Pusher('1ac728eb26e770e7b87d', options)
 // Pusher.logToConsole = true
 
-// const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY
-// const pusherCluster = import.meta.env.VITE_PUSHER_APP_CLUSTER
+const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY
+const pusherCluster = import.meta.env.VITE_PUSHER_APP_CLUSTER
 
-export const pusher = new Pusher('1ac728eb26e770e7b87d', {
-  cluster: 'ap1',
+// export const pusher = new Pusher('1ac728eb26e770e7b87d', {
+//   cluster: 'ap1',
+// })
+
+export const pusher = new Pusher(pusherKey, {
+  cluster: pusherCluster,
 })
 
 pusher.subscribe('bet-channel')
