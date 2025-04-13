@@ -166,7 +166,7 @@ export function BetDialog({ children, side }) {
           <div className="grid grid-cols-2 items-center gap-4">
             <InputBet setBet={setBet} bet={bet} className='col-span-3' />
           </div>
-          <div className="flex gap-2 flex-row items-center justify-center">
+          <div className="flex gap-2 flex-row items-center justify-center flex-wrap">
               {amounts.map((value) => {
                 return <AmountBtn className='bg-green-500 text-white' key={value} amount={value} setBet={setBet} />
               })}

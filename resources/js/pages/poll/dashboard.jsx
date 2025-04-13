@@ -92,7 +92,7 @@ function PlaceBets() {
     <div className="bg-black justify-around flex flex-row w-full p-2">
       <div className="flex w-2/5 justify-center items-center">
         <BetDialog side='M'>
-          <Button size="sm" className="text-white bg-red-500 font-bold">
+          <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-red-500 font-bold">
             <PlusCircleIcon />BET MERON
           </Button>
         </BetDialog>
@@ -101,7 +101,7 @@ function PlaceBets() {
       <div className="w-1/5"></div>
       <div className="flex w-2/5 justify-center items-center">
         <BetDialog side='W'>
-          <Button size="sm" className="text-white bg-blue-500 font-bold">
+          <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-blue-500 font-bold">
             <PlusCircleIcon />BET WALA
           </Button>
         </BetDialog>
