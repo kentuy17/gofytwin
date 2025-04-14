@@ -68,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/fight/update', [FightController::class, 'updateFight'])->name('post.update.fight');
     Route::get('/operator', [FightController::class, 'operator'])->name('operator');
     Route::get('/fight/trend', [FightController::class, 'getFightTrends'])->name('fight.trend');
+    Route::post('/fight/lastcall', [FightController::class, 'updateLastCall'])->name('update.lastcall');
 
 });
 

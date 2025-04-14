@@ -1,5 +1,4 @@
-import { cn } from '@/lib/utils'
-import { OperatorContext } from '@/context/operator-context'
+/* eslint-disable no-alert */
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,12 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useContext, useEffect, useState } from 'react'
-import CurrencyInput from 'react-currency-input-field';
-import axios from 'axios'
+import { OperatorContext } from '@/context/operator-context'
+import { cn } from '@/lib/utils'
 import { usePage } from '@inertiajs/react'
+import axios from 'axios'
+import { useContext, useEffect, useState } from 'react'
+import CurrencyInput from 'react-currency-input-field'
 
-function InputBet({className, bet, setBet}) {
+function InputBet({ className, bet, setBet }) {
   const [betVal, setBetVal] = useState(bet)
 
   const handleValueChange = (value) => {
@@ -23,14 +24,15 @@ function InputBet({className, bet, setBet}) {
   }
 
   useEffect(() => {
-    if(bet > 1500 || betVal > 1500) {
+    if (bet > 1500 || betVal > 1500) {
       setBetVal(1500)
       setBet(1500)
-    } else {
+    }
+    else {
       setBetVal(bet)
       setBet(bet)
     }
-  }, [bet, betVal])
+  }, [bet, betVal, setBet])
 
   return (
     <CurrencyInput
@@ -91,18 +93,19 @@ async function addBet(params) {
   }
 }
 
-function AmountBtn({amount, setBet, className}) {
+function AmountBtn({ amount, setBet, className }) {
   return (
     <Button
       onClick={() => setBet(amount)}
-      size='sm'
+      size="sm"
       className={cn(
         'h-5 px-2',
-        className
+        className,
       )}
-    >{amount}</Button>
+    >
+      {amount}
+    </Button>
   )
-
 }
 
 export function BetDialog({ children, side }) {
@@ -116,12 +119,12 @@ export function BetDialog({ children, side }) {
   const amounts = [20, 50, 100, 500, 1000, 1500, 'ALL-IN']
 
   const handleSumbit = async () => {
-    if(bet < 10) {
+    if (bet < 10) {
       alert('Minimum bet is 10.00')
       return
     }
 
-    if(bet > credits) {
+    if (bet > credits) {
       alert('Insuficient points')
       return
     }
@@ -131,8 +134,8 @@ export function BetDialog({ children, side }) {
     const resp = await addBet({
       message: 'OPEN',
       amount: bet,
-      side: side,
-      credits: credits,
+      side,
+      credits,
       _token: csrf_token,
     })
 
@@ -142,15 +145,17 @@ export function BetDialog({ children, side }) {
         : setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(bet) })
 
       setCredits(prev => prev - bet)
-    } else {
+    }
+    else {
       alert(JSON.stringify(resp))
     }
   }
 
   useEffect(() => {
-    if(bet === 'ALL-IN') {
+    if (bet === 'ALL-IN') {
       setBet(credits)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bet])
 
   return (
@@ -164,23 +169,22 @@ export function BetDialog({ children, side }) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-2 items-center gap-4">
-            <InputBet setBet={setBet} bet={bet} className='col-span-3' />
+            <InputBet setBet={setBet} bet={bet} className="col-span-3" />
           </div>
           <div className="flex gap-2 flex-row items-center justify-center flex-wrap">
-              {amounts.map((value) => {
-                return <AmountBtn className='bg-green-500 text-white' key={value} amount={value} setBet={setBet} />
-              })}
-            </div>
+            {amounts.map((value) => {
+              return <AmountBtn className="bg-green-500 text-white" key={value} amount={value} setBet={setBet} />
+            })}
+          </div>
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleSumbit}>
-            BET {side === 'M' ? 'MERON' : 'WALA'}
+            BET
+            {' '}
+            {side === 'M' ? 'MERON' : 'WALA'}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
-
-
-

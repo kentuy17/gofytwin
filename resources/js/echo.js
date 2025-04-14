@@ -21,6 +21,7 @@ export const pusher = new Pusher(pusherKey, {
 pusher.subscribe('bet-channel')
 pusher.subscribe('fight-channel')
 pusher.subscribe('result-channel')
+pusher.subscribe('lastcall-channel')
 
 // window.Pusher = require('pusher-js')
 

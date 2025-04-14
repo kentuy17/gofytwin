@@ -21,3 +21,7 @@ Broadcast::channel('result-channel', function ($user) {
     return Auth::check() && (int)$user->id === Auth::id();
     // return true;
 });
+
+Broadcast::channel('lastcall-channel', function ($user) {
+    return Auth::check() && (int)$user->id === Auth::id();
+});

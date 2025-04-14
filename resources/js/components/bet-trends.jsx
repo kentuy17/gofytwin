@@ -13,7 +13,7 @@ import {
 import { OperatorContext } from '@/context/operator-context'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
@@ -54,20 +54,13 @@ export const trendClasses = {
   C: 'bg-secondary',
 }
 
-function StatusBar({ last }) {
-  const [isLastCall, setIsLastCall] = useState(last)
-
-  const { status } = useContext(OperatorContext)
-
-  useEffect(() => {
-    setIsLastCall(last)
-  }, [last])
+function StatusBar() {
+  const { status, lastCall } = useContext(OperatorContext)
 
   return (
-
     <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
       <span className="text-black text-xl">Game Fight Results</span>
-      {isLastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
+      {lastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
       <div className={`uppercase ${statuses[status] && statuses[status].backgroundColor} py-2 px-4 ${status && statuses[status].textColor}`}>
         {status && statuses[status].text}
       </div>
@@ -89,6 +82,11 @@ async function updateStatus(status) {
     status,
     result: null,
   })
+  return data
+}
+
+async function updateLastCall(params) {
+  const { data } = await axios.post('/fight/lastcall', params)
   return data
 }
 
@@ -142,8 +140,8 @@ function PopUpSelectResult() {
 }
 
 function OperatorControls() {
-  const [toggled, setToggled] = useState(false)
-  const { status } = useContext(OperatorContext)
+  const { status, setLastCall, lastCall } = useContext(OperatorContext)
+  const { _token } = usePage().props
 
   const handleOpen = () => {
     return () => updateStatus('OPEN')
@@ -151,6 +149,11 @@ function OperatorControls() {
 
   const handleClosed = () => {
     return () => updateStatus('CLOSED')
+  }
+
+  const handleLastCallChange = () => {
+    setLastCall(prev => !prev)
+    updateLastCall({ _token, lastCall: !lastCall })
   }
 
   return (
@@ -179,9 +182,9 @@ function OperatorControls() {
         </Button>
         {/* <Toggle className="w-full" defaultPressed={false}><Button variant="secondary">LAST CALL</Button></Toggle> */}
         <div className="flex items-center space-x-2">
-          <Switch id="airplane-mode" defaultChecked={toggled} onCheckedChange={() => setToggled(prev => !prev)} />
+          <Switch id="airplane-mode" defaultChecked={lastCall} disabled={status === 'CLOSED'} onCheckedChange={handleLastCallChange} />
           {
-            toggled
+            lastCall
               ? (
                   <Label className="animate-blink text-red-500" htmlFor="airplane-mode">LAST CALL</Label>
                 )
@@ -273,7 +276,7 @@ function createFightArray(results) {
   return fights
 }
 
-function BetTrends({ last }) {
+function BetTrends() {
   const { lastResult } = useContext(OperatorContext)
   const { globals } = usePage().props
   const fightArray = createFightArray(globals.trend.results)
@@ -294,7 +297,7 @@ function BetTrends({ last }) {
               <OperatorControls />
             )
           : (
-              <StatusBar last={last} />
+              <StatusBar />
             )}
         {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">

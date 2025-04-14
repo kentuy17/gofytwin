@@ -79,6 +79,7 @@ class HomeController extends Controller
         $fight = json_decode(Redis::get('fight'));
         $meron = $this->getSideBetsPerFight('M', $fight->id);
         $wala = $this->getSideBetsPerFight('W', $fight->id);
+        $lastCall = Redis::get('lastCall');
 
         // dd($fight);
 
@@ -87,6 +88,7 @@ class HomeController extends Controller
             'wala' => $wala,
             'fight_no' => $fight->fight_no,
             'status' => $fight->status,
+            'lastCall' => $lastCall,
         ];
 
         return $data;

@@ -50,7 +50,7 @@ class BetController extends Controller
                 ], 400);
             }
 
-            if ($this->current_fight->status == 'C') {
+            if ($this->current_fight->status == 'CLOSED') {
                 $this->hacking($request, 'Closed Bet');
                 return response()->json([
                     'status' => 400,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\FightEvent;
+use App\Events\LastCallEvent;
 use App\Events\ResultEvent;
 use App\Models\EventGame;
 use App\Models\Fight;
@@ -59,6 +60,11 @@ class FightController extends Controller
                 event(new FightEvent($this->currentFight));
                 // event(new BetEvent($bet));
                 Redis::set('fight', $this->currentFight);
+
+                if($request->status === 'CLOSED') {
+                    $req = new Request(['lastCall' => false]);
+                    $this->updateLastCall($req);
+                }
             }
 
             if ($request->status === 'DONE') {
@@ -162,5 +168,11 @@ class FightController extends Controller
         }
 
         return $check;
+    }
+
+    public function updateLastCall(Request $request): void
+    {
+        Redis::set('lastCall', $request->lastCall);
+        event(new LastCallEvent($request->lastCall));
     }
 }

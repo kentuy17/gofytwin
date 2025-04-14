@@ -166,6 +166,7 @@ export default function Operator({ player, commonData }) {
     setFight,
     setStatus,
     setLastResult,
+    setLastCall,
   } = useContext(OperatorContext)
 
   const { flash } = usePage().props
@@ -224,6 +225,10 @@ export default function Operator({ player, commonData }) {
       }
     })
 
+    pusher.bind('lastcall-event', (e) => {
+      setLastCall(e.lastCall)
+    })
+
     pusher.bind('result-event', (e) => {
       const { fight_no, game_winner } = e.fightResult
       const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
@@ -237,6 +242,7 @@ export default function Operator({ player, commonData }) {
     setWala(commonData.wala)
     setFight(commonData.fight_no)
     setStatus(commonData.status)
+    setLastCall(commonData.lastCall)
     setPlayerBet({
       meron: player.bets.meron,
       wala: player.bets.wala,

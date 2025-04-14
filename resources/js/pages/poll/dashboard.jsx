@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 import { BetDialog } from '@/components/bet-dialog'
 import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
@@ -8,10 +7,9 @@ import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
 import { Head, usePage } from '@inertiajs/react'
-import axios from 'axios'
+import { PlusCircleIcon } from 'lucide-react'
 import React, { useContext, useEffect } from 'react'
 import { pusher } from '../../echo'
-import { PlusCircleIcon } from 'lucide-react'
 
 const breadcrumbs = [
   {
@@ -22,87 +20,25 @@ const breadcrumbs = [
 
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
-async function addBet(params) {
-  try {
-    const { message, amount, side, credits } = params
-    if (message !== 'OPEN') {
-      alert('Cannot Bet')
-      return
-    }
-
-    if (amount < 10) {
-      alert('Minimum bet is 10.00')
-      return
-    }
-
-    if (amount > credits) {
-      alert('Insuficient Points')
-      return
-    }
-
-    if (amount > 1500) {
-      alert('Maximum bet is 1,500.00')
-      return
-    }
-
-    // if (!confirm(`Bet ${formatMoney(amount)}?`)) {
-    //   return
-    // }
-
-    const { data } = await axios.post('/bet/add', {
-      amount,
-      side,
-    })
-
-    return data.status
-  }
-  catch (err) {
-    console.error(err)
-  }
-}
-
 function PlaceBets() {
-  const { auth } = usePage().props
-  const { playerBet, setPlayerBet,  status } = useContext(OperatorContext)
-  const betWala = Number.parseFloat(playerBet.wala)
-
-  const handleOnlickWala = async () => {
-    if (status !== 'OPEN') {
-      alert(`Cannot bet.`)
-      return
-    }
-
-    const betAmount = prompt('Enter Amount:', 0)
-    if (!betAmount)
-      return
-
-    const resp = await addBet({
-      message: 'OPEN',
-      amount: Number.parseFloat(betAmount),
-      side: 'W',
-      credits: auth.user.credits,
-    })
-
-    if (resp === 'OK') {
-      setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(betAmount) })
-    }
-  }
-
+  const { status } = useContext(OperatorContext)
   return (
     <div className="bg-black justify-around flex flex-row w-full p-2">
       <div className="flex w-2/5 justify-center items-center">
-        <BetDialog side='M'>
+        <BetDialog side="M">
           <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-red-500 font-bold">
-            <PlusCircleIcon />BET MERON
+            <PlusCircleIcon />
+            BET MERON
           </Button>
         </BetDialog>
       </div>
 
       <div className="w-1/5"></div>
       <div className="flex w-2/5 justify-center items-center">
-        <BetDialog side='W'>
+        <BetDialog side="W">
           <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-blue-500 font-bold">
-            <PlusCircleIcon />BET WALA
+            <PlusCircleIcon />
+            BET WALA
           </Button>
         </BetDialog>
       </div>
@@ -164,6 +100,7 @@ export default function Dashboard({ commonData, player }) {
     setStatus,
     setCredits,
     setLastResult,
+    setLastCall,
   } = useContext(OperatorContext)
 
   const { flash } = usePage().props
@@ -228,6 +165,10 @@ export default function Dashboard({ commonData, player }) {
       }
     })
 
+    pusher.bind('lastcall-event', (e) => {
+      setLastCall(e.lastCall)
+    })
+
     pusher.bind('result-event', (e) => {
       const { fight_no, game_winner } = e.fightResult
       const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
@@ -241,12 +182,13 @@ export default function Dashboard({ commonData, player }) {
     setWala(commonData.wala)
     setFight(commonData.fight_no)
     setStatus(commonData.status)
+    setLastCall(commonData.lastCall)
     setCredits(player.credits)
     setPlayerBet({
       meron: player.bets.meron,
       wala: player.bets.wala,
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commonData, player])
 
   return (

@@ -11,6 +11,7 @@ export const OperatorContext = createContext({
   },
   status: null,
   lastResult: [],
+  lastCall: false,
   setLastResult: () => {},
   setFight: () => { },
   setMeron: () => { },
@@ -31,6 +32,7 @@ function OperatorProvider({ children }) {
     wala: 0,
   })
   const [lastResult, setLastResult] = useState([])
+  const [lastCall, setLastCall] = useState(false)
 
   return (
     <OperatorContext
@@ -42,6 +44,7 @@ function OperatorProvider({ children }) {
         status,
         credits,
         lastResult,
+        lastCall,
         setFight,
         setMeron,
         setWala,
@@ -49,6 +52,7 @@ function OperatorProvider({ children }) {
         setStatus,
         setCredits,
         setLastResult,
+        setLastCall,
       }}
     >
       {children}
