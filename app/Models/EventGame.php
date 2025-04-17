@@ -14,8 +14,10 @@ class EventGame extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'name',
-        'schedule_date',
-        'schedule_time',
+        'event_date',
+        'time_start',
+        'current_fight',
+        'limit_fight',
         'status',
         'added_by',
         'updated_by',

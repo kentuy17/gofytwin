@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 use App\Http\Controllers\BetController;
 use App\Http\Controllers\HomeController;
+use App\Models\BetHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Redirect;
 class FightController extends Controller
 {
     private $currentFight;
+
+    const COMMISSION = 15;
 
     private function currenctMatch()
     {
@@ -57,18 +60,24 @@ class FightController extends Controller
 
             if ($updated) {
                 // dd($this->currentFight);
-                event(new FightEvent($this->currentFight));
+                // event(new FightEvent($this->currentFight));
+                FightEvent::dispatch($this->currentFight);
                 // event(new BetEvent($bet));
                 Redis::set('fight', $this->currentFight);
 
                 if($request->status === 'CLOSED') {
                     $req = new Request(['lastCall' => false]);
                     $this->updateLastCall($req);
+
+
                 }
             }
 
             if ($request->status === 'DONE') {
                 event(new ResultEvent($this->currentFight));
+
+                $this->processPayables($request->status, $this->currentFight);
+
                 $new = Fight::create([
                     'fight_no' => $this->currentFight->fight_no + 1,
                     'user_id' => Auth::user()->id,
@@ -76,6 +85,9 @@ class FightController extends Controller
                     'event_id' => $this->currentFight->event_id,
                     'time_start' => Carbon::now()->toTimeString(),
                 ]);
+
+                $this->current_event->current_fight = $new->fight_no;
+                $this->current_event->save();
 
                 Redis::set('fight', $new);
             }
@@ -109,6 +121,62 @@ class FightController extends Controller
                 'credits' => Auth::user()->credits,
             ],
         ]);
+    }
+
+    public function events()
+    {
+        $events = EventGame::orderBy('status','desc')
+            ->orderBy('id', 'desc')->get();
+        return Inertia::render('events',[
+            'events' => $events,
+        ]);
+    }
+
+    public function addEvent()
+    {
+        EventGame::create([
+            'name' => 'GameFowl Master Event',
+            'status' => 'WAITING',
+            'event_date' => Carbon::now()->toDateString(),
+            'added_by' => 1,
+        ]);
+
+        return redirect()->intended(route('events', absolute: false));
+    }
+
+    public function activateEvent($id)
+    {
+        try {
+            $current = EventGame::where('status', 'ACTIVE')->first();
+            $current->status = 'DONE';
+            $current->save();
+
+            $active = EventGame::find($id);
+            $active->status = 'ACTIVE';
+            $active->save();
+
+            Redis::set('event', $active);
+
+            $fight = $active->fights();
+            if(!$fight) {
+                $fight = Fight::create([
+                    'fight_no' => $active->current_fight,
+                    'user_id' => 1,
+                    'status' => 'WAITING',
+                    'event_id' => $active->id,
+                    'time_start' => Carbon::now()->toTimeString(),
+                ]);
+            } else {
+                $fight = $fight->orderBy('fight_no','desc')->first();
+                $active->current_fight = $fight->fight_no;
+                $active->save();
+            }
+            Redis::set('fight', $fight);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+        return redirect()->intended(route('events', absolute: false));
     }
 
     public function getFightTrends(Request $request)
@@ -175,4 +243,44 @@ class FightController extends Controller
         Redis::set('lastCall', $request->lastCall);
         event(new LastCallEvent($request->lastCall));
     }
+
+    public function processPayables($result, Fight $currentFight)
+    {
+        $home = new HomeController();
+        $data = $home->getCurrentData();
+        $total_sum = $data['meron'] + $data['wala'];
+
+        # fetch win bets
+        if($result === 'M' || $result === 'W') {
+            $side_total = $result === 'M' ? $data['M'] : $data['wala'];
+            $commission = $this->calculateCommission($side_total, $total_sum);
+
+            $winners = BetHistory::where('side', $result)
+                ->where('fight_id', $currentFight->id)
+                ->where('fight_no', $currentFight->fight_no)
+                ->get();
+
+            foreach ($winners as $winner) {
+                # update bet_histories
+                $win_amount = ($winner->amount * $commission) / 100;
+                $winner->win_amount = $win_amount;
+                $winner->save();
+
+                # update bets
+
+
+                # broadcast
+
+            }
+        }
+    }
+
+    private function calculateCommission($side_total, $total_sum)
+    {
+        $commission = ($side_total * self::COMMISSION) / 100;
+        $deducted = $total_sum - $commission;
+        return ($deducted / $side_total) * 100;
+    }
+
+
 }

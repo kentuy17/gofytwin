@@ -4,7 +4,7 @@ import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { Link, usePage } from '@inertiajs/react'
-import { BookOpen, CoinsIcon, Folder, Joystick, LayoutGrid } from 'lucide-react'
+import { BookOpen, Calendar, CoinsIcon, Folder, Joystick, LayoutGrid } from 'lucide-react'
 import AppLogo from './app-logo'
 
 const mainNavItems = [
@@ -24,6 +24,12 @@ const mainNavItems = [
     title: 'Operator',
     url: '/operator',
     icon: Joystick,
+    level: 1,
+  },
+  {
+    title: 'Events',
+    url: '/events',
+    icon: Calendar,
     level: 1,
   },
 ]

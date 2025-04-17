@@ -70,6 +70,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/fight/trend', [FightController::class, 'getFightTrends'])->name('fight.trend');
     Route::post('/fight/lastcall', [FightController::class, 'updateLastCall'])->name('update.lastcall');
 
+    Route::get('/events', [FightController::class, 'events'])->name('events');
+    Route::post('/event/add', [FightController::class, 'addEvent'])->name('add.event');
+    Route::post('/event/activate/{id}', [FightController::class, 'activateEvent'])->name('activate.event');
+
+
 });
 
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);
