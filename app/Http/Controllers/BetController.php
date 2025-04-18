@@ -133,11 +133,11 @@ class BetController extends Controller
     public function dummyBets($request)
     {
         $bet = Bet::create([
-            'fight_id' => $request->fight_id,
-            'fight_no' => $request->fight_no,
+            'fight_id' => $request['fight_id'],
+            'fight_no' => $request['fight_no'],
             'user_id' => 0,
-            'amount' => $request->amount,
-            'side' => $request->side,
+            'amount' => $request['amount'],
+            'side' => $request['side'],
             'status' => 'F',
         ]);
         // $bet = collect($data);
