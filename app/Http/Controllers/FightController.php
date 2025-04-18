@@ -28,10 +28,16 @@ class FightController extends Controller
         $this->current_event = EventGame::where('status', 'ACTIVE')
             ->orderBy('id', 'desc')->first();
 
-        return Fight::where('event_id', $this->current_event->id)
-            ->where('game_winner', null)
+        $fight = json_decode(Redis::get('fight'));
+
+        if(!$fight) {
+            return Fight::where('event_id', $this->current_event->id)
+            // ->where('game_winner', null)
             ->orderBy('id', 'desc')
             ->first();
+        }
+
+        return $fight;
     }
 
     public function updateFight(Request $request)
