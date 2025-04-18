@@ -24,6 +24,10 @@ class Bet extends Model
         'updated_at'
     ];
 
+    protected $hidden = [
+        'user_id',
+    ];
+
     protected $casts = [
         'created_at' => 'datetime:M d, Y h:s A',
         'updated_at' => 'datetime:M d, Y h:s A',

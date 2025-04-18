@@ -10,7 +10,7 @@ use App\Models\Fight;
 use App\Models\Hacking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Redis;
 
 class BetController extends Controller
 {
@@ -24,10 +24,16 @@ class BetController extends Controller
             ->orderBy('id','DESC')
             ->first();
 
-        $this->current_fight = Fight::where('event_id', $this->current_event->id)
-            // ->where('status', 'OPEN')
-            ->orderBy('id', 'DESC')
-            ->first();
+        $fight = json_decode(Redis::get('fight'));
+
+        if($fight) {
+            $this->current_fight = $fight;
+        } else {
+            $this->current_fight = Fight::where('event_id', $this->current_event->id)
+                // ->where('status', 'OPEN')
+                ->orderBy('id', 'DESC')
+                ->first();
+        }
     }
 
     public function addBet(Request $request)
@@ -122,5 +128,20 @@ class BetController extends Controller
             'request' => json_encode($request->all()),
             'violation' => $violation
         ]);
+    }
+
+    public function dummyBets($request)
+    {
+        $bet = Bet::create([
+            'fight_id' => $request->fight_id,
+            'fight_no' => $request->fight_no,
+            'user_id' => 0,
+            'amount' => $request->amount,
+            'side' => $request->side,
+            'status' => 'F',
+        ]);
+        // $bet = collect($data);
+
+        event(new BetEvent($bet));
     }
 }
