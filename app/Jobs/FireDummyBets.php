@@ -43,7 +43,7 @@ class FireDummyBets implements ShouldQueue
             if($option['M'] > $limit && $option['W'] > $limit) break;
 
             $bet = [
-                'fight_id' => $this->currentFight->fight_id,
+                'fight_id' => $this->currentFight->id,
                 'fight_no' => $this->currentFight->fight_no,
                 'uuid' => Str::uuid(),
                 'side' => $side,

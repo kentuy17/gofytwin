@@ -140,7 +140,7 @@ class BetController extends Controller
             'side' => $request['side'],
             'status' => 'F',
         ]);
-        // $bet = collect($data);
+        // $bet = collect($request);
 
         event(new BetEvent($bet));
     }
