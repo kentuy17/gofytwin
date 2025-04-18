@@ -20,23 +20,29 @@ use Illuminate\Support\Facades\Redirect;
 class FightController extends Controller
 {
     private $currentFight;
+    private $current_event;
 
     const COMMISSION = 15;
 
     private function currenctMatch()
     {
-        $this->current_event = EventGame::where('status', 'ACTIVE')
-            ->orderBy('id', 'desc')->first();
-
-        $fight = json_decode(Redis::get('fight'));
-
-        if(!$fight) {
-            return Fight::where('event_id', $this->current_event->id)
-            // ->where('game_winner', null)
-            ->orderBy('id', 'desc')
-            ->first();
+        if($this->currentFight) {
+            return $this->currentFight;
         }
 
+        $this->current_event = EventGame::where('status', 'ACTIVE')
+                ->orderBy('id', 'desc')->first();
+
+        $fight = json_decode(Redis::get('fight'));
+        if(!$fight) {
+            $fight = Fight::where('event_id', $this->current_event->id)
+                ->orderBy('id', 'desc')
+                ->first();
+        } else {
+            $fight = Fight::find($fight->id);
+        }
+
+        $this->currentFight = $fight;
         return $fight;
     }
 
