@@ -145,40 +145,6 @@
                             </div>
                         </div>
 
-
-                        <div class="row mb-3">
-                            <label for="two_d_bet_limit" class="col-md-4 col-form-label text-md-end">{{ __('2D Bet Limit') }}</label>
-                            <div class="col-md-6">
-                                <input  id="two_d_bet_limit" 
-                                        type="number" 
-                                        class="form-control @error('two_d_bet_limit') is-invalid @enderror" 
-                                        name="two_d_bet_limit" 
-                                        value="{{$user->two_d_bet_limit}}"
-                                        autofocus>
-                                @error('two_d_bet_limit')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="three_d_bet_limit" class="col-md-4 col-form-label text-md-end">{{ __('3D Bet Limit') }}</label>
-                            <div class="col-md-6">
-                                <input  id="three_d_bet_limit" 
-                                        type="number" 
-                                        class="form-control @error('three_d_bet_limit') is-invalid @enderror" 
-                                        name="three_d_bet_limit" 
-                                        value="{{$user->three_d_bet_limit}}"
-                                        autofocus>
-                                @error('three_d_bet_limit')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
                         <div class="row mb-3">
                             <label class="col-md-4 col-form-label text-md-end">{{ __('Date Registered') }}</label>
 
