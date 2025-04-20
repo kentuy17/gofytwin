@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-console */
 import { BetDialog } from '@/components/bet-dialog'
 import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
@@ -7,6 +9,7 @@ import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
 import { Head, usePage } from '@inertiajs/react'
+// import Echo from 'laravel-echo'
 import { PlusCircleIcon } from 'lucide-react'
 import React, { useContext, useEffect } from 'react'
 import { pusher } from '../../echo'
@@ -91,7 +94,7 @@ function BetStats() {
   )
 }
 
-export default function Dashboard({ commonData, player }) {
+export default function Dashboard({ commonData, player, user }) {
   const {
     setPlayerBet,
     setMeron,
@@ -103,8 +106,10 @@ export default function Dashboard({ commonData, player }) {
     setLastCall,
   } = useContext(OperatorContext)
 
+  const resultChannel = `result.${user.id}`
+
   const { flash } = usePage().props
-  // eslint-disable-next-line no-console
+
   flash.message && console.log(flash)
 
   const playerRef = React.useRef(null)
@@ -134,6 +139,7 @@ export default function Dashboard({ commonData, player }) {
     })
   }
 
+  window.Echo.private(resultChannel)
   useEffect(() => {
     pusher.unbind_all()
     pusher.bind('bet-event', (e) => {
@@ -149,11 +155,22 @@ export default function Dashboard({ commonData, player }) {
     })
 
     pusher.bind('fight-event', (e) => {
-      const { fight_no, status } = e.currentFight
+      const { fight_no, game_winner, status } = e.currentFight
       setFight(fight_no)
       setStatus(status)
 
+      // if (game_winner === 'M' && playerBet.meron > 0) {
+      //   alert(`Congratulations! You win`)
+      // }
+
+      // if (game_winner === 'W' && playerBet.wala > 0) {
+      //   alert(`Congratulations! You win`)
+      // }
+
       if (status === 'DONE') {
+        const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
+        setLastResult(old => [...old, res])
+
         // Clean-up here
         setFight(fight_no + 1)
         setMeron(0)
@@ -169,15 +186,18 @@ export default function Dashboard({ commonData, player }) {
       setLastCall(e.lastCall)
     })
 
-    pusher.bind('result-event', (e) => {
-      const { fight_no, game_winner } = e.fightResult
-      const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
-      setLastResult(old => [...old, res])
-    })
+    window.Echo.private(resultChannel)
+      .listen('ResultEvent', (data) => {
+        const { win_amount, status } = data.bet
+        if (status === 'W') {
+          alert(`Congratulations! You win ${formatMoney(win_amount)}`)
+        }
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
+    // console.log(commonData)
     setMeron(commonData.meron)
     setWala(commonData.wala)
     setFight(commonData.fight_no)
