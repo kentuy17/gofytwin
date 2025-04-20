@@ -24,9 +24,9 @@ function InputBet({ className, bet, setBet }) {
   }
 
   useEffect(() => {
-    if (bet > 1500 || betVal > 1500) {
-      setBetVal(1500)
-      setBet(1500)
+    if (bet > 10000 || betVal > 10000) {
+      setBetVal(10000)
+      setBet(10000)
     }
     else {
       setBetVal(bet)
@@ -71,7 +71,7 @@ async function addBet(params) {
       return
     }
 
-    if (amount > 1500) {
+    if (amount > 10000) {
       alert('Maximum bet is 1,500.00')
       return
     }
@@ -116,7 +116,7 @@ export function BetDialog({ children, side }) {
   const betMeron = Number.parseFloat(playerBet.meron)
   const betWala = Number.parseFloat(playerBet.wala)
 
-  const amounts = [20, 50, 100, 500, 1000, 1500, 'ALL-IN']
+  const amounts = [20, 50, 100, 500, 1000, 10000, 'ALL-IN']
 
   const handleSumbit = async () => {
     if (bet < 10) {
