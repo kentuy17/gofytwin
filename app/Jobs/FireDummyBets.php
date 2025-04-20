@@ -30,7 +30,7 @@ class FireDummyBets implements ShouldQueue
     {
         //
         $betController = new BetController();
-        $limit = 50000;
+        $limit = 5000;
         $option = ['M' => 0, 'W' => 0];
 
         $choices = array('M', 'W');

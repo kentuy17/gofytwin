@@ -4,7 +4,9 @@ namespace App\Console\Commands;
 
 use App\Events\BetEvent;
 use App\Events\FightEvent;
+use App\Events\ResultEvent;
 use App\Models\Bet;
+use App\Models\BetHistory;
 use App\Models\EventGame;
 use App\Models\Fight;
 use App\Models\User;
@@ -47,7 +49,7 @@ class Playground extends Command
         // event(new BetEvent($bet));
 
         // MANUAL CREATE FIGHT
-        // $event = EventGame::where('status', 'ACTIVE')->orderBy('id', 'desc')->first();
+        $event = EventGame::where('status', 'ACTIVE')->orderBy('id', 'desc')->first();
         // $current = json_decode(Redis::get('fight'));
         // $fight = Fight::create([
         //     'fight_no' => $current->fight_no + 1,
@@ -58,7 +60,8 @@ class Playground extends Command
         // ]);
 
         // MANUAL CLOSE FIGHT
-        $currentFight = Fight::orderBy('id', 'desc')->first();
+        $currentFight = Fight::where('event_id', $event->id)
+            ->orderBy('id', 'desc')->first();
         // $new = Fight::create([
         //      'fight_no' => $prev->id + 1,
         //      'user_id' => 15,
@@ -66,9 +69,9 @@ class Playground extends Command
         //      'event_id' =>$event->id,
         //      'time_start' => Carbon::now()->toTimeString()
         //  ]);
-        //  Redis::set('fight', $new);
+         Redis::set('fight', $currentFight);
         // event(new FightEvent($currentFight));
-        FightEvent::dispatch($currentFight);
+        // FightEvent::dispatch($currentFight);
         // Log::channel('test')->info(json_encode($currentFight, true));
 
         // SET ALL USER_LEVEL to 1
@@ -77,8 +80,12 @@ class Playground extends Command
            //     'user_level' => 1
            // ]);
 
+        $bet = BetHistory::orderBy('id', 'desc')->first();
+        ResultEvent::dispatch($bet);
+        // $fight = json_decode(Redis::get('fight'));
 
-        $this->info(json_encode($currentFight));
+
+        $this->info(json_encode($bet));
 
     }
 }

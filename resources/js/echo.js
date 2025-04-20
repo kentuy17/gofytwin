@@ -1,4 +1,4 @@
-// import Echo from 'laravel-echo'
+import Echo from 'laravel-echo'
 
 import Pusher from 'pusher-js'
 
@@ -20,7 +20,6 @@ export const pusher = new Pusher(pusherKey, {
 
 pusher.subscribe('bet-channel')
 pusher.subscribe('fight-channel')
-pusher.subscribe('result-channel')
 pusher.subscribe('lastcall-channel')
 
 // window.Pusher = require('pusher-js')
@@ -35,17 +34,17 @@ pusher.subscribe('lastcall-channel')
 //   client: new Pusher('1ac728eb26e770e7b87d', options),
 // })
 
-// window.Echo = new Echo({
-//   broadcaster: 'pusher',
-//   // key: import.meta.env.VITE_PUSHER_APP_KEY,
-//   key: '1ac728eb26e770e7b87d',
-//   cluster: 'ap1',
-//   wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-//   wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
-//   wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-//   forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-//   enabledTransports: ['ws', 'wss'],
-// })
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: import.meta.env.VITE_PUSHER_APP_KEY,
+  cluster: pusherCluster,
+  wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+  wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+  wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+  forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+  enabledTransports: ['ws', 'wss'],
+  authEndpoint: '/broadcasting/auth',
+})
 
 // export const echoPusher = new Echo({
 //   broadcaster: 'pusher',

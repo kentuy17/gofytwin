@@ -70,25 +70,30 @@ class FightController extends Controller
                 'status' => $request->status
             ]);
 
-            if ($updated) {
-                // dd($this->currentFight);
-                // event(new FightEvent($this->currentFight));
-                FightEvent::dispatch($this->currentFight);
-                // event(new BetEvent($bet));
-                Redis::set('fight', $this->currentFight);
+            // dd($this->currentFight);
+            FightEvent::dispatch($this->currentFight);
+            Redis::set('fight', $this->currentFight);
 
-                if($request->status === 'CLOSED') {
-                    $req = new Request(['lastCall' => false]);
-                    $this->updateLastCall($req);
+            if($request->status === 'CLOSED') {
+                $req = new Request(['lastCall' => false]);
+                $this->updateLastCall($req);
 
+                $bet_histories = BetHistory::where('fight_id', $this->currentFight->id);
+                $home = new HomeController();
+                $data = $home->getCurrentData();
+                $total_sum = $data['meron'] + $data['wala'];
 
-                }
+                // MERON WIN PERCENT
+                $meron_percent = $this->calculateCommission($data['meron'], $total_sum);
+                $bet_histories->where('side', 'M')->update(['percent' => $meron_percent]);
+
+                // WALA WIN PERCENT
+                $wala_percent = $this->calculateCommission($data['wala'], $total_sum);
+                $bet_histories->where('side', 'W')->update(['percent' => $wala_percent]);
             }
 
             if ($request->status === 'DONE') {
-                event(new ResultEvent($this->currentFight));
-
-                $this->processPayables($request->status, $this->currentFight);
+                $this->processPayables($request->result, $this->currentFight);
 
                 $new = Fight::create([
                     'fight_no' => $this->currentFight->fight_no + 1,
@@ -104,7 +109,7 @@ class FightController extends Controller
                 Redis::set('fight', $new);
             }
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return $e;
         }
 
         return [
@@ -256,6 +261,7 @@ class FightController extends Controller
         event(new LastCallEvent($request->lastCall));
     }
 
+    // $this->processPayables($request->status, $this->currentFight);
     public function processPayables($result, Fight $currentFight)
     {
         $home = new HomeController();
@@ -264,25 +270,34 @@ class FightController extends Controller
 
         # fetch win bets
         if($result === 'M' || $result === 'W') {
-            $side_total = $result === 'M' ? $data['M'] : $data['wala'];
+            $side_total = $result === 'M' ? $data['meron'] : $data['wala'];
             $commission = $this->calculateCommission($side_total, $total_sum);
 
-            $winners = BetHistory::where('side', $result)
-                ->where('fight_id', $currentFight->id)
+            $player_bets = BetHistory::where('fight_id', $currentFight->id)
                 ->where('fight_no', $currentFight->fight_no)
                 ->get();
 
-            foreach ($winners as $winner) {
+            foreach ($player_bets as $bet) {
                 # update bet_histories
-                $win_amount = ($winner->amount * $commission) / 100;
-                $winner->win_amount = $win_amount;
-                $winner->save();
+                if($bet->side === $result) {
+                    $win_amount = ($bet->amount * $commission) / 100;
+                    $bet->win_amount = $win_amount;
+                    $bet->current_points += $win_amount;
+                    $bet->status = 'W';
 
-                # update bets
+                    $bet->user->credits += $win_amount;
+                    $bet->user->save();
 
+                     # broadcast
+                    //  event(new ResultEvent($bet));
+                    ResultEvent::dispatch($bet);
+                } else {
+                    $bet->status = 'L';
+                }
 
-                # broadcast
+                $bet->save();
 
+                // update bets
             }
         }
     }

@@ -8,6 +8,7 @@ use App\Models\BetHistory;
 use App\Models\EventGame;
 use App\Models\Fight;
 use App\Models\Hacking;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
@@ -86,11 +87,14 @@ class BetController extends Controller
             event(new BetEvent($bet));
             // event(new BetEvent('hello world'));
 
-            if (Auth::user()->user_level < 3) {
-                Auth::user()->decrement('credits', $request->amount);
+            if (Auth::user()->user_level < 5) {
+                $points_after_bet = $points_before_bet - $request->amount;
 
-                $points_after_bet = Auth::user()->credits;
-                $current_points = Auth::user()->credits;
+                $user = User::find(Auth::user()->id);
+                $user->credits = $points_after_bet;
+                $user->save();
+
+                $current_points = $user->credits;
 
                 //Add in Bet History
                 BetHistory::create([
@@ -117,7 +121,8 @@ class BetController extends Controller
 
         return response()->json([
             'status' => 'OK',
-            'data' => $bet
+            'data' => $bet,
+            'credits' => $points_after_bet,
         ]);
     }
 
@@ -132,6 +137,9 @@ class BetController extends Controller
 
     public function dummyBets($request)
     {
+        $fight = json_decode(Redis::get('fight'));
+        if($fight->status === 'CLOSED') return;
+
         $bet = Bet::create([
             'fight_id' => $request['fight_id'],
             'fight_no' => $request['fight_no'],
