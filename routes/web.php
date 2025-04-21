@@ -51,12 +51,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/users', [AccountsController::class, 'users'])->middleware('auth')->name('users');
     Route::get('/admin/core/statistics/prizes-claimed', [ReportsController::class, 'prizesClaimed'])->middleware('auth')->name('prizes.claimed');
     Route::get('/admin/core/statistics/winners', [ReportsController::class, 'winners'])->middleware('auth')->name('winners');
-    Route::get('/admin/claim/requests',[WithdrawController::class,'withdrawal'])->name('withdrawal')->middleware('auth');
+    // Route::get('/admin/claim/requests',[WithdrawController::class,'withdrawal'])->name('withdrawal')->middleware('auth');
     Route::post('/check-balance', [ServerInfoController::class,'check_balance'])->name('check.balance')->middleware('auth');
     Route::post('/get-bettors', [ServerInfoController::class,'get_bettors'])->name('get.bettors')->middleware('auth');
     Route::post('/get-total-agents-earnings', [ServerInfoController::class,'get_total_agent_earnings'])->name('get.total.agents.earnings')->middleware('auth');
     Route::post('/get-inactive', [ServerInfoController::class,'get_inactive'])->name('get.inactive')->middleware('auth');
-    Route::get('/play/3d/receipt',[PlaythreeController::class,'pay'])->name('play.three.pay')->middleware('auth');
+    // Route::get('/play/3d/receipt',[PlaythreeController::class,'pay'])->name('play.three.pay')->middleware('auth');
     Route::get('/winner/info/cashin', [ServerInfoController::class,'cashin_info_board'])->name('cashin.info')->middleware('auth');
 
     // React/Inertia Front-end

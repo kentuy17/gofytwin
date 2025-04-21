@@ -38,6 +38,12 @@ export const columns = [
     enableHiding: false,
   },
   {
+    accessorKey: 'id',
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="#" />
+    },
+  },
+  {
     accessorKey: 'name',
     header: ({ column }) => {
       return <DataTableColumnHeader column={column} title="Name" />

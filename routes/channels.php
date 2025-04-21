@@ -20,8 +20,8 @@ Broadcast::channel('fight-channel', function ($user) {
 });
 
 Broadcast::channel('result.{bet}', function (User $user, BetHistory $bet) {
-    return $user->id === $bet->user_id;
-    // return true;
+    // return $user->id === $bet->user_id;
+    return true;
 });
 
 Broadcast::channel('lastcall-channel', function ($user) {

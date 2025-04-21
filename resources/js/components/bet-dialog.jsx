@@ -12,10 +12,10 @@ import { OperatorContext } from '@/context/operator-context'
 import { cn } from '@/lib/utils'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import CurrencyInput from 'react-currency-input-field'
 
-function InputBet({ className, bet, setBet }) {
+function InputBet({ className, bet, setBet, handleKeyDown }) {
   const [betVal, setBetVal] = useState(bet)
 
   const handleValueChange = (value) => {
@@ -36,6 +36,7 @@ function InputBet({ className, bet, setBet }) {
 
   return (
     <CurrencyInput
+      onKeyDown={handleKeyDown}
       id="input-example"
       name="input-name"
       placeholder="Please enter a number"
@@ -110,6 +111,7 @@ function AmountBtn({ amount, setBet, className }) {
 
 export function BetDialog({ children, side }) {
   const { csrf_token } = usePage().props
+  const submitRef = useRef(null)
   const { credits, playerBet, setPlayerBet, setCredits } = useContext(OperatorContext)
   const [open, setOpen] = useState(false)
   const [bet, setBet] = useState(100)
@@ -151,6 +153,12 @@ export function BetDialog({ children, side }) {
     }
   }
 
+  const handleOnEnter = (e) => {
+    if (e.key === 'Enter') {
+      submitRef.current.click()
+    }
+  }
+
   useEffect(() => {
     if (bet === 'ALL-IN') {
       setBet(credits)
@@ -169,7 +177,7 @@ export function BetDialog({ children, side }) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-2 items-center gap-4">
-            <InputBet setBet={setBet} bet={bet} className="col-span-3" />
+            <InputBet setBet={setBet} bet={bet} handleKeyDown={handleOnEnter} className="col-span-3" />
           </div>
           <div className="flex gap-2 flex-row items-center justify-center flex-wrap">
             {amounts.map((value) => {
@@ -178,7 +186,7 @@ export function BetDialog({ children, side }) {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSumbit}>
+          <Button type="submit" ref={submitRef} onClick={handleSumbit}>
             BET
             {' '}
             {side === 'M' ? 'MERON' : 'WALA'}

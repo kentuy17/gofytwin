@@ -285,7 +285,7 @@ class FightController extends Controller
                     $bet->current_points += $win_amount;
                     $bet->status = 'W';
 
-                    $bet->user->credits += $win_amount;
+                    $bet->user->credits = intval($bet->user->credits) + intval($win_amount);
                     $bet->user->save();
 
                      # broadcast

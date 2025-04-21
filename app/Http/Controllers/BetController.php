@@ -138,7 +138,7 @@ class BetController extends Controller
     public function dummyBets($request)
     {
         $fight = json_decode(Redis::get('fight'));
-        if($fight->status === 'CLOSED') return;
+        if($fight->status !== 'OPEN') return;
 
         $bet = Bet::create([
             'fight_id' => $request['fight_id'],

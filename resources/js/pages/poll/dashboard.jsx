@@ -139,7 +139,6 @@ export default function Dashboard({ commonData, player, user }) {
     })
   }
 
-  window.Echo.private(resultChannel)
   useEffect(() => {
     pusher.unbind_all()
     pusher.bind('bet-event', (e) => {
@@ -158,14 +157,6 @@ export default function Dashboard({ commonData, player, user }) {
       const { fight_no, game_winner, status } = e.currentFight
       setFight(fight_no)
       setStatus(status)
-
-      // if (game_winner === 'M' && playerBet.meron > 0) {
-      //   alert(`Congratulations! You win`)
-      // }
-
-      // if (game_winner === 'W' && playerBet.wala > 0) {
-      //   alert(`Congratulations! You win`)
-      // }
 
       if (status === 'DONE') {
         const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
@@ -187,10 +178,11 @@ export default function Dashboard({ commonData, player, user }) {
     })
 
     window.Echo.private(resultChannel)
-      .listen('ResultEvent', (data) => {
+      .listen('ResultEvent', async (data) => {
         const { win_amount, status } = data.bet
         if (status === 'W') {
           alert(`Congratulations! You win ${formatMoney(win_amount)}`)
+          setCredits(prev => win_amount + prev)
         }
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
