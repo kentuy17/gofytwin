@@ -122,7 +122,6 @@ class BetController extends Controller
         return response()->json([
             'status' => 'OK',
             'data' => $bet,
-            'credits' => $points_after_bet,
         ]);
     }
 
