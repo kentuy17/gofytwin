@@ -18,6 +18,8 @@ const breadcrumbs = [
   },
 ]
 
+const COMMISSION = 10
+
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
 async function addBet(params) {
@@ -119,9 +121,15 @@ function BetStats() {
 
   const totalSum = meron + wala
 
+  // const percentage = (side) => {
+  //   const comm = side => (side * COMMISSION) / 100
+  //   const win = totalSum - comm(side)
+  //   return (win / side) * 100
+  // }
+
   const percentage = (side) => {
-    const comm = side => (side * 15) / 100
-    const win = totalSum - comm(side)
+    const comm = totalSum => (totalSum * Number.parseFloat(COMMISSION)) / 100
+    const win = totalSum - comm(totalSum)
     return (win / side) * 100
   }
 

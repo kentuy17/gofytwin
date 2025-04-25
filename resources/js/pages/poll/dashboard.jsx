@@ -21,6 +21,8 @@ const breadcrumbs = [
   },
 ]
 
+const COMMISSION = 10
+
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
 function PlaceBets() {
@@ -55,9 +57,15 @@ function BetStats() {
 
   const totalSum = meron + wala
 
+  // const percentage = (side) => {
+  //   const comm = side => (side * Number.parseFloat(COMMISSION)) / 100
+  //   const win = totalSum - comm(side)
+  //   return (win / side) * 100
+  // }
+
   const percentage = (side) => {
-    const comm = side => (side * 15) / 100
-    const win = totalSum - comm(side)
+    const comm = totalSum => (totalSum * Number.parseFloat(COMMISSION)) / 100
+    const win = totalSum - comm(totalSum)
     return (win / side) * 100
   }
 
@@ -180,10 +188,18 @@ export default function Dashboard({ commonData, player, user }) {
     window.Echo.private(resultChannel)
       .listen('ResultEvent', async (data) => {
         const { win_amount, status } = data.bet
+        if (win_amount === 0)
+          return
+
         if (status === 'W') {
           alert(`Congratulations! You win ${formatMoney(win_amount)}`)
-          setCredits(prev => win_amount + prev)
         }
+
+        if (status === 'D' || status === 'C') {
+          alert(`Returned ${formatMoney(win_amount)}`)
+        }
+
+        setCredits(prev => win_amount + prev)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

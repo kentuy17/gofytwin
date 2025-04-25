@@ -22,7 +22,7 @@ class FightController extends Controller
     private $currentFight;
     private $current_event;
 
-    const COMMISSION = 15;
+    const COMMISSION = 10;
 
     private function currenctMatch()
     {
@@ -268,14 +268,15 @@ class FightController extends Controller
         $data = $home->getCurrentData();
         $total_sum = $data['meron'] + $data['wala'];
 
+        $player_bets = BetHistory::where('fight_id', $currentFight->id)
+            ->where('fight_no', $currentFight->fight_no)
+            ->get();
+
         # fetch win bets
         if($result === 'M' || $result === 'W') {
             $side_total = $result === 'M' ? $data['meron'] : $data['wala'];
-            $commission = $this->calculateCommission($side_total, $total_sum);
-
-            $player_bets = BetHistory::where('fight_id', $currentFight->id)
-                ->where('fight_no', $currentFight->fight_no)
-                ->get();
+            // $commission = $this->calculateCommission($side_total, $total_sum);
+            $commission = $this->cocoysFormula($side_total, $total_sum);
 
             foreach ($player_bets as $bet) {
                 # update bet_histories
@@ -283,6 +284,7 @@ class FightController extends Controller
                     $win_amount = ($bet->amount * $commission) / 100;
                     $bet->win_amount = $win_amount;
                     $bet->current_points += $win_amount;
+                    $bet->percent = $commission;
                     $bet->status = 'W';
 
                     $bet->user->credits = intval($bet->user->credits) + intval($win_amount);
@@ -299,6 +301,21 @@ class FightController extends Controller
 
                 // update bets
             }
+        } else {
+            foreach ($player_bets as $bet) {
+                # code...
+                $bet->win_amount = $bet->amount;
+                $bet->percent = 0;
+                $bet->current_points += $bet->amount;
+                $bet->status = $result === 'X' ? 'D' : $result;
+                $bet->save();
+
+                $bet->user->credits += $bet->amount;
+                $bet->user->save();
+
+                ResultEvent::dispatch($bet);
+            }
+
         }
     }
 
@@ -307,6 +324,22 @@ class FightController extends Controller
         $commission = ($side_total * self::COMMISSION) / 100;
         $deducted = $total_sum - $commission;
         return ($deducted / $side_total) * 100;
+    }
+
+    private function cocoysFormula($side_total, $total_sum)
+    {
+        // Total Pool = Total bets on Red + Total bets on Blue
+        // House Cut = Total Pool × House Percentage
+        // Net Pool = Total Pool − House Cut
+        // Payout Rate (per 100) = (Net Pool ÷ Total Bets on Winning Side) × 100
+        // Winning Player's Return = (Player's Bet × Payout Rate) ÷ 100
+        // Winning Player's Profit = Winning Player's Return − Player's Bet
+
+        $total_pool = $total_sum;
+        $house_cut = ($total_pool * self::COMMISSION) / 100;
+        $net_pool = $total_pool - $house_cut;
+        $payout_rate = ($net_pool / $side_total) * 100;
+        return $payout_rate;
     }
 
 
