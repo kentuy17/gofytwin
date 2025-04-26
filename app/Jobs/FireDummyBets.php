@@ -53,7 +53,7 @@ class FireDummyBets implements ShouldQueue
             ];
 
             // Log::channel('test')->info(json_encode($bet));
-            $betController->dummyBets($bet);
+            // $betController->dummyBets($bet);
             $option[$side] += $money;
 
             usleep(rand(100,500) * 1000);
