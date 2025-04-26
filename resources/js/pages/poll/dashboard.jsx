@@ -188,11 +188,13 @@ export default function Dashboard({ commonData, player, user }) {
     window.Echo.private(resultChannel)
       .listen('ResultEvent', async (data) => {
         const { win_amount, status } = data.bet
+        const tada = new Audio('/images/tada.mp3')
         if (win_amount === 0)
           return
 
         if (status === 'W') {
           alert(`Congratulations! You win ${formatMoney(win_amount)}`)
+          tada.play()
         }
 
         if (status === 'D' || status === 'C') {

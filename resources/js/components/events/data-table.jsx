@@ -117,7 +117,7 @@ export function DataTable({
         </div>
 
       </div>
-      <div className="rounded-md border">
+      <div className="grid grid-cols-1 rounded-md border">
         <Table>
           <TableHeader className="">
             {table.getHeaderGroups().map(headerGroup => (

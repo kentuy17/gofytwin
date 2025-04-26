@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { columns } from '@/components/events/columns'
 import { DataTable } from '@/components/events/data-table'
 import AppLayout from '@/layouts/app-layout'
@@ -31,20 +30,13 @@ export function getData() {
 
 export default function Events({ events }) {
   const data = events
-  console.log(events)
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
-      <div className="flex flex-col m-6">
-        {/* <div className="text-center mb-3">
-          {JSON.stringify(events, true)}
-        </div> */}
-
+      <div className="flex flex-col md:m-6 m-2">
         <div className="container mx-auto py-10">
-          <DataTable columns={columns} data={data} />
+          <DataTable className="grid grid-cols-1" columns={columns} data={data} />
         </div>
-
       </div>
     </AppLayout>
   )

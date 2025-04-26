@@ -278,6 +278,7 @@ class FightController extends Controller
             // $commission = $this->calculateCommission($side_total, $total_sum);
             $commission = $this->cocoysFormula($side_total, $total_sum);
 
+            // $accumulated = [];
             foreach ($player_bets as $bet) {
                 # update bet_histories
                 if($bet->side === $result) {
@@ -289,6 +290,12 @@ class FightController extends Controller
 
                     $bet->user->credits = intval($bet->user->credits) + intval($win_amount);
                     $bet->user->save();
+
+                    // if($accumulated[$bet->user_id]) {
+                    //     $accumulated[$bet->user_id] += $win_amount;
+                    // } else {
+                    //     $accumulated[$bet->user_id] = $win_amount;
+                    // }
 
                      # broadcast
                     //  event(new ResultEvent($bet));
