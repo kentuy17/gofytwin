@@ -18,7 +18,7 @@ const breadcrumbs = [
   },
 ]
 
-const COMMISSION = 10
+const COMMISSION = 15
 
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
