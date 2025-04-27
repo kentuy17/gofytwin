@@ -1,17 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BetController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\FightController;
 use App\Http\Controllers\CashinController;
 use App\Http\Controllers\AuthOtpController;
+use App\Http\Controllers\ClaimPrizeController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\AccountsController;
+use App\Http\Controllers\Admin\WithdrawController;
 use App\Http\Controllers\API\ServerInfoController;
 use App\Http\Controllers\Admin\CashinController as AdminCashIn;
-use App\Http\Controllers\BetController;
-use App\Http\Controllers\FightController;
-use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return Redirect::to(route('login'));
@@ -73,6 +75,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/events', [FightController::class, 'events'])->name('events');
     Route::post('/event/add', [FightController::class, 'addEvent'])->name('add.event');
     Route::post('/event/activate/{id}', [FightController::class, 'activateEvent'])->name('activate.event');
+    
+    //referral processes
+    Route::get('/admin/claim/requests',[WithdrawController::class,'withdrawal'])->name('withdrawal')->middleware('auth');
+    Route::get('/admin/claim/requests/list',[WithdrawController::class,'list'])->name('withdrawal.list')->middleware('auth');
+    Route::post('/claim-prize/process/referral',[ClaimPrizeController::class,'processReferral'])->name('claim.process.referral')->middleware('auth');
 
 
 });
