@@ -84,11 +84,11 @@ class FightController extends Controller
                 $total_sum = $data['meron'] + $data['wala'];
 
                 // MERON WIN PERCENT
-                $meron_percent = $this->calculateCommission($data['meron'], $total_sum);
+                $meron_percent = $this->cocoysFormula($data['meron'], $total_sum);
                 $bet_histories->where('side', 'M')->update(['percent' => $meron_percent]);
 
                 // WALA WIN PERCENT
-                $wala_percent = $this->calculateCommission($data['wala'], $total_sum);
+                $wala_percent = $this->cocoysFormula($data['wala'], $total_sum);
                 $bet_histories->where('side', 'W')->update(['percent' => $wala_percent]);
             }
 
