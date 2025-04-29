@@ -75,7 +75,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/events', [FightController::class, 'events'])->name('events');
     Route::post('/event/add', [FightController::class, 'addEvent'])->name('add.event');
     Route::post('/event/activate/{id}', [FightController::class, 'activateEvent'])->name('activate.event');
-    
+    Route::post('/event/update-fight', [FightController::class, 'updateFightNumber'])->name('activate.update-fight');
+
     //referral processes
     Route::get('/admin/claim/requests',[WithdrawController::class,'withdrawal'])->name('withdrawal')->middleware('auth');
     Route::get('/admin/claim/requests/list',[WithdrawController::class,'list'])->name('withdrawal.list')->middleware('auth');

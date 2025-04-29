@@ -7,30 +7,42 @@ import { Link, usePage } from '@inertiajs/react'
 import { BookOpen, Calendar, CoinsIcon, Folder, Joystick, LayoutGrid } from 'lucide-react'
 import AppLogo from './app-logo'
 
-const mainNavItems = [
+const navItems = [
   {
-    title: 'Home',
-    url: '/home',
-    icon: LayoutGrid,
+    name: 'Player',
     level: 0,
+    items: [
+      {
+        title: 'Home',
+        url: '/home',
+        icon: LayoutGrid,
+        level: 0,
+      },
+      {
+        title: 'Cashin',
+        url: '/player/deposit',
+        icon: CoinsIcon,
+        level: 0,
+      },
+    ],
   },
   {
-    title: 'Cashin',
-    url: '/player/deposit',
-    icon: CoinsIcon,
-    level: 0,
-  },
-  {
-    title: 'Operator',
-    url: '/operator',
-    icon: Joystick,
+    name: 'Operator',
     level: 1,
-  },
-  {
-    title: 'Events',
-    url: '/events',
-    icon: Calendar,
-    level: 1,
+    items: [
+      {
+        title: 'Operator',
+        url: '/operator',
+        icon: Joystick,
+        level: 1,
+      },
+      {
+        title: 'Events',
+        url: '/events',
+        icon: Calendar,
+        level: 1,
+      },
+    ],
   },
 ]
 
@@ -64,7 +76,7 @@ const footerNavItems = [
 
 export function AppSidebar() {
   const { auth } = usePage().props
-  const filterNav = mainNavItems.filter(item => auth.user.user_level >= item.level)
+  // const filterNav = mainNavItems.filter(item => auth.user.user_level >= item.level)
 
   return (
     <Sidebar collapsible="icon" variant="inset">
@@ -81,7 +93,9 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={filterNav} />
+        {navItems.map(navItem => (
+          auth.user.user_level >= navItem.level && <NavMain key={navItem.level} group={navItem.name} items={navItem.items} />
+        ))}
       </SidebarContent>
 
       <SidebarFooter>
