@@ -46,6 +46,14 @@ class HomeController extends Controller
         ]);
     }
 
+    public function adminConfig()
+    {
+        return Inertia::render('admin/config', [
+            'user' => Auth::user(),
+            'commonData' => $this->getCurrentData(),
+        ]);
+    }
+
     public function getUserTotalBets($side, $fight_id)
     {
         return Bet::where('fight_id', $fight_id)

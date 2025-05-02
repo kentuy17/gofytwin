@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Http\Controllers\BetController;
 use App\Models\Bet;
 use App\Models\Fight;
+use App\Models\Settings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -30,7 +31,7 @@ class FireDummyBets implements ShouldQueue
     {
         //
         $betController = new BetController();
-        $limit = 50000;
+        $limit = Settings::all()->get('dummy_bet_amount');
         $option = ['M' => 0, 'W' => 0];
 
         $choices = array('M', 'W');
@@ -53,7 +54,7 @@ class FireDummyBets implements ShouldQueue
             ];
 
             // Log::channel('test')->info(json_encode($bet));
-            // $betController->dummyBets($bet);
+            $betController->dummyBets($bet);
             $option[$side] += $money;
 
             usleep(rand(100,500) * 1000);

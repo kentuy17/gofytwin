@@ -13,4 +13,9 @@ class Settings extends Model
         'field',
         'value',
     ];
+
+    public function get($field)
+    {
+        return $this->where('field', $field)->first()->value;
+    }
 }
