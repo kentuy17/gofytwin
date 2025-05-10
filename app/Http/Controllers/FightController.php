@@ -85,11 +85,11 @@ class FightController extends Controller
                 $total_sum = $data['meron'] + $data['wala'];
 
                 // MERON WIN PERCENT
-                $meron_percent = $this->calculateCommission($data['meron'], $total_sum);
+                $meron_percent = $this->cocoysFormula($data['meron'], $total_sum);
                 $bet_histories->where('side', 'M')->update(['percent' => $meron_percent]);
 
                 // WALA WIN PERCENT
-                $wala_percent = $this->calculateCommission($data['wala'], $total_sum);
+                $wala_percent = $this->cocoysFormula($data['wala'], $total_sum);
                 $bet_histories->where('side', 'W')->update(['percent' => $wala_percent]);
             }
 
@@ -351,6 +351,7 @@ class FightController extends Controller
         // Payout Rate (per 100) = (Net Pool ÷ Total Bets on Winning Side) × 100
         // Winning Player's Return = (Player's Bet × Payout Rate) ÷ 100
         // Winning Player's Profit = Winning Player's Return − Player's Bet
+        if($total_sum === 0) return 0;
 
         $total_pool = $total_sum;
         $house_cut = ($total_pool * self::COMMISSION) / 100;
@@ -359,5 +360,36 @@ class FightController extends Controller
         return $payout_rate;
     }
 
+    public function updateFightNumber(Request $request)
+    {
+        $event = EventGame::find($request->event_id);
+        $check = Fight::where('fight_no', $request->fight)
+            ->where('event_id', $event->id)
+            ->first();
+
+        $current_fight = $event->fights->where('fight_no', $event->current_fight)->first();
+
+        if(!in_array($current_fight->status, ['WAITING','DONE'])
+            || $check || $event->current_fight > $request->fight) {
+            return Redirect::back()->withErrors([
+                'msg' => 'Unable to update fight'
+            ]);
+        }
+
+        $fight = Fight::create([
+            'fight_no' => $request->fight,
+            'user_id' => Auth::user()->id,
+            'status' => 'WAITING',
+            'event_id' => $event->id,
+            'time_start' => Carbon::now()->toTimeString(),
+        ]);
+
+        $event->current_fight = $fight->fight_no;
+        $event->save();
+
+        Redis::set('fight', $fight);
+
+        return Redirect::back()->with('success', 'updated successfully.');
+    }
 
 }

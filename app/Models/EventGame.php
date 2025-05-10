@@ -42,7 +42,7 @@ class EventGame extends Model
 
     public function fights()
     {
-        $this->hasMany(Fight::class, 'event_id', 'id');
+        return $this->hasMany(Fight::class, 'event_id', 'id');
     }
 
     public function next()
@@ -53,6 +53,11 @@ class EventGame extends Model
     public  function previous()
     {
         return $this->where('id', '<', $this->id)->orderBy('id', 'desc')->first();
+    }
+
+    public function currentFight()
+    {
+        return $this->hasOne(Fight::class, 'id', 'current_fight');
     }
 
     public function active()

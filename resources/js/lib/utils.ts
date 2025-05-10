@@ -55,3 +55,7 @@ export function formatMoney(value: any, peso: boolean = true) {
 export function sleep(ms: number): Promise<void> {
   return new Promise<void>(resolve => setTimeout(resolve, ms))
 }
+
+export function numberWithCommas(x: number) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}

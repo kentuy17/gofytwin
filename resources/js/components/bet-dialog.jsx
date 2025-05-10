@@ -9,11 +9,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { OperatorContext } from '@/context/operator-context'
-import { cn } from '@/lib/utils'
+import { cn, formatMoney, numberWithCommas } from '@/lib/utils'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { useContext, useEffect, useRef, useState } from 'react'
 import CurrencyInput from 'react-currency-input-field'
+
+const min = 20
+const max = 20000
 
 function InputBet({ className, bet, setBet, handleKeyDown }) {
   const [betVal, setBetVal] = useState(bet)
@@ -24,9 +27,9 @@ function InputBet({ className, bet, setBet, handleKeyDown }) {
   }
 
   useEffect(() => {
-    if (bet > 10000 || betVal > 10000) {
-      setBetVal(10000)
-      setBet(10000)
+    if (bet > max || betVal > max) {
+      setBetVal(max)
+      setBet(max)
     }
     else {
       setBetVal(bet)
@@ -104,7 +107,7 @@ function AmountBtn({ amount, setBet, className }) {
         className,
       )}
     >
-      {amount}
+      {numberWithCommas(amount)}
     </Button>
   )
 }
@@ -118,11 +121,11 @@ export function BetDialog({ children, side }) {
   const betMeron = Number.parseFloat(playerBet.meron)
   const betWala = Number.parseFloat(playerBet.wala)
 
-  const amounts = [20, 50, 100, 500, 1000, 10000, 'ALL-IN']
+  const amounts = [20, 50, 100, 500, 1000, 1500, 'ALL-IN']
 
   const handleSumbit = async () => {
-    if (bet < 10) {
-      alert('Minimum bet is 10.00')
+    if (bet < min) {
+      alert(`Minimum bet is ${formatMoney(min)}`)
       return
     }
 
@@ -187,9 +190,7 @@ export function BetDialog({ children, side }) {
         </div>
         <DialogFooter>
           <Button type="submit" ref={submitRef} onClick={handleSumbit}>
-            BET
-            {' '}
-            {side === 'M' ? 'MERON' : 'WALA'}
+            {`BET ${side === 'M' ? 'MERON' : 'WALA'}`}
           </Button>
         </DialogFooter>
       </DialogContent>
