@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\FightEvent;
-use App\Events\LastCallEvent;
-use App\Events\ResultEvent;
-use App\Models\EventGame;
-use App\Models\Fight;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
+use Carbon\Carbon;
+use App\Models\Bet;
 use Inertia\Inertia;
+use App\Models\Fight;
+use App\Models\EventGame;
+use App\Events\FightEvent;
+use App\Models\BetHistory;
+use App\Events\ResultEvent;
+use Illuminate\Http\Request;
+use App\Events\LastCallEvent;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\BetController;
 use App\Http\Controllers\HomeController;
-use App\Models\BetHistory;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 class FightController extends Controller
@@ -146,6 +147,15 @@ class FightController extends Controller
             ->orderBy('id', 'desc')->get();
         return Inertia::render('events',[
             'events' => $events,
+        ]);
+    }
+    public function bets()
+    {
+        $bets = Bet::where('user_id',Auth::user()->id)
+            ->orderBy('status','desc')
+            ->orderBy('id', 'desc')->get();
+        return Inertia::render('bets',[
+            'bets' => $bets,
         ]);
     }
 

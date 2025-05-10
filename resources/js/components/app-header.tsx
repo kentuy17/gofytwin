@@ -24,6 +24,11 @@ const mainNavItems: NavItem[] = [
 
 const rightNavItems: NavItem[] = [
   {
+    title: 'Admin Bets',
+    url: '/admin/bets/list',
+    icon: Folder,
+  },
+  {
     title: 'Users List',
     url: '/admin/users/list',
     icon: Folder,
