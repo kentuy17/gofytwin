@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\FightController;
 use App\Http\Controllers\CashinController;
 use App\Http\Controllers\AuthOtpController;
+use App\Http\Controllers\Admin\BetsController;
 use App\Http\Controllers\ClaimPrizeController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\AccountsController;
@@ -28,6 +29,7 @@ Route::post('/webrequest/captcha', [AuthOtpController::class,'check'])->name('ca
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+    Route::get('/admin/bets/list', [BetsController::class, 'bets'])->name('admin.bets.list');
 
     Route::get('/test/logout',[HomeController::class,'temporaryLogout'])->name('testttest.logout');
     Route::get('/admin/users/list', [AccountsController::class, 'users'])->name('admin.users.list');
@@ -72,6 +74,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/operator', [FightController::class, 'operator'])->name('operator');
     Route::get('/fight/trend', [FightController::class, 'getFightTrends'])->name('fight.trend');
     Route::post('/fight/lastcall', [FightController::class, 'updateLastCall'])->name('update.lastcall');
+    Route::get('/bets', [FightController::class, 'bets'])->name('bets');
+
+
 
     Route::get('/events', [FightController::class, 'events'])->name('events');
     Route::post('/event/add', [FightController::class, 'addEvent'])->name('add.event');

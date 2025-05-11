@@ -44,9 +44,20 @@ const navItems = [
       },
     ],
   },
+  {
+    title: 'My Bets',
+    url: '/bets',
+    icon: Calendar,
+    level: 1,
+  },
 ]
 
 const footerNavItems = [
+  {
+    title: 'Admin Bets',
+    url: '/admin/bets/list',
+    icon: Folder,
+  },
   {
     title: 'Users List',
     url: '/admin/users/list',
