@@ -1,6 +1,5 @@
-/* eslint-disable no-alert */
 /* eslint-disable no-console */
-import { BetDialog } from '@/components/bet-dialog'
+import { BetDialog, CongratsDialog } from '@/components/bet-dialog'
 import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 import VideoJS from '@/components/videojs'
@@ -11,7 +10,7 @@ import { formatMoney } from '@/lib/utils'
 import { Head, usePage } from '@inertiajs/react'
 // import Echo from 'laravel-echo'
 import { PlusCircleIcon } from 'lucide-react'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { pusher } from '../../echo'
 
 const breadcrumbs = [
@@ -113,6 +112,8 @@ export default function Dashboard({ commonData, player, user }) {
     setLastResult,
     setLastCall,
   } = useContext(OperatorContext)
+  const [winAmount, setWinAmount] = useState(0)
+  const [betStatus, setBetStatus] = useState(null)
 
   const resultChannel = `result.${user.id}`
 
@@ -121,6 +122,7 @@ export default function Dashboard({ commonData, player, user }) {
   flash.message && console.log(flash)
 
   const playerRef = React.useRef(null)
+  const btnRef = React.useRef(null)
 
   const videoJsOptions = {
     autoplay: true,
@@ -148,6 +150,10 @@ export default function Dashboard({ commonData, player, user }) {
   }
 
   useEffect(() => {
+    const handleShowCongrats = () => {
+      btnRef.current.click()
+    }
+
     pusher.unbind_all()
     pusher.bind('bet-event', (e) => {
       const { amount, side } = e.securedBet
@@ -192,16 +198,19 @@ export default function Dashboard({ commonData, player, user }) {
         if (win_amount === 0)
           return
 
+        setCredits(prev => win_amount + prev)
+        setBetStatus(status)
+
         if (status === 'W') {
-          alert(`Congratulations! You win ${formatMoney(win_amount)}`)
+          // alert(`Congratulations! You win ${formatMoney(win_amount)}`)
+          setWinAmount(win_amount)
+          handleShowCongrats()
           tada.play()
         }
 
-        if (status === 'D' || status === 'C') {
-          alert(`Returned ${formatMoney(win_amount)}`)
-        }
-
-        setCredits(prev => win_amount + prev)
+        // if (status === 'D' || status === 'C') {
+        //   alert(`Returned ${formatMoney(win_amount)}`)
+        // }
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -237,6 +246,9 @@ export default function Dashboard({ commonData, player, user }) {
         </div>
         <BetTrends />
         {/* </div> */}
+        <CongratsDialog win_amount={winAmount} status={betStatus}>
+          <Button hidden ref={btnRef} variant="outline">Show Congrats Dialog</Button>
+        </CongratsDialog>
       </div>
     </AppLayout>
   )

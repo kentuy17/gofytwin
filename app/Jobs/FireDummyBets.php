@@ -3,9 +3,9 @@
 namespace App\Jobs;
 
 use App\Http\Controllers\BetController;
-use App\Models\Bet;
+// use App\Models\Bet;
 use App\Models\Fight;
-use App\Models\Settings;
+// use App\Models\Settings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -15,13 +15,15 @@ class FireDummyBets implements ShouldQueue
 {
     use Queueable;
     private $currentFight;
+    private $dummy_limit;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(Fight $currentFight)
+    public function __construct(Fight $currentFight, $dummy_limit)
     {
         $this->currentFight = $currentFight;
+        $this->dummy_limit = $dummy_limit;
     }
 
     /**
@@ -31,11 +33,13 @@ class FireDummyBets implements ShouldQueue
     {
         //
         $betController = new BetController();
-        $limit = Settings::all()->get('dummy_bet_amount');
+        $limit = $this->dummy_limit;
         $option = ['M' => 0, 'W' => 0];
 
         $choices = array('M', 'W');
         $amount = range(100,1500);
+
+        Log::channel('test')->info($limit);
 
         while($option['M'] <= $limit || $option['W'] <= $limit) {
             $side = $choices[array_rand($choices)];

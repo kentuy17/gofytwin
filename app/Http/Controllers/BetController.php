@@ -12,6 +12,7 @@ use App\Models\Settings;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class BetController extends Controller
@@ -137,8 +138,8 @@ class BetController extends Controller
 
     public function dummyBets($request)
     {
-        $enable_dummy = Settings::all()->get('enable_dummy');
-        $this->info($enable_dummy);
+        $enable_dummy = Settings::get('enable_dummy');
+        // Log::channel('test')->info($enable_dummy);
 
         if(!$enable_dummy) {
             return;

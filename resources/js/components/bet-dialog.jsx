@@ -1,5 +1,17 @@
 /* eslint-disable no-alert */
+import {
+  AlertDialog,
+  AlertDialogAction,
+  // AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+
 import {
   Dialog,
   DialogContent,
@@ -8,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+
 import { OperatorContext } from '@/context/operator-context'
 import { cn, formatMoney, numberWithCommas } from '@/lib/utils'
 import { usePage } from '@inertiajs/react'
@@ -195,5 +208,30 @@ export function BetDialog({ children, side }) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export function CongratsDialog({ children, win_amount, status }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        {children}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Congratulations!</AlertDialogTitle>
+          <AlertDialogDescription>
+            {(status === 'W')
+              ? (`You win ${formatMoney(win_amount)}`)
+              : (`Returned ${formatMoney(win_amount)}`)}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
+          <AlertDialogAction>OK</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

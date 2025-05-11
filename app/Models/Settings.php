@@ -14,8 +14,11 @@ class Settings extends Model
         'value',
     ];
 
-    public function get($field)
+    static function get($field)
     {
-        return $this->where('field', $field)->first()->value;
+        $item = self::where('field', $field)->first();
+        return $item->value;
     }
+
+
 }
