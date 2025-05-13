@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\FightEvent;
 use App\Jobs\FireDummyBets;
+use App\Models\Settings;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -31,7 +32,9 @@ class InitiateDummyBets implements ShouldQueue
     {
         // php artisan queue:work database --queue=listeners
         if ($event->currentFight->status === 'OPEN') {
-            dispatch(new FireDummyBets($event->currentFight));
+            // dispatch(new FireDummyBets($event->currentFight));
+            $limit = Settings::get('dummy_bet_amount');
+            FireDummyBets::dispatch($event->currentFight, $limit);
         }
     }
 }

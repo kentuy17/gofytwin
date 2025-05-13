@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // React/Inertia Front-end
     Route::get('/player/deposit', [UserController::class, 'deposit'])->name('deposit');
+    Route::get('/admin/config', [HomeController::class, 'adminConfig'])->name('admin.config');
 
     // Betting
     Route::post('/bet/add', [BetController::class, 'addBet'])->name('add.bet');

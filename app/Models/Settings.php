@@ -13,4 +13,12 @@ class Settings extends Model
         'field',
         'value',
     ];
+
+    static function get($field)
+    {
+        $item = self::where('field', $field)->first();
+        return $item->value;
+    }
+
+
 }

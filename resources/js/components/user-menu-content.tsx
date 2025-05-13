@@ -1,16 +1,26 @@
 import type { User } from '@/types'
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { UserInfo } from '@/components/user-info'
-import { useMobileNavigation } from '@/hooks/use-mobile-navigation'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { LogOut, Settings } from 'lucide-react'
+import { useCallback } from 'react'
 
 interface UserMenuContentProps {
   user: User
 }
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
-  const cleanup = useMobileNavigation()
+  const cleanup = useCallback(() => {
+    // Remove pointer-events style from body...
+    document.body.style.removeProperty('pointer-events')
+  }, [])
+
+  const handleSettingsClicked = (e: any) => {
+    e.preventDefault()
+    router.visit('/admin/config')
+
+    return cleanup
+  }
 
   // const handleLogout = () => {
   //   localStorage.setItem('isAuthenticated', 'false')
@@ -26,9 +36,9 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem asChild>
-          <Link className="block w-full" href={route('profile.edit')} as="button" type="button" prefetch onClick={cleanup}>
+          <Link className="block w-full" href="#" as="button" type="button" prefetch onClick={handleSettingsClicked}>
             <Settings className="mr-2" />
-            Settings
+            Settingss
           </Link>
         </DropdownMenuItem>
       </DropdownMenuGroup>

@@ -72,7 +72,7 @@ class FightController extends Controller
             ]);
 
             // dd($this->currentFight);
-            FightEvent::dispatch($this->currentFight);
+
             Redis::set('fight', $this->currentFight);
 
             if($request->status === 'CLOSED') {
@@ -86,12 +86,24 @@ class FightController extends Controller
 
                 // MERON WIN PERCENT
                 $meron_percent = $this->cocoysFormula($data['meron'], $total_sum);
-                $bet_histories->where('side', 'M')->update(['percent' => $meron_percent]);
 
                 // WALA WIN PERCENT
                 $wala_percent = $this->cocoysFormula($data['wala'], $total_sum);
+
+                if($meron_percent <= 140 || $wala_percent <= 140) {
+                    $updated = $this->currentFight->update([
+                        'game_winner' => 'C',
+                        'status' => 'DONE'
+                    ]);
+
+                    return;
+                }
+
+                $bet_histories->where('side', 'M')->update(['percent' => $meron_percent]);
                 $bet_histories->where('side', 'W')->update(['percent' => $wala_percent]);
             }
+
+            FightEvent::dispatch($this->currentFight);
 
             if ($request->status === 'DONE') {
                 $this->processPayables($request->result, $this->currentFight);
@@ -308,8 +320,8 @@ class FightController extends Controller
                     // }
 
                      # broadcast
-                    //  event(new ResultEvent($bet));
-                    ResultEvent::dispatch($bet);
+                     event(new ResultEvent($bet));
+                    // ResultEvent::dispatch($bet);
                 } else {
                     $bet->status = 'L';
                 }
