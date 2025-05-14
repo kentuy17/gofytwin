@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\FightController;
+use App\Http\Controllers\Admin\TotalGross;
 use App\Http\Controllers\CashinController;
 use App\Http\Controllers\AuthOtpController;
 use App\Http\Controllers\Admin\BetsController;
@@ -47,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/core/statistics/gross-income', [ReportsController::class, 'grossIncome'])->middleware('auth')->name('gross');
     Route::get('/admin/cash-in',[AdminCashIn::class,'index'])->middleware('auth')->name('admin.cashin');
     Route::get('/admin/net-income',[AdminCashIn::class,'net_income'])->middleware('auth')->name('admin.net.income');
-    Route::get('/admin/total-gross',[AdminCashIn::class,'totak_gross'])->middleware('auth')->name('admin.total.gross');
+    Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
 
     Route::get('/cash-in', [CashinController::class, 'cash_in'])->middleware('auth')->name('cashin');
     Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');
@@ -87,6 +88,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/claim/requests',[WithdrawController::class,'withdrawal'])->name('withdrawal')->middleware('auth');
     Route::get('/admin/claim/requests/list',[WithdrawController::class,'list'])->name('withdrawal.list')->middleware('auth');
     Route::post('/claim-prize/process/referral',[ClaimPrizeController::class,'processReferral'])->name('claim.process.referral')->middleware('auth');
+    Route::post('/winner/info/winner/board', [ServerInfoController::class,'winner_info_board'])->name('winner.info.winner.board')->middleware('auth');
+    Route::get('/admin/winners-board/from/{from}/to/{to}',[WinnersDownloadController::class,'dldownload'])->name('winners.download')->middleware('auth');
 
 
 });
