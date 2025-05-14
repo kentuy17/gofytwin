@@ -2,8 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 // import React from 'react'
 import AppLayout from '@/layouts/app-layout'
 import { formatMoney } from '@/lib/utils'
-import { Head } from '@inertiajs/react'
+import { Head, useForm } from '@inertiajs/react'
 import '../../css/bet-arnie.css'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import InputError from '@/components/input-error'
 
 const breadcrumbs = [
   {
@@ -11,6 +15,15 @@ const breadcrumbs = [
     href: '/player/deposit',
   },
 ]
+const { data, setData, post, processing, errors } = useForm({
+    email: '',
+  })
+const submit = (e) => {
+    e.preventDefault()
+    post('/otp/generate', {
+      onFinish: () => reset('password'),
+    })
+  }
 
 function PaymentProvider({ item }) {
   const { name, icon, min, max } = item
@@ -155,7 +168,41 @@ function Deposit({ providers }) {
             </CardContent>
           </Card> */}
         </div>
+        
+
+
+
+       <div className="space-y-6">
+               <form onSubmit={submit}>
+                 <div className="grid gap-2">
+                   <Label htmlFor="amount">amount address</Label>
+                   <Input
+                     id="amount"
+                     type="amount"
+                     name="amount"
+                     autoComplete="off"
+                     autoFocus
+                    //  onChange={e => setData('email', e.target.value)}
+                     placeholder="Enter Amount"
+                   />
+       
+                   {/* <InputError message={errors.email} /> */}
+                 </div>
+       
+                 <div className="my-6 flex items-center justify-start">
+                   <Button className="w-full" >
+                     Submit
+                   </Button>
+                 </div>
+               </form>
+       
+               <div className="text-muted-foreground space-x-1 text-center text-sm">
+                 <span>Or, return to</span>
+                 <TextLink href={route('login')}>log in</TextLink>
+               </div>
+             </div>
       </div>
+    
     </AppLayout>
   )
 }

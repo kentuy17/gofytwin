@@ -24,6 +24,12 @@ const navItems = [
         icon: CoinsIcon,
         level: 0,
       },
+      {
+        title: 'Bets',
+        url: '/bets',
+        icon: CoinsIcon,
+        level: 0,
+      },
     ],
   },
   {
@@ -53,6 +59,11 @@ const navItems = [
 ]
 
 const footerNavItems = [
+  {
+      title: 'Total Gross',
+      url: '/admin/total-gross',
+      icon: Folder,
+  },
   {
     title: 'Admin Bets',
     url: '/admin/bets/list',

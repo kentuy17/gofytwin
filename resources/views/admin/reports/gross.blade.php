@@ -25,7 +25,7 @@
                 success: function(response){
                     $(".total_meron_" + e).text( response.data.total_meron);
                     $(".total_wala_" + e).text( response.data.total_wala);
-                    $(".total_bets_" + e).text( response.data.total_bets);
+                    $(".company_share_" + e).text( response.data.company_share);
                    
                 },
                 complete: function(response){
@@ -92,7 +92,7 @@
                             <td>{{$fight->fight_no}}</td>
                             <td class="total_meron_{{$fight->fight_no}}">Loading...</td>
                             <td class="total_wala_{{$fight->fight_no}}">Loading...</td>
-                            <td class="total_company_share_{{$fight->fight_no}}">Loading...</td>
+                            <td class="company_share_{{$fight->fight_no}}">Loading...</td>
                             <td>{{$fight->game_winner}}</td>
                             <script>loadRowData({{$fight->fight_no}})</script>
                         </tr>

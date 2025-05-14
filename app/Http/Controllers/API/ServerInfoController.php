@@ -151,19 +151,12 @@ class ServerInfoController extends BaseController
         // Cashin / total winnings x 100 - 100 = %
         // $profitability_1 = $total_bets / $cashin->won_amount;
         // $profitability_2 = $profitability_1 * 100;
-        // $profitability = $profitability_2 - 100;
+        $company_share = $total_meron + $total_meron;
         
-
-        $profitability = 100;
-
-        if($total_win_amount > 0){
-            $profitability_1 = $total_bets / $total_win_amount;
-            $profitability_2 = $profitability_1 * 100;
-                $profitability = $profitability_2 - 100;
-        }
+ 
         $data['total_meron'] = $total_meron;
         $data['total_wala'] = $total_wala;
-        $data['profitability'] = $profitability;
+        $data['company_share'] = $company_share * 0.06;
         $data['total_winnings'] = number_format($total_win_amount, 2, '.',',');
         $data['total_bets'] = number_format($total_bets, 2, '.',',');
 
