@@ -107,7 +107,11 @@ class SettingsSeeder extends Seeder
             [
                 'field' => 'min_bet',
                 'value' => 20,
-            ]
+            ],
+            [
+                'field' => 'video_banner',
+                'value' => '/images/video-banner.jpeg',
+            ],
         ]);
 
 

@@ -50,6 +50,9 @@ dependencies:
   lucide-react:
     specifier: ^0.483.0
     version: 0.483.0(react@19.0.0)
+  next-themes:
+    specifier: ^0.4.6
+    version: 0.4.6(react-dom@19.0.0)(react@19.0.0)
   phone:
     specifier: ^3.1.58
     version: 3.1.58
@@ -68,6 +71,9 @@ dependencies:
   react-player:
     specifier: ^2.16.0
     version: 2.16.0(react@19.0.0)
+  sonner:
+    specifier: ^2.0.3
+    version: 2.0.3(react-dom@19.0.0)(react@19.0.0)
   styled-components:
     specifier: ^6.1.17
     version: 6.1.17(react-dom@19.0.0)(react@19.0.0)
@@ -5712,6 +5718,16 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
+  /next-themes@0.4.6(react-dom@19.0.0)(react@19.0.0):
+    resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    dependencies:
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+    dev: false
+
   /node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
     dev: true
@@ -6535,6 +6551,16 @@ packages:
   /slashes@3.0.12:
     resolution: {integrity: sha512-Q9VME8WyGkc7pJf6QEkj3wE+2CnvZMI+XJhwdTPR8Z/kWQRXi7boAWLDibRPyHRTUTPx5FaU7MsyrjI3yLB4HA==}
     dev: true
+
+  /sonner@2.0.3(react-dom@19.0.0)(react@19.0.0):
+    resolution: {integrity: sha512-njQ4Hht92m0sMqqHVDL32V2Oun9W1+PHO9NDv9FHfJjT3JT22IG4Jpo3FPQy+mouRKCXFWO+r67v6MrHX2zeIA==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    dependencies:
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+    dev: false
 
   /source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}

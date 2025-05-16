@@ -50,19 +50,19 @@ const navItems = [
       },
     ],
   },
-  {
-    title: 'My Bets',
-    url: '/bets',
-    icon: Calendar,
-    level: 1,
-  },
+  // {
+  //   title: 'My Bets',
+  //   url: '/bets',
+  //   icon: Calendar,
+  //   level: 1,
+  // },
 ]
 
 const footerNavItems = [
   {
-      title: 'Total Gross',
-      url: '/admin/total-gross',
-      icon: Folder,
+    title: 'Total Gross',
+    url: '/admin/total-gross',
+    icon: Folder,
   },
   {
     title: 'Admin Bets',
