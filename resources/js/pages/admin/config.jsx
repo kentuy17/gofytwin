@@ -6,9 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import AppLayout from '@/layouts/app-layout'
-import { Head, router, useForm } from '@inertiajs/react'
-import { useState } from 'react'
-// import { useRef } from 'react'
+import { Head, useForm } from '@inertiajs/react'
 import { toast } from 'sonner'
 
 const breadcrumbs = [
