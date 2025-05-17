@@ -10,6 +10,7 @@ interface UserMenuContentProps {
 }
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
+  const { user_level } = user
   const cleanup = useCallback(() => {
     // Remove pointer-events style from body...
     document.body.style.removeProperty('pointer-events')
@@ -34,15 +35,21 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
         </div>
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuGroup>
-        <DropdownMenuItem asChild>
-          <Link className="block w-full" href="#" as="button" type="button" prefetch onClick={handleSettingsClicked}>
-            <Settings className="mr-2" />
-            Settingss
-          </Link>
-        </DropdownMenuItem>
-      </DropdownMenuGroup>
-      <DropdownMenuSeparator />
+      {
+        user_level > 0 && (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link className="block w-full" href="#" as="button" type="button" prefetch onClick={handleSettingsClicked}>
+                  <Settings className="mr-2" />
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )
+      }
       <DropdownMenuItem asChild>
 
         <Link className="block w-full" method="post" href={route('logout')} as="button" type="button" onClick={cleanup}>
