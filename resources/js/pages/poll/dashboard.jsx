@@ -226,6 +226,11 @@ export default function Dashboard({ commonData, player, user, settings }) {
         //   alert(`Returned ${formatMoney(win_amount)}`)
         // }
       })
+
+    if (user.credits === 0) {
+      // eslint-disable-next-line no-alert
+      alert('Add credits to view video')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -250,7 +255,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
       <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
         {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
         <div className="border-sidebar-border/70">
-          {settings.show_video === '1'
+          {settings.show_video === '1' && user.credits > 0
             ? (
                 <VideoJS options={videoJsOptions} playsInline onReady={handlePlayerReady} />
               )
