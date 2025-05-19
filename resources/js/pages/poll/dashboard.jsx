@@ -112,8 +112,16 @@ export default function Dashboard({ commonData, player, user, settings }) {
     setLastResult,
     setLastCall,
   } = useContext(OperatorContext)
+  let ctr = localStorage.getItem('ctr')
+
+  if (!ctr) {
+    localStorage.setItem('ctr', 0)
+    ctr = 0
+  }
+
   const [winAmount, setWinAmount] = useState(0)
   const [betStatus, setBetStatus] = useState(null)
+  const [logoutCtr, setLogoutCtr] = useState(ctr)
 
   const resultChannel = `result.${user.id}`
 
@@ -150,17 +158,6 @@ export default function Dashboard({ commonData, player, user, settings }) {
   }
 
   useEffect(() => {
-    const ctr = localStorage.getItem('ctr')
-
-    if (!ctr) {
-      localStorage.setItem('ctr', 0)
-    }
-
-    if (Number.parseInt(ctr) > 5) {
-      localStorage.setItem('ctr', 0)
-      router.visit('logout')
-    }
-
     const handleShowCongrats = () => {
       btnRef.current.click()
     }
@@ -196,8 +193,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
           wala: 0,
         })
 
-        const i = localStorage.getItem('ctr')
-        localStorage.setItem('ctr', Number.parseInt(i) + 1)
+        setLogoutCtr(i => Number.parseInt(i) + 1)
       }
     })
 
@@ -247,6 +243,17 @@ export default function Dashboard({ commonData, player, user, settings }) {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commonData, player])
+
+  useEffect(() => {
+    localStorage.setItem('ctr', logoutCtr + 1)
+    if (Number.parseInt(logoutCtr) > 5) {
+      localStorage.setItem('ctr', 0)
+      setLogoutCtr(0)
+
+      // eslint-disable-next-line no-undef
+      router.post(route('logout'))
+    }
+  }, [logoutCtr])
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

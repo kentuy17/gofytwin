@@ -163,6 +163,7 @@ export function BetDialog({ children, side }) {
         : setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(bet) })
 
       setCredits(prev => prev - bet)
+      console.log('reset')
       localStorage.setItem('ctr', 0)
     }
     else {
