@@ -1,11 +1,12 @@
 // import type { NavItem } from '@/types'
-import { NavFooter } from '@/components/nav-footer'
+// import { NavFooter } from '@/components/nav-footer'
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { Link, usePage } from '@inertiajs/react'
-import { BookOpen, Calendar, CoinsIcon, Folder, Joystick, LayoutGrid } from 'lucide-react'
+import { Calendar, CoinsIcon, Folder, Joystick, LayoutGrid, Settings, UserCog2Icon } from 'lucide-react'
 import AppLogo from './app-logo'
+import { NavAdmin } from './nav-admin'
 
 const navItems = [
   {
@@ -48,6 +49,12 @@ const navItems = [
         icon: Calendar,
         level: 1,
       },
+      {
+        title: 'Settings',
+        url: '/admin/config',
+        icon: Settings,
+        level: 1,
+      },
     ],
   },
   // {
@@ -58,47 +65,82 @@ const navItems = [
   // },
 ]
 
-const footerNavItems = [
+const adminNavItems = [
   {
-    title: 'Total Gross',
-    url: '/admin/total-gross',
-    icon: Folder,
-  },
-  {
-    title: 'Admin Bets',
-    url: '/admin/bets/list',
-    icon: Folder,
-  },
-  {
-    title: 'Users List',
-    url: '/admin/users/list',
-    icon: Folder,
-  },
-  {
-    title: 'Verification OTP Codes',
-    url: '/admin/users/otp/list',
-    icon: Folder,
-  },
-  {
-    title: 'Spam Players List',
-    url: '/admin/users/spam',
-    icon: Folder,
-  },
-  {
-    title: 'Repository',
-    url: 'https://github.com/laravel/react-starter-kit',
-    icon: Folder,
-  },
-  {
-    title: 'Documentation',
-    url: 'https://laravel.com/docs/starter-kits',
-    icon: BookOpen,
+    title: 'Admin',
+    url: '#',
+    icon: UserCog2Icon,
+    isActive: true,
+    items: [
+      {
+        title: 'Total Gross',
+        url: '/admin/total-gross',
+        icon: Folder,
+      },
+      {
+        title: 'Admin Bets',
+        url: '/admin/bets/list',
+        icon: Folder,
+      },
+      {
+        title: 'Users List',
+        url: '/admin/users/list',
+        icon: Folder,
+      },
+      {
+        title: 'Verification OTP Codes',
+        url: '/admin/users/otp/list',
+        icon: Folder,
+      },
+      {
+        title: 'Spam Players List',
+        url: '/admin/users/spam',
+        icon: Folder,
+      },
+    ],
   },
 ]
 
+// const footerNavItems = [
+//   {
+//     title: 'Total Gross',
+//     url: '/admin/total-gross',
+//     icon: Folder,
+//   },
+//   {
+//     title: 'Admin Bets',
+//     url: '/admin/bets/list',
+//     icon: Folder,
+//   },
+//   {
+//     title: 'Users List',
+//     url: '/admin/users/list',
+//     icon: Folder,
+//   },
+//   {
+//     title: 'Verification OTP Codes',
+//     url: '/admin/users/otp/list',
+//     icon: Folder,
+//   },
+//   {
+//     title: 'Spam Players List',
+//     url: '/admin/users/spam',
+//     icon: Folder,
+//   },
+//   // {
+//   //   title: 'Repository',
+//   //   url: 'https://github.com/laravel/react-starter-kit',
+//   //   icon: Folder,
+//   // },
+//   // {
+//   //   title: 'Documentation',
+//   //   url: 'https://laravel.com/docs/starter-kits',
+//   //   icon: BookOpen,
+//   // },
+// ]
+
 export function AppSidebar() {
   const { auth } = usePage().props
-  // const filterNav = mainNavItems.filter(item => auth.user.user_level >= item.level)
   const userLevel = Number.parseInt(auth.user.user_level)
 
   return (
@@ -117,12 +159,14 @@ export function AppSidebar() {
 
       <SidebarContent>
         {navItems.map(navItem => (
-          userLevel === navItem.level && <NavMain key={navItem.level} group={navItem.name} items={navItem.items} />
+          (userLevel === navItem.level || userLevel >= 2)
+          && <NavMain key={navItem.level} group={navItem.name} items={navItem.items} />
         ))}
+        {userLevel >= 2 && <NavAdmin items={adminNavItems} />}
       </SidebarContent>
 
       <SidebarFooter>
-        <NavFooter items={footerNavItems} className="mt-auto" />
+        {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
         <NavUser />
       </SidebarFooter>
     </Sidebar>

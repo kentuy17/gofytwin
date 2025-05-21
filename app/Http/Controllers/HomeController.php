@@ -61,6 +61,9 @@ class HomeController extends Controller
             'show_video',
             'video_banner',
             'dummy_bet_amount',
+            'min_bet',
+            'max_bet',
+            'no_credits_banner',
         ])->get();
 
         return Inertia::render('admin/config', [
@@ -76,6 +79,9 @@ class HomeController extends Controller
             "show_video",
             // "video_banner",
             "dummy_bet_amount",
+            'min_bet',
+            'max_bet',
+            // 'no_credits_banner',
         ];
 
         foreach ($configs as $conf) {
@@ -84,25 +90,36 @@ class HomeController extends Controller
             $item->save();
         }
 
-        if($request->hasFile('video_banner')) {
-            $storage = Storage::path('images');
-            if (!is_dir($storage)) {
-                mkdir( $storage,0775, true);
-            } else {
-                chmod($storage, 775);
+        $upload_configs = [
+            'no_credits_banner',
+            'video_banner'
+        ];
+
+        foreach ($upload_configs as $config) {
+            if($request->hasFile($config)) {
+                $storage = Storage::path('images');
+                if (!is_dir($storage)) {
+                    mkdir( $storage,0775, true);
+                } else {
+                    chmod($storage, 775);
+                }
+
+                $request->validate([
+                    $config => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+
+                $imageName = time().'.'.$request->file($config)->extension();
+                $request->{$config}->move(public_path('images'), $imageName);
+
+                $banner = Settings::where('field', $config)->first();
+                $banner->value = "/images/" . $imageName;
+                $banner->save();
             }
-
-            $request->validate([
-                'video_banner' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
-
-            $imageName = time().'.'.$request->file('video_banner')->extension();
-            $request->video_banner->move(public_path('images'), $imageName);
-
-            $banner = Settings::where('field', 'video_banner')->first();
-            $banner->value = "/images/" . $imageName;
-            $banner->save();
         }
+
+        // Log::channel('test')->info($request->file('video_banner')->extension());
+
+
 
         return Redirect::back()->with('success', 'File uploaded successfully');
     }

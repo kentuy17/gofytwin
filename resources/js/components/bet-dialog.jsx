@@ -78,8 +78,8 @@ async function addBet(params) {
       return
     }
 
-    if (amount < 10) {
-      alert('Minimum bet is 10.00')
+    if (amount < min) {
+      alert(`Minimum bet is ${formatMoney(min)}`)
       return
     }
 
@@ -88,14 +88,10 @@ async function addBet(params) {
       return
     }
 
-    if (amount > 10000) {
-      alert('Maximum bet is 1,500.00')
+    if (amount > max) {
+      alert(`Maximum bet is ${formatMoney(max)}`)
       return
     }
-
-    // if (!confirm(`Bet ${formatMoney(amount)}?`)) {
-    //   return
-    // }
 
     const { data } = await axios.post('/bet/add', {
       amount,
@@ -136,7 +132,9 @@ export function BetDialog({ children, side, reset }) {
 
   const amounts = [20, 50, 100, 500, 1000, 1500, 'ALL-IN']
 
-  const handleSumbit = async () => {
+  const handleSumbit = async (e) => {
+    e.preventDefault()
+
     if (bet < min) {
       alert(`Minimum bet is ${formatMoney(min)}`)
       return
@@ -163,13 +161,12 @@ export function BetDialog({ children, side, reset }) {
         : setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(bet) })
 
       setCredits(prev => prev - bet)
-      // eslint-disable-next-line no-console
-      console.log('reset')
       reset(-1)
       localStorage.setItem('ctr', 0)
     }
     else {
-      alert(JSON.stringify(resp))
+      // eslint-disable-next-line no-console
+      console.log(resp)
     }
   }
 

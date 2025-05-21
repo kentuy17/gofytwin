@@ -176,11 +176,19 @@ class FightController extends Controller
 
     public function addEvent()
     {
-        EventGame::create([
+        $event = EventGame::create([
             'name' => 'GameFowl Master Event',
             'status' => 'WAITING',
             'event_date' => Carbon::now()->toDateString(),
             'added_by' => 1,
+        ]);
+
+        Fight::create([
+            'fight_no' => 1,
+            'user_id' => Auth::user()->id,
+            'status' => 'WAITING',
+            'event_id' => $event->id,
+            'time_start' => Carbon::now()->toTimeString(),
         ]);
 
         return redirect()->intended(route('events', absolute: false));

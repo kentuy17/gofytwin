@@ -163,8 +163,8 @@ function OtpDialog({ user }) {
   )
 }
 
-export default function Otp({ user, code, ip }) {
-  console.log([code, ip])
+export default function Otp({ user, code }) {
+  console.log(code.otp)
 
   return (
     <AuthLayout>
