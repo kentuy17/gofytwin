@@ -125,7 +125,7 @@ function AmountBtn({ amount, setBet, className }) {
   )
 }
 
-export function BetDialog({ children, side }) {
+export function BetDialog({ children, side, reset }) {
   const { csrf_token } = usePage().props
   const submitRef = useRef(null)
   const { credits, playerBet, setPlayerBet, setCredits } = useContext(OperatorContext)
@@ -163,7 +163,9 @@ export function BetDialog({ children, side }) {
         : setPlayerBet({ ...playerBet, wala: betWala + Number.parseFloat(bet) })
 
       setCredits(prev => prev - bet)
+      // eslint-disable-next-line no-console
       console.log('reset')
+      reset(-1)
       localStorage.setItem('ctr', 0)
     }
     else {

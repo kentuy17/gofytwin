@@ -129,10 +129,10 @@ function PopUpSelectResult() {
         </AlertDialogHeader>
         <AlertDialogFooter className="grid md:grid-cols-2 grid-cols-1 gap-2">
           <AlertDialogAction onClick={meronWins} className="bg-red-500 text-white font-bold">MERON</AlertDialogAction>
-          <AlertDialogCancel onClick={walaWins} className="bg-blue-500 text-white font-bold">WALA</AlertDialogCancel>
+          <AlertDialogCancel onClick={walaWins} className="dark:bg-blue-500 text-white font-bold">WALA</AlertDialogCancel>
           <Button onClick={() => handleDraw()} variant="default" className="bg-yellow-500">DRAW</Button>
           <Button onClick={() => handleCanceled()} variant="secondary">CANCELLED</Button>
-          <Button variant="default">REVERT</Button>
+          {/* <Button disabled variant="default">REVERT</Button> */}
           <AlertDialogCancel>Back</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

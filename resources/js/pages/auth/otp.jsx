@@ -28,7 +28,7 @@ import AuthLayout from '@/layouts/auth-layout'
 // import AuthBlock from '@/layouts/auth/auth-block'
 
 // import { cn } from '@/lib/utils'
-import { Head, useForm } from '@inertiajs/react'
+import { Head, router, useForm } from '@inertiajs/react'
 import { countries, getCountryFlagEmojiFromCountryCodeOrNameOrFlagEmoji } from 'country-codes-flags-phone-codes'
 // import { LoaderCircle } from 'lucide-react'
 
@@ -88,7 +88,11 @@ function OtpDialog({ user }) {
     }
 
     post('/home', {
-      onFinish: () => console.log('paksit'),
+      onFinish: () => {
+        if (user.user_level === '1') {
+          router.visit('/operator')
+        }
+      },
       onError: () => alert(errors.msg),
     })
   }

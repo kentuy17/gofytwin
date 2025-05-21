@@ -2,15 +2,24 @@ import { Breadcrumbs } from '@/components/breadcrumbs'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { OperatorContext } from '@/context/operator-context'
 import { formatMoney } from '@/lib/utils'
-import { Link, usePage } from '@inertiajs/react'
-import { PlusIcon } from 'lucide-react'
-import { useContext, useEffect } from 'react'
+import { Link, router, usePage } from '@inertiajs/react'
+import { PlusIcon, VideoIcon, VideoOffIcon } from 'lucide-react'
+import { useContext, useEffect, useState } from 'react'
 import { Button } from './ui/button'
 
 export function AppSidebarHeader({ breadcrumbs }) {
   const { setCredits, credits } = useContext(OperatorContext)
-  const { auth } = usePage().props
+  const { auth, globals } = usePage().props
+  const [showVideo, setShowVideo] = useState(globals.config.show_video === '1')
   const pts = auth?.user?.credits
+
+  const toggleVideoBtn = (e) => {
+    e.preventDefault()
+    setShowVideo(!showVideo)
+    router.post('/admin/toggle-video', {
+      show_video: !showVideo,
+    })
+  }
 
   useEffect(() => {
     setCredits(pts)
@@ -30,12 +39,20 @@ export function AppSidebarHeader({ breadcrumbs }) {
         </span>
       </div>
       <div className="">
-        <Button size="sm" className="bg-blue-500 text-white font-bold" asChild>
-          <Link href="/player/deposit">
-            <PlusIcon />
-            <span>Cashin</span>
-          </Link>
-        </Button>
+        {Number.parseInt(auth.user.user_level) > 0
+          ? (
+              <Button onClick={toggleVideoBtn} variant="default" size="icon">
+                {showVideo ? <VideoIcon /> : <VideoOffIcon />}
+              </Button>
+            )
+          : (
+              <Button size="sm" className="bg-blue-500 text-white font-bold" asChild>
+                <Link href="/player/deposit">
+                  <PlusIcon />
+                  <span>Cashin</span>
+                </Link>
+              </Button>
+            )}
       </div>
     </header>
   )

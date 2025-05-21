@@ -37,7 +37,7 @@ const navItems = [
     level: 1,
     items: [
       {
-        title: 'Operator',
+        title: 'Controller',
         url: '/operator',
         icon: Joystick,
         level: 1,
@@ -99,6 +99,7 @@ const footerNavItems = [
 export function AppSidebar() {
   const { auth } = usePage().props
   // const filterNav = mainNavItems.filter(item => auth.user.user_level >= item.level)
+  const userLevel = Number.parseInt(auth.user.user_level)
 
   return (
     <Sidebar collapsible="icon" variant="inset">
@@ -116,7 +117,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         {navItems.map(navItem => (
-          auth.user.user_level >= navItem.level && <NavMain key={navItem.level} group={navItem.name} items={navItem.items} />
+          userLevel === navItem.level && <NavMain key={navItem.level} group={navItem.name} items={navItem.items} />
         ))}
       </SidebarContent>
 

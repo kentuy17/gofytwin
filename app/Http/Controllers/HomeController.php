@@ -60,6 +60,7 @@ class HomeController extends Controller
         $settings = Settings::whereIn('field', [
             'show_video',
             'video_banner',
+            'dummy_bet_amount',
         ])->get();
 
         return Inertia::render('admin/config', [
@@ -71,10 +72,17 @@ class HomeController extends Controller
 
     public function updateConfig(Request $request)
     {
-        // $configs = ["show_video", "video_banner"];
-        $item = Settings::where('field', 'show_video')->first();
-        $item->value = $request->show_video;
-        $item->save();
+        $configs = [
+            "show_video",
+            // "video_banner",
+            "dummy_bet_amount",
+        ];
+
+        foreach ($configs as $conf) {
+            $item = Settings::where('field', $conf)->first();
+            $item->value = $request->{$conf};
+            $item->save();
+        }
 
         if($request->hasFile('video_banner')) {
             $storage = Storage::path('images');
@@ -97,6 +105,14 @@ class HomeController extends Controller
         }
 
         return Redirect::back()->with('success', 'File uploaded successfully');
+    }
+
+    public function toggleVideo(Request $request)
+    {
+        $update = Settings::where('field', 'show_video')
+            ->update(['value' => $request->show_video]);
+
+        return Redirect::back()->with('success', 'Updated successfully.');
     }
 
     public function getUserTotalBets($side, $fight_id)

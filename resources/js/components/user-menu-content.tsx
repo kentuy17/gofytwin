@@ -10,7 +10,7 @@ interface UserMenuContentProps {
 }
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
-  const { user_level } = user
+  const { user_level }: any = user
   const cleanup = useCallback(() => {
     // Remove pointer-events style from body...
     document.body.style.removeProperty('pointer-events')

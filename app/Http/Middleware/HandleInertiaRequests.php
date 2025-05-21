@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Middleware;
 use App\Http\Controllers\FightController;
+use App\Models\Settings;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -60,6 +61,9 @@ class HandleInertiaRequests extends Middleware
                     'wala' => $activeBets->where('side','W')->sum('amount'),
                 ],
                 'trend' => $fightController->getFightTrends($request),
+                'config' => [
+                    'show_video' => Settings::get('show_video'),
+                ]
             ];
         }
 

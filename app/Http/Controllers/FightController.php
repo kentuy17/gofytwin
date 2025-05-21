@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\BetController;
 use App\Http\Controllers\HomeController;
+use App\Models\Settings;
 use Illuminate\Support\Facades\Redirect;
 
 class FightController extends Controller
@@ -150,13 +151,16 @@ class FightController extends Controller
                 ],
                 'credits' => Auth::user()->credits,
             ],
+            'settings' => [
+                'show_video' => Settings::get('show_video'),
+                'video_banner' => Settings::get('video_banner'),
+            ]
         ]);
     }
 
     public function events()
     {
-        $events = EventGame::orderBy('status','desc')
-            ->orderBy('id', 'desc')->get();
+        $events = EventGame::orderBy('id','desc')->get();
         return Inertia::render('events',[
             'events' => $events,
         ]);
@@ -164,7 +168,6 @@ class FightController extends Controller
     public function bets()
     {
         $bets = Bet::where('user_id',Auth::user()->id)
-            ->orderBy('status','desc')
             ->orderBy('id', 'desc')->get();
         return Inertia::render('bets',[
             'bets' => $bets,

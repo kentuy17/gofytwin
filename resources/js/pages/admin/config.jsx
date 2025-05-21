@@ -12,37 +12,22 @@ import { toast } from 'sonner'
 const breadcrumbs = [
   {
     title: 'Home',
-    href: '/home',
+    href: '/',
   },
 ]
 
 function Admin({ settings }) {
-  // const imgRef = useRef(null)
   const { data, setData, post } = useForm({
     show_video: settings.filter(item => item.field === 'show_video')[0].value,
     video_banner: null,
+    dummy_bet_amount: settings.filter(item => item.field === 'dummy_bet_amount')[0].value,
   })
-  // const [showVideo, setShowVideo] = useState(settings.filter(item => item.field === 'show_video')[0].value)
-
-  // const updateImage = (e) => {
-  //   const file = e.target.files[0]
-  //   setData('video_banner', file)
-  //   console.log(data, 'data')
-  // }
 
   const handleSave = (e) => {
     e.preventDefault()
-    console.log(data, 'data')
-
-    // const formData = new FormData()
-    // formData.append('show_video', showVideo)
-    // formData.append('video_banner', image
-
-    // console.log(formData)
 
     post('/admin/config', {
-      // forceFormData: true,
-      onFinnish: () => {
+      onSuccess: () => {
         toast('Success!', {
           description: 'Configuration have been succesfully updated!',
           action: {
@@ -61,19 +46,6 @@ function Admin({ settings }) {
         })
       },
     })
-
-    // return;
-    // post('/admin/config', {
-    //   onFinish: () => {
-    //     toast('Success!', {
-    //       description: 'Configuration have been succesfully updated!',
-    //       action: {
-    //         label: 'OK',
-    //         onClick: () => console.log('OK'),
-    //       },
-    //     })
-    //   },
-    // })
   }
 
   return (
@@ -111,6 +83,16 @@ function Admin({ settings }) {
                     type="file"
                     name="video_banner"
                     onChange={e => setData('video_banner', e.target.files[0])}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="dummy_bet_amount">Dummy Bets Amount</Label>
+                  <Input
+                    id="dummy_bet_amount"
+                    type="number"
+                    name="dummy_bet_amount"
+                    onChange={e => setData('dummy_bet_amount', e.target.value)}
+                    defaultValue={data.dummy_bet_amount}
                   />
                 </div>
               </CardContent>
