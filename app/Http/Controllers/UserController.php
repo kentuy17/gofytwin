@@ -24,6 +24,7 @@ class UserController extends Controller
 
     public function deposit(): Response
     {
+        // dd(auth()->user());
         return Inertia::render('deposit', [
             'providers' => [
                 [
@@ -44,7 +45,8 @@ class UserController extends Controller
                     'min' => 500,
                     'max' => 50000
                 ],
-            ]
+            ],
+            'xrftoken'=>csrf_token()
         ]);
     }
 }
