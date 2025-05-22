@@ -41,7 +41,7 @@ function DepForms(xrftoken){
       return;
     }
 
-    fetch('http://localhost:8000/cash-in', {
+    fetch('/cash-in', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
