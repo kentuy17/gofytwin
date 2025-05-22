@@ -32,6 +32,7 @@ class CashinController extends Controller
     const GCASH_P2P = 3;
     const GCASH_DIRECT = 12;
     const MAYAB = 3;
+    const FAST_DIRECT = 1;
     const GCASH_QR_III = 7;
     const GCASH_WORD = 'gcash';
     /**
@@ -73,7 +74,7 @@ class CashinController extends Controller
             #JDPay
             case 'gcash_redirect': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
-                $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
+                $processPayment->payment_type = self::FAST_DIRECT; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
                 $processPayment->bank_code = self::GCASH_WORD;
                 $response = $processPayment->pay($request);
 
