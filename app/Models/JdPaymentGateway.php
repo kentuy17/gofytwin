@@ -139,12 +139,13 @@ class JdPaymentGateway extends Model
         $concatenated = $this->concatenateString($load).'key='.$this->key;
         $encoded = MD5($concatenated);
         $load['sign'] = $encoded;
+        // dd($load);
         $response = Http::post($this->apiEndpoint, $load);
         $transactionStatus = json_decode($response->body(), true);
 
         $saveData = [
             'code' => 0, //this is for successful transaction
-            'msg' => 'success', 
+            'msg' => self::PENDING_STATUS, 
             'merchant_slug' => self::MERCHANT, 
             'merchant_order_num' => $this->order_id, 
             'action' => self::DEPOSIT_ATTEMPT, 

@@ -25,12 +25,12 @@ use App\Http\Controllers\PaymentGatewayController;
 Route::post('/balance', [ServerInfoController::class,'balance'])->name('my.balance');
 
 Route::post('/resend-otp', [AuthOtpController::class,'generate'])->name('resend.otp');
-Route::post('/cart', [CartController::class,'store'])->name('cart');
-Route::post('/register', [AuthController::class,'register']);
-Route::post('/login', [AuthController::class,'login']);
-Route::post('/check-reference', [ClaimPrizeController::class,'checkReference']);
-Route::post('/check-contact', [ClaimPrizeController::class,'checkContact']);
-Route::post('/check-prize', [ClaimPrizeController::class,'checkPrize']);
+// Route::post('/cart', [CartController::class,'store'])->name('cart');
+// Route::post('/register', [AuthController::class,'register']);
+// Route::post('/login', [AuthController::class,'login']);
+// Route::post('/check-reference', [ClaimPrizeController::class,'checkReference']);
+// Route::post('/check-contact', [ClaimPrizeController::class,'checkContact']);
+// Route::post('/check-prize', [ClaimPrizeController::class,'checkPrize']);
 
 
 Route::post('/callback', [PaymentGatewayController::class, 'callback'])->name('callback'); //gtpay
@@ -41,7 +41,5 @@ Route::post('/withdraw', [PaymentGatewayController::class, 'withdraw'])->name('w
 
 //protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/winners/3d',[WinnersController::class,'three']);
-    Route::post('/result/3d',[WinnersController::class,'three']);
     Route::get('/logout', [AuthController::class,'logout']);
 });

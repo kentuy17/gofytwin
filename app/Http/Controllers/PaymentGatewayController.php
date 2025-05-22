@@ -148,24 +148,24 @@ class PaymentGatewayController extends Controller
             $cash_in->status = self::SUCCESS;
             $cash_in->save();
         }
-        $withdrawals = Withdrawals::where('merchant_order_no',$this->transaction_id)->first();
-        if($withdrawals){
-            $withdrawals->process_status = self::SUCCESS;
-            $withdrawals->save();
-        }
-        $adminWithdrawals = AdminWithdrawals::where('merchant_order_no',$this->transaction_id)->first();
-        if($adminWithdrawals){
-            $adminWithdrawals->process_status = self::SUCCESS;
-            $adminWithdrawals->save();
-        }
+        // $withdrawals = Withdrawals::where('merchant_order_no',$this->transaction_id)->first();
+        // if($withdrawals){
+        //     $withdrawals->process_status = self::SUCCESS;
+        //     $withdrawals->save();
+        // }
+        // $adminWithdrawals = AdminWithdrawals::where('merchant_order_no',$this->transaction_id)->first();
+        // if($adminWithdrawals){
+        //     $adminWithdrawals->process_status = self::SUCCESS;
+        //     $adminWithdrawals->save();
+        // }
     }
     protected function checkWinners(){
          
-        $is_winner_3d = Winners3ds::where('merchant_order_no', $this->transaction_id)->first();
-        if($is_winner_3d){
-            $is_winner_3d->process_status = self::SUCCESS;
-            $is_winner_3d->save();
-        }
+        // $is_winner_3d = Winners3ds::where('merchant_order_no', $this->transaction_id)->first();
+        // if($is_winner_3d){
+        //     $is_winner_3d->process_status = self::SUCCESS;
+        //     $is_winner_3d->save();
+        // }
         
     }
     protected function saveRecordToGrid($topup){
@@ -205,206 +205,15 @@ class PaymentGatewayController extends Controller
             $topup->status = self::SUCCESS;
             $topup->save();
         }
-        $credits = Credits::where('user_id', $topup->user_id)->first();
+        $credits = User::find($topup->user_id);
         if($credits){
             $this->saveRecordToGrid($topup);
-            // if($order['amount'] > 299 && $order['amount'] < 2001){
-
-            //     $has_availed_promo = Promos::where('user_id',$topup->user_id)
-            //                                 ->where('promo_type', self::PROMO_DOUBLE_AMOUNT)
-            //                                 ->first();
-            //     if($has_availed_promo){
-            //         $new_amount = $credits->amount + $order['amount'];
-            //     }else{
-            //         $double_promo = $order['amount'] * 2;
-            //         $new_amount = $credits->amount + $double_promo;
-            //         Promos::create([
-            //             'user_id' => $topup->user_id,
-            //             'amount' => $double_promo,
-            //             'mobile_no' => null,
-            //             'promo_type' => self::PROMO_DOUBLE_AMOUNT,
-            //         ]);
-            //     }
-            // } else {
-                //first, check if url is download url
-                // $new_amount = $credits->amount + $this->transaction_amount;
-            // }
-            # promo 2% rebates
+ 
             $rebate_amount = $this->transaction_amount * 0.02;
             $new_amount = $credits->amount + $this->transaction_amount + $rebate_amount;
-            Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => $rebate_amount,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_2_percent_reate,
-                        ]);
-
-            /*
-            $from = Carbon::createFromDate(date('Y-m-d'));
-            $to = Carbon::createFromDate(date('Y-m-d'));
-            switch ($this->transaction_amount) {
-                case '1500': // PROMO_PLUS_50_percent_CI_1500
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_50_percent_CI_1500)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 750;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 750,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_50_percent_CI_1500,
-                        ]);
-                    }
-                        
-                    break;
-                case '2000': // PROMO_PLUS_50_percent_CI_2000
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_50_percent_CI_2000)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 1000;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 1000,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_50_percent_CI_2000,
-                        ]);
-                    }
-                        
-
-                    break;
-                case '3000': // PROMO_PLUS_50_percent_CI_3000
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_50_percent_CI_3000)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 1500;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 1500,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_50_percent_CI_3000,
-                        ]);
-                    }
-                        
-
-                    break;
-                case '100': // PROMO_PLUS_10_percent_CI_100
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_10_percent_CI_100)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 10;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 10,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_10_percent_CI_100,
-                        ]);
-                    }
-                        
-
-                    break;
-                case '400': // PROMO_PLUS_10_percent_CI_400
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_10_percent_CI_400)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 40;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 40,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_10_percent_CI_400,
-                        ]);
-                    }
-                        
-
-                    break;
-                case '600': // PROMO_PLUS_10_percent_CI_600
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_10_percent_CI_600)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 60;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 60,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_10_percent_CI_600,
-                        ]);
-                    }
-                        
-
-                    break;
-                case '800': // PROMO_PLUS_20_percent_CI_800
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_20_percent_CI_800)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 160;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 160,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_20_percent_CI_800,
-                        ]);
-                    }
-                        
-
-                    break;
-                case '1000': // PROMO_PLUS_20_percent_CI_1000
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_20_percent_CI_1000)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 200;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 200,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_20_percent_CI_1000,
-                        ]);
-                    }
-                        
-
-                    break;
-                case '1400': // PROMO_PLUS_20_percent_CI_1400
-                    $has_availed_promo = Promos::where('promo_type', self::PROMO_PLUS_20_percent_CI_1400)
-                                                ->where('user_id', $userId)
-                                                ->whereBetween('created_at', [$from->format('Y-m-d')." 00:00:00", $to->format('Y-m-d')." 23:59:59"])
-                                                ->count();
-                    if($has_availed_promo < 3){
-                        $new_amount = $credits->amount + $this->transaction_amount + 280;
-                        Promos::create([
-                            'user_id' => $topup->user_id,
-                            'amount' => 280,
-                            'mobile_no' => null,
-                            'promo_type' => self::PROMO_PLUS_20_percent_CI_1400,
-                        ]);
-                    }
-                        
-
-                    break;
-                default:
-                    
-            }
-            */
-            
-            // $new_amount = $credits->amount + $this->transaction_amount + $rebate_amount;
-            // $credits->amount = $new_amount;
-
+         
             #default. uncomment if there are no promos
-            $credits->amount = $credits->amount + $this->transaction_amount;
+            $credits->credits = $credits->credits + $this->transaction_amount;
 
             $credits->save();
         }
@@ -430,9 +239,10 @@ class PaymentGatewayController extends Controller
                 'message' => 'You are not allowed here',
             ]);    
         }
+        // dd($data);
         if(isset($data['status']) && $data['status'] == self::SUCCESS_STATUS){
-
-            //check if the order number has already existed and called back
+           
+            //check if the order number has already existed and called back 
             $has_callbacked = Callbacks::where('merchant_order_num',$data['order_id'])->where('msg',self::SUCCESS)->where('action',self::DEPOSIT_SUCCESS)->first();
             if($has_callbacked){
 
@@ -456,6 +266,7 @@ class PaymentGatewayController extends Controller
             ];
             Callbacks::create($saveData);
             $this->applyCredits();
+            // dd('error');
             $this->checkWinners();
             $this->updateStatus();
 

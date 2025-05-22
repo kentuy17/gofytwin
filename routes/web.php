@@ -91,7 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/claim/requests/list',[WithdrawController::class,'list'])->name('withdrawal.list')->middleware('auth');
     Route::post('/claim-prize/process/referral',[ClaimPrizeController::class,'processReferral'])->name('claim.process.referral')->middleware('auth');
     Route::post('/winner/info/winner/board', [ServerInfoController::class,'winner_info_board'])->name('winner.info.winner.board')->middleware('auth');
-    Route::get('/admin/winners-board/from/{from}/to/{to}',[WinnersDownloadController::class,'dldownload'])->name('winners.download')->middleware('auth');
+    // Route::get('/admin/winners-board/from/{from}/to/{to}',[WinnersDownloadController::class,'dldownload'])->name('winners.download')->middleware('auth');
 
 
     Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');
