@@ -74,7 +74,7 @@ class CashinController extends Controller
             #JDPay
             case 'gcash_redirect': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
-                $processPayment->payment_type = self::FAST_DIRECT; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
+                $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
                 $processPayment->bank_code = self::GCASH_WORD;
                 $response = $processPayment->pay($request);
 
