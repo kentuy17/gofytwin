@@ -215,10 +215,6 @@ class JdPaymentGateway extends Model
             'merchant_order_remark'=> self::PG,
             'status'=> self::PENDING_STATUS,
             'sign'=> $this->order_id,
-            'ma_id'=> $ma_id,
-            'sa_id'=> $sa_id,
-            'ma_amount'=> $ma_mount,
-            'sa_amount'=> $sa_amount,
         ]);
         Log::create([
             'order_no'=> $this->order_id,
