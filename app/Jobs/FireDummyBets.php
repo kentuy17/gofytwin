@@ -39,8 +39,6 @@ class FireDummyBets implements ShouldQueue
         $choices = array('M', 'W');
         $amount = range(100,1500);
 
-        Log::channel('test')->info($limit);
-
         while($option['M'] <= $limit || $option['W'] <= $limit) {
             $side = $choices[array_rand($choices)];
             $money = $amount[array_rand($amount)];
@@ -61,7 +59,7 @@ class FireDummyBets implements ShouldQueue
             $betController->dummyBets($bet);
             $option[$side] += $money;
 
-            usleep(rand(100,500) * 1000);
+            usleep(rand(20,100) * 1000);
         }
 
 

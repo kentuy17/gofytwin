@@ -166,7 +166,7 @@ function BetStats() {
   )
 }
 
-export default function Operator({ player, commonData }) {
+export default function Operator({ player, commonData, settings }) {
   const {
     setPlayerBet,
     setMeron,
@@ -265,7 +265,14 @@ export default function Operator({ player, commonData }) {
       <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
         {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
         <div className="border-sidebar-border/70">
-          <VideoJS options={videoJsOptions} onReady={handlePlayerReady} />
+          {/* <VideoJS options={videoJsOptions} onReady={handlePlayerReady} /> */}
+          {settings.show_video === '1'
+            ? (
+                <VideoJS options={videoJsOptions} playsInline onReady={handlePlayerReady} />
+              )
+            : (
+                <img src={settings.video_banner} className="max-w-full" />
+              )}
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>

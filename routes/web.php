@@ -68,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/player/deposit', [UserController::class, 'deposit'])->name('deposit');
     Route::get('/admin/config', [HomeController::class, 'adminConfig'])->name('admin.config');
     Route::post('/admin/config', [HomeController::class, 'updateConfig'])->name('update.config');
+    Route::post('/admin/toggle-video', [HomeController::class, 'toggleVideo']);
 
     // Betting
     Route::post('/bet/add', [BetController::class, 'addBet'])->name('add.bet');

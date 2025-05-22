@@ -60,6 +60,10 @@ class HomeController extends Controller
         $settings = Settings::whereIn('field', [
             'show_video',
             'video_banner',
+            'dummy_bet_amount',
+            'min_bet',
+            'max_bet',
+            'no_credits_banner',
         ])->get();
 
         return Inertia::render('admin/config', [
@@ -71,32 +75,61 @@ class HomeController extends Controller
 
     public function updateConfig(Request $request)
     {
-        // $configs = ["show_video", "video_banner"];
-        $item = Settings::where('field', 'show_video')->first();
-        $item->value = $request->show_video;
-        $item->save();
+        $configs = [
+            "show_video",
+            // "video_banner",
+            "dummy_bet_amount",
+            'min_bet',
+            'max_bet',
+            // 'no_credits_banner',
+        ];
 
-        if($request->hasFile('video_banner')) {
-            $storage = Storage::path('images');
-            if (!is_dir($storage)) {
-                mkdir( $storage,0775, true);
-            } else {
-                chmod($storage, 775);
-            }
-
-            $request->validate([
-                'video_banner' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
-
-            $imageName = time().'.'.$request->file('video_banner')->extension();
-            $request->video_banner->move(public_path('images'), $imageName);
-
-            $banner = Settings::where('field', 'video_banner')->first();
-            $banner->value = "/images/" . $imageName;
-            $banner->save();
+        foreach ($configs as $conf) {
+            $item = Settings::where('field', $conf)->first();
+            $item->value = $request->{$conf};
+            $item->save();
         }
 
+        $upload_configs = [
+            'no_credits_banner',
+            'video_banner'
+        ];
+
+        foreach ($upload_configs as $config) {
+            if($request->hasFile($config)) {
+                $storage = Storage::path('images');
+                if (!is_dir($storage)) {
+                    mkdir( $storage,0775, true);
+                } else {
+                    chmod($storage, 775);
+                }
+
+                $request->validate([
+                    $config => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+
+                $imageName = time().'.'.$request->file($config)->extension();
+                $request->{$config}->move(public_path('images'), $imageName);
+
+                $banner = Settings::where('field', $config)->first();
+                $banner->value = "/images/" . $imageName;
+                $banner->save();
+            }
+        }
+
+        // Log::channel('test')->info($request->file('video_banner')->extension());
+
+
+
         return Redirect::back()->with('success', 'File uploaded successfully');
+    }
+
+    public function toggleVideo(Request $request)
+    {
+        $update = Settings::where('field', 'show_video')
+            ->update(['value' => $request->show_video]);
+
+        return Redirect::back()->with('success', 'Updated successfully.');
     }
 
     public function getUserTotalBets($side, $fight_id)

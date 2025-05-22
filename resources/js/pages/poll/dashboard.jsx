@@ -24,12 +24,12 @@ const COMMISSION = 6
 
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
-function PlaceBets() {
+function PlaceBets({ reset }) {
   const { status } = useContext(OperatorContext)
   return (
     <div className="bg-black justify-around flex flex-row w-full p-2">
       <div className="flex w-2/5 justify-center items-center">
-        <BetDialog side="M">
+        <BetDialog reset={reset} side="M">
           <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-red-500 font-bold">
             <PlusCircleIcon />
             BET MERON
@@ -39,7 +39,7 @@ function PlaceBets() {
 
       <div className="w-1/5"></div>
       <div className="flex w-2/5 justify-center items-center">
-        <BetDialog side="W">
+        <BetDialog reset={reset} side="W">
           <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-blue-500 font-bold">
             <PlusCircleIcon />
             BET WALA
@@ -112,16 +112,10 @@ export default function Dashboard({ commonData, player, user, settings }) {
     setLastResult,
     setLastCall,
   } = useContext(OperatorContext)
-  let ctr = localStorage.getItem('ctr')
-
-  if (!ctr) {
-    localStorage.setItem('ctr', 0)
-    ctr = 0
-  }
 
   const [winAmount, setWinAmount] = useState(0)
   const [betStatus, setBetStatus] = useState(null)
-  const [logoutCtr, setLogoutCtr] = useState(ctr)
+  const [logoutCtr, setLogoutCtr] = useState(0)
 
   const resultChannel = `result.${user.id}`
 
@@ -158,6 +152,8 @@ export default function Dashboard({ commonData, player, user, settings }) {
   }
 
   useEffect(() => {
+    localStorage.setItem('ctr', 0)
+
     const handleShowCongrats = () => {
       btnRef.current.click()
     }
@@ -250,6 +246,8 @@ export default function Dashboard({ commonData, player, user, settings }) {
       localStorage.setItem('ctr', 0)
       setLogoutCtr(0)
 
+      // eslint-disable-next-line no-alert
+      alert('You have been logged-out due to inactivity.')
       // eslint-disable-next-line no-undef
       router.post(route('logout'))
     }
@@ -274,7 +272,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
           </div>
           <BetStats />
-          <PlaceBets />
+          <PlaceBets reset={setLogoutCtr} />
         </div>
         <BetTrends />
         {/* </div> */}

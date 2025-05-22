@@ -112,6 +112,10 @@ class SettingsSeeder extends Seeder
                 'field' => 'video_banner',
                 'value' => '/images/video-banner.jpeg',
             ],
+            [
+                'field' => 'no_credits_banner',
+                'value' => '/images/video-banner.jpeg',
+            ]
         ]);
 
 
