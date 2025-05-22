@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Mail\BetsMail;
+use App\Models\Topups;
+use App\Models\Cashins;
 use App\Models\Receipts;
 use App\Mail\MailableName;
+use Illuminate\Http\Request;
 use App\Models\SettingsModel;
 use App\Models\ProcessPayment;
+use App\Models\AgentReportGrids;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreFileRequest;
@@ -15,23 +20,18 @@ use App\Models\ManualPaymentGateway;
 class CashinController extends Controller
 {
     protected $emails = [ 
-            'playstlofficial@gmail.com'
+            'gofytwin@gmail.com'
         ];
     protected $bcc = [
             'ryanletterbee@gmail.com',
-            'playonline.pcso@gmail.com',
-            'omoyondennis@gmail.com',
-            'jovelrsa@gmail.com',
-            'ryanbarz89@gmail.com',
-            'orlandmanubag01@gmail.com',
-            'manubagadrian0399@gmail.com',
         ];
     protected $draw_time;
     protected $play;
-    protected $url = 'https://playstl.net/';
+    protected $url = 'https://gofytwin.com/';
     public $settings;
     const GCASH_P2P = 3;
     const GCASH_DIRECT = 12;
+    const MAYAB = 3;
     const GCASH_QR_III = 7;
     const GCASH_WORD = 'gcash';
     /**
@@ -49,8 +49,7 @@ class CashinController extends Controller
     public function cash_in(){
         $background_image = $this->settings->getValueFor('background_image');
         $balance = User::find(auth()->user()->id); 
-        // $balance = $balance->credits->amount;
-        $balance = 0;
+        $balance = $balance->credits;
         
         return view(
             'cash-in',[
@@ -64,6 +63,7 @@ class CashinController extends Controller
     }
 
     public function processPayment(StoreFileRequest $request){
+        
         $return_url = URL::to("/");
         $response = false;
         // dd($request->amount);
@@ -71,9 +71,9 @@ class CashinController extends Controller
         switch ($request->getPg()) {
 
             #JDPay
-            case 'gcash_redirect': // primary PG | min amount = 50 | (GCash Easy Pay I)
+            case 'gcash_redirect': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
-                $processPayment->payment_type = self::GCASH_DIRECT; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
+                $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
                 $processPayment->bank_code = self::GCASH_WORD;
                 $response = $processPayment->pay($request);
 
@@ -100,15 +100,6 @@ class CashinController extends Controller
                 $response = $processPayment->pay($request);
 
                 break;
-            case 'gcash_qr': // SECONDARY PG | min amount = 100 | (GCash Pay II)
-                #secondary PG
-                $processPayment = new Receipts;
-                $pg = $this->settings->getValueFor('gcash_gateway');
-                $response = $processPayment->pay($request->amount, $pg, $return_url);
-                // dd($response);
-
-                return redirect($response);
-                break;
             case 'paymaya_1': // min amount = 50
                 $processPayment = new ProcessPayment();
                 $processPayment->payment_type = 3;
@@ -116,13 +107,7 @@ class CashinController extends Controller
                 $response = $processPayment->pay($request);
               
                   break;
-            case 'paymaya_2': // SECONDARY PG | min amount = 100
-                $processPayment = new Receipts;
-                $pg = $this->settings->getValueFor('paymaya_gateway');
-                $response = $processPayment->pay($request->amount, $pg, $return_url);
-
-                return redirect($response);
-                  break;
+     
             case self::CI_MANUAL: // min amount = 50
                 $path = $request->file('file');
                 $userMobile = auth()->user()->mobile_no;
@@ -139,18 +124,23 @@ class CashinController extends Controller
                 return redirect()->back()->with('error', 'An error has occured.');
         }
 
+        
         $responseToArray = json_decode($response, true);
         // dd($responseToArray);
             
         if($responseToArray['status'] == 1){
             
-
-            return redirect($responseToArray['redirect_url']);
+            return response([
+                'status'=> true,
+                'redirect_url'=> $responseToArray['redirect_url'],
+            ],200);
         } else {
-            
-            return redirect()->back()->with('error', $responseToArray['message']);
-        }
 
-        return redirect()->back()->with('error', 'Unable to process request');
+            return response([
+                'status'=> false,
+                'redirect_url'=> $responseToArray['message'],
+            ],200);
+        }
+        
     }
 }

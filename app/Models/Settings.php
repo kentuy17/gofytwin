@@ -17,7 +17,8 @@ class Settings extends Model
     static function get($field)
     {
         $item = self::where('field', $field)->first();
-        return $item->value;
+
+        return isset($item->value) ? $item->value : null;
     }
 
 

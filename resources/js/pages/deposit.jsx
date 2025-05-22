@@ -8,22 +8,111 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import InputError from '@/components/input-error'
+import { useEffect, useRef, useState } from 'react'
 
-const breadcrumbs = [
-  {
-    title: 'Cash-in',
-    href: '/player/deposit',
-  },
-]
-const { data, setData, post, processing, errors } = useForm({
-    email: '',
+function DepForms(xrftoken){
+  const submitRef = useRef(null)
+  const [submitDisabled, setSubmitDisabled] = useState(true)
+  const { data, setData, post, processing, reset } = useForm({
+    amount: '',
+    remember: true,
   })
-const submit = (e) => {
-    e.preventDefault()
-    post('/otp/generate', {
-      onFinish: () => reset('password'),
-    })
+  const handleAmountInput = (e) => {
+    let val = e.target.value
+    val = val.replace(/\D/g, '')
+    if (val.length > 6)
+      return
+    setSubmitDisabled(val.length !== 6)
+    setData('amount', val)
   }
+  const submit = (e) => {
+    e.preventDefault()
+
+    
+
+
+
+    // post('/otp/generate', {
+    //   onFinish: () => reset('password'),
+    // })
+    if(data.amount == ''){
+      alert('Plase input amount');
+      
+      return;
+    }
+
+    fetch('http://localhost:8000/cash-in', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': xrftoken.xrftoken,
+      },
+      body: JSON.stringify({
+        pg: 'gcash_redirect',
+        amount: data.amount,
+      })
+    }).then(response => {
+      return Promise.all([response.json(),response])
+    })
+    .then(([responseData,response]) => {
+      // handle data here
+      
+      if(responseData.status === true){
+        window.location.href=responseData.redirect_url;
+      } else {
+        console.log('wqewqe')
+      }
+      // console.log(response)
+    })
+    
+
+  }
+  const inputGradient = {
+    background: 'rgb(1, 1, 2)',
+    // eslint-disable-next-line no-dupe-keys
+    background: 'linear-gradient(90deg, rgba(1,1,2,1) 0%, rgba(34,34,49,1) 48%, rgba(84,84,84,1) 100%)',
+    borderColor: 'rgba(84,84,84,1)',
+    marginLeft: '16px',
+    width: 'calc(100% - 32px)',
+  }
+  
+  
+
+  return(
+    <div className="space-y-6">
+      <form onSubmit={submit}>
+        <div className="grid gap-2">
+          <Label htmlFor="amount">Enter Amount</Label>
+          <Input
+            onChange={handleAmountInput}
+            value={data.amount} 
+            // onChange={e => setData('amount', e.target.value)}
+            className="bg-gradient-to-l from-white to-zinc-900 to-75%"
+            style={inputGradient}
+            placeholder="Enter Amount"
+          />
+
+          {/* <InputError message={errors.email} /> */}
+        </div>
+
+        <div className="my-6 flex items-center justify-start">
+          <Button type="submit" ref={submitRef}   tabIndex={4} disabled={processing}>
+            Submit
+          </Button>
+        </div>
+      </form>
+
+      
+    </div>
+  )
+
+}
+
+
+ 
+
+ 
 
 function PaymentProvider({ item }) {
   const { name, icon, min, max } = item
@@ -55,7 +144,15 @@ function PaymentProvider({ item }) {
   )
 }
 
-function Deposit({ providers }) {
+function Deposit({ providers,xrftoken }) {
+  // console.log(xrftoken)
+  // setData('xrf_token', xrftoken)
+  const breadcrumbs = [
+    {
+      title: 'Cash-in',
+      href: '/player/deposit',
+    },
+  ]
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
@@ -168,40 +265,10 @@ function Deposit({ providers }) {
             </CardContent>
           </Card> */}
         </div>
-        
+  </div>
 
-
-
-       <div className="space-y-6">
-               <form onSubmit={submit}>
-                 <div className="grid gap-2">
-                   <Label htmlFor="amount">amount address</Label>
-                   <Input
-                     id="amount"
-                     type="amount"
-                     name="amount"
-                     autoComplete="off"
-                     autoFocus
-                    //  onChange={e => setData('email', e.target.value)}
-                     placeholder="Enter Amount"
-                   />
-       
-                   {/* <InputError message={errors.email} /> */}
-                 </div>
-       
-                 <div className="my-6 flex items-center justify-start">
-                   <Button className="w-full" >
-                     Submit
-                   </Button>
-                 </div>
-               </form>
-       
-               <div className="text-muted-foreground space-x-1 text-center text-sm">
-                 <span>Or, return to</span>
-                 <TextLink href={route('login')}>log in</TextLink>
-               </div>
-             </div>
-      </div>
+     
+      <DepForms xrftoken={xrftoken} />
     
     </AppLayout>
   )
