@@ -253,6 +253,8 @@ export default function Dashboard({ commonData, player, user, settings }) {
     }
   }, [logoutCtr])
 
+  console.log(settings)
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
@@ -260,13 +262,17 @@ export default function Dashboard({ commonData, player, user, settings }) {
       <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
         {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
         <div className="border-sidebar-border/70">
-          {settings.show_video === '1' && user.credits > 0
+          {settings.show_video === '1' && user.credits >= 20
             ? (
                 <VideoJS options={videoJsOptions} playsInline onReady={handlePlayerReady} />
               )
-            : (
-                <img src={settings.video_banner} className="max-w-full" />
-              )}
+            : settings.show_video === '1' && user.credits < 20
+              ? (
+                  <img src={settings.no_credits_banner} className="max-w-full" />
+                )
+              : (
+                  <img src={settings.video_banner} className="max-w-full" />
+                )}
 
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
             Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
