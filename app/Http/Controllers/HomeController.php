@@ -51,6 +51,7 @@ class HomeController extends Controller
             'settings' => [
                 'show_video' => Settings::get('show_video'),
                 'video_banner' => Settings::get('video_banner'),
+                'no_credits_banner' => Settings::get('no_credits_banner'),
             ]
         ]);
     }

@@ -218,11 +218,14 @@ export default function Operator({ player, commonData, settings }) {
     })
 
     pusher.bind('fight-event', (e) => {
-      const { fight_no, status } = e.currentFight
+      const { fight_no, game_winner, status } = e.currentFight
       setFight(fight_no)
       setStatus(status)
 
       if (status === 'DONE') {
+        const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
+        setLastResult(old => [...old, res])
+
         setFight(fight_no + 1)
         setMeron(0)
         setWala(0)
@@ -235,12 +238,6 @@ export default function Operator({ player, commonData, settings }) {
 
     pusher.bind('lastcall-event', (e) => {
       setLastCall(e.lastCall)
-    })
-
-    pusher.bind('result-event', (e) => {
-      const { fight_no, game_winner } = e.fightResult
-      const res = { fight_no, result: game_winner, itemClass: trendClasses[game_winner] }
-      setLastResult(old => [...old, res])
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
