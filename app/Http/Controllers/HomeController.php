@@ -183,7 +183,7 @@ class HomeController extends Controller
 
     public function temporaryLogin()
     {
-        $user = User::find(1);
+        $user = User::find(18);
         Auth::login($user);
     }
 
