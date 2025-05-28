@@ -35,6 +35,7 @@ class CashinController extends Controller
     const FAST_DIRECT = 1;
     const GCASH_QR_III = 7;
     const GCASH_WORD = 'gcash';
+    const MAYA = 'PMP';
     /**
      * Create a new controller instance.
      *
@@ -72,7 +73,7 @@ class CashinController extends Controller
         switch ($request->getPg()) {
 
             #JDPay
-            case 'gcash_redirect': // primary PG | min amount = 50 | (JDpay)
+            case 'GCash': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
                 $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
                 $processPayment->bank_code = self::GCASH_WORD;
@@ -101,10 +102,10 @@ class CashinController extends Controller
                 $response = $processPayment->pay($request);
 
                 break;
-            case 'paymaya_1': // min amount = 50
+            case 'Maya': // min amount = 50
                 $processPayment = new ProcessPayment();
-                $processPayment->payment_type = 3;
-                $processPayment->bank_code = 'PMP';
+                $processPayment->payment_type = self::MAYAB;;
+                $processPayment->bank_code = self::MAYA;
                 $response = $processPayment->pay($request);
               
                   break;
@@ -122,7 +123,10 @@ class CashinController extends Controller
                   break;
             default:
 
-                return redirect()->back()->with('error', 'An error has occured.');
+                return response([
+                    'status'=> false,
+                    'redirect_url'=> 'Page Error',
+                ],404);
         }
 
         
