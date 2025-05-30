@@ -25,8 +25,6 @@ class Topups extends Model
         'merchant_order_remark',
         'status',
         'sign',
-        'ma_id',
-        'sa_id',
         'ma_amount',
         'sa_amount',
     ];

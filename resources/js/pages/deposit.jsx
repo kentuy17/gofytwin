@@ -12,24 +12,42 @@ import { Head, useForm } from '@inertiajs/react'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import { useEffect, useRef, useState } from 'react'
 import '../../css/bet-arnie.css'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import InputError from '@/components/input-error'
+import { useEffect, useRef, useState } from 'react'
 
-function DepForms(xrftoken) {
+function DepForms({xrftoken, inputValue}){
+
   const submitRef = useRef(null)
   const [submitDisabled, setSubmitDisabled] = useState(true)
   const { data, setData, post, processing, reset } = useForm({
     amount: '',
     remember: true,
   })
+  const handleAmountInput = (e) => {
+    let val = e.target.value
+    val = val.replace(/\D/g, '')
+    if (val.length > 6)
+      return
+    setSubmitDisabled(val.length !== 6)
+    setData('amount', val)
+  }
+
   const submit = (e) => {
+
     e.preventDefault()
 
-    // post('/otp/generate', {
-    //   onFinish: () => reset('password'),
-    // })
-    if (data.amount == '') {
-      alert('Plase input amount')
+    if(data.amount == ''){
+      alert('Plase input amount');
 
-      return
+      return;
+    }
+    if(inputValue == null){
+      alert('Plase select gateway');
+
+      return;
     }
 
     fetch('/cash-in', {
@@ -37,25 +55,27 @@ function DepForms(xrftoken) {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': xrftoken.xrftoken,
+        'X-CSRF-TOKEN': xrftoken,
       },
       body: JSON.stringify({
-        pg: 'gcash_redirect',
+        pg: inputValue,
         amount: data.amount,
-      }),
-    }).then((response) => {
-      return Promise.all([response.json(), response])
-    }).then(([responseData, response]) => {
+      })
+    }).then(response => {
+      return Promise.all([response.json(),response])
+    })
+    .then(([responseData,response]) => {
       // handle data here
-      console.log(responseData, response)
-      if (responseData.status === true) {
-        window.location.href = responseData.redirect_url
-      }
-      else {
+
+      if(responseData.status === true){
+        window.location.href=responseData.redirect_url;
+      } else {
         console.log('wqewqe')
       }
       // console.log(response)
     })
+
+
   }
   const inputGradient = {
     background: 'rgb(1, 1, 2)',
@@ -66,9 +86,14 @@ function DepForms(xrftoken) {
     width: 'calc(100% - 32px)',
   }
 
-  return (
-    <div className="space-y-6">
+
+
+  return(
+    <div className="space-y-6 p-6">
       <form onSubmit={submit}>
+        <div className="grid my-6">
+              Gateway:  &nbsp;  {inputValue}
+          </div>
         <div className="grid gap-2">
           <Label htmlFor="amount">Enter Amount</Label>
           <Input
@@ -79,27 +104,43 @@ function DepForms(xrftoken) {
             style={inputGradient}
             placeholder="Enter Amount"
           />
-
           {/* <InputError message={errors.email} /> */}
         </div>
+        {/* <Label htmlFor="amount">Chosen Gateway: </Label> */}
 
         <div className="my-6 flex items-center justify-start">
-          <Button type="submit" ref={submitRef} tabIndex={4} disabled={processing}>
+          <Button type="submit" ref={submitRef}   tabIndex={4} disabled={processing}>
             Submit
           </Button>
         </div>
       </form>
 
+
     </div>
   )
+
 }
 
-function PaymentProvider({ item }) {
+
+
+
+
+
+function PaymentProvider({ value, onInputChange, item }) {
   const { name, icon, min, max } = item
+  const handleChange  = (e) => {
+    onInputChange(name);
+    // let val = e.target.value
+    // val = val.replace(/\D/g, '')
+    // if (val.length > 6)
+    //   return
+    // setSubmitDisabled(val.length !== 6)
+    // setData('amount', val)
+  }
 
   return (
     <div className="dep-tile-2 rounded clearfix">
-      <div className="btn-gold rounded gp-shadow-sm d-flex p-2 clickable">
+      <div className="btn-gold rounded gp-shadow-sm d-flex p-2 clickable" onClick={handleChange}>
         <div className="icn">
           <img src={icon} />
         </div>
@@ -124,63 +165,13 @@ function PaymentProvider({ item }) {
   )
 }
 
-export function PaymentProviderTmp({ item }) {
-  const [pg, setPg] = useState({ selected: 0 })
-  return (
-    <button
-      type="button"
-      key={item.name}
-      className={cn(
-        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-        pg.selected === item.id && 'bg-muted',
-      )}
-      onClick={() => setPg({ selected: item.name })}
-    >
-      <div className="flex w-full flex-col gap-1">
-        <div className="flex items-center">
-          <div className="flex items-center gap-2">
-            <div className="font-semibold">{item.name}</div>
-            {!item.read && (
-              <span className="flex h-2 w-2 rounded-full bg-blue-600" />
-            )}
-          </div>
-          <div
-            className={cn(
-              'ml-auto text-xs',
-              pg.selected === item.name
-                ? 'text-foreground'
-                : 'text-muted-foreground',
-            )}
-          >
-            {formatDistanceToNow(new Date(item.date), {
-              addSuffix: true,
-            })}
-          </div>
-        </div>
-        <div className="text-xs font-medium">{item.subject}</div>
-      </div>
-      <div className="line-clamp-2 text-xs text-muted-foreground">
-        {item.text.substring(0, 300)}
-      </div>
-      {item.labels.length
-        ? (
-            <div className="flex items-center gap-2">
-              {item.labels.map(label => (
-                <Badge key={label} variant="default">
-                  {label}
-                </Badge>
-              ))}
-            </div>
-          )
-        : null}
-    </button>
-  )
-}
+function Deposit({ providers,xrftoken }) {
+  const [inputValue, setInputValue] = useState(null);
 
-function Deposit({ providers, xrftoken }) {
-  console.log(providers)
-  // console.log(xrftoken)
-  // setData('xrf_token', xrftoken)
+  const handleInputChange = (newValue) => {
+    setInputValue(newValue);
+  };
+
   const breadcrumbs = [
     {
       title: 'Cash-in',
@@ -217,91 +208,16 @@ function Deposit({ providers, xrftoken }) {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <PaymentProvider item={item} />
+                  <PaymentProvider inputValue={inputValue} onInputChange={handleInputChange} item={item} />
                 </CardContent>
               </Card>
             )
           })}
-          {/* <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Subscriptions
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
-              <p className="text-xs text-muted-foreground">
-                +180.1% from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sales</CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <rect width="20" height="14" x="2" y="5" rx="2" />
-                <path d="M2 10h20" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
-              <p className="text-xs text-muted-foreground">
-                +19% from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Active Now
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-muted-foreground">
-                +201 since last hour
-              </p>
-            </CardContent>
-          </Card> */}
         </div>
-      </div>
+  </div>
 
-      <DepForms xrftoken={xrftoken} />
+
+      <DepForms xrftoken={xrftoken} inputValue={inputValue} />
 
     </AppLayout>
   )
