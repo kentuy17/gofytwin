@@ -1,29 +1,98 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-// import React from 'react'
-import AppLayout from '@/layouts/app-layout'
-import { formatMoney } from '@/lib/utils'
-import { Head, useForm } from '@inertiajs/react'
-import '../../css/bet-arnie.css'
+/* eslint-disable no-console */
+import InputError from '@/components/input-error'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import InputError from '@/components/input-error'
+// import React from 'react'
+import AppLayout from '@/layouts/app-layout'
+import { cn, formatMoney } from '@/lib/utils'
+import { Head, useForm } from '@inertiajs/react'
+import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+import { useEffect, useRef, useState } from 'react'
+import '../../css/bet-arnie.css'
 
-const breadcrumbs = [
-  {
-    title: 'Cash-in',
-    href: '/player/deposit',
-  },
-]
-const { data, setData, post, processing, errors } = useForm({
-    email: '',
+function DepForms(xrftoken) {
+  const submitRef = useRef(null)
+  const [submitDisabled, setSubmitDisabled] = useState(true)
+  const { data, setData, post, processing, reset } = useForm({
+    amount: '',
+    remember: true,
   })
-const submit = (e) => {
+  const submit = (e) => {
     e.preventDefault()
-    post('/otp/generate', {
-      onFinish: () => reset('password'),
+
+    // post('/otp/generate', {
+    //   onFinish: () => reset('password'),
+    // })
+    if (data.amount == '') {
+      alert('Plase input amount')
+
+      return
+    }
+
+    fetch('/cash-in', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': xrftoken.xrftoken,
+      },
+      body: JSON.stringify({
+        pg: 'gcash_redirect',
+        amount: data.amount,
+      }),
+    }).then((response) => {
+      return Promise.all([response.json(), response])
+    }).then(([responseData, response]) => {
+      // handle data here
+      console.log(responseData, response)
+      if (responseData.status === true) {
+        window.location.href = responseData.redirect_url
+      }
+      else {
+        console.log('wqewqe')
+      }
+      // console.log(response)
     })
   }
+  const inputGradient = {
+    background: 'rgb(1, 1, 2)',
+    // eslint-disable-next-line no-dupe-keys
+    background: 'linear-gradient(90deg, rgba(1,1,2,1) 0%, rgba(34,34,49,1) 48%, rgba(84,84,84,1) 100%)',
+    borderColor: 'rgba(84,84,84,1)',
+    marginLeft: '16px',
+    width: 'calc(100% - 32px)',
+  }
+
+  return (
+    <div className="space-y-6">
+      <form onSubmit={submit}>
+        <div className="grid gap-2">
+          <Label htmlFor="amount">Enter Amount</Label>
+          <Input
+            onChange={handleAmountInput}
+            value={data.amount}
+            // onChange={e => setData('amount', e.target.value)}
+            className="bg-gradient-to-l from-white to-zinc-900 to-75%"
+            style={inputGradient}
+            placeholder="Enter Amount"
+          />
+
+          {/* <InputError message={errors.email} /> */}
+        </div>
+
+        <div className="my-6 flex items-center justify-start">
+          <Button type="submit" ref={submitRef} tabIndex={4} disabled={processing}>
+            Submit
+          </Button>
+        </div>
+      </form>
+
+    </div>
+  )
+}
 
 function PaymentProvider({ item }) {
   const { name, icon, min, max } = item
@@ -55,7 +124,69 @@ function PaymentProvider({ item }) {
   )
 }
 
-function Deposit({ providers }) {
+export function PaymentProviderTmp({ item }) {
+  const [pg, setPg] = useState({ selected: 0 })
+  return (
+    <button
+      type="button"
+      key={item.name}
+      className={cn(
+        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
+        pg.selected === item.id && 'bg-muted',
+      )}
+      onClick={() => setPg({ selected: item.name })}
+    >
+      <div className="flex w-full flex-col gap-1">
+        <div className="flex items-center">
+          <div className="flex items-center gap-2">
+            <div className="font-semibold">{item.name}</div>
+            {!item.read && (
+              <span className="flex h-2 w-2 rounded-full bg-blue-600" />
+            )}
+          </div>
+          <div
+            className={cn(
+              'ml-auto text-xs',
+              pg.selected === item.name
+                ? 'text-foreground'
+                : 'text-muted-foreground',
+            )}
+          >
+            {formatDistanceToNow(new Date(item.date), {
+              addSuffix: true,
+            })}
+          </div>
+        </div>
+        <div className="text-xs font-medium">{item.subject}</div>
+      </div>
+      <div className="line-clamp-2 text-xs text-muted-foreground">
+        {item.text.substring(0, 300)}
+      </div>
+      {item.labels.length
+        ? (
+            <div className="flex items-center gap-2">
+              {item.labels.map(label => (
+                <Badge key={label} variant="default">
+                  {label}
+                </Badge>
+              ))}
+            </div>
+          )
+        : null}
+    </button>
+  )
+}
+
+function Deposit({ providers, xrftoken }) {
+  console.log(providers)
+  // console.log(xrftoken)
+  // setData('xrf_token', xrftoken)
+  const breadcrumbs = [
+    {
+      title: 'Cash-in',
+      href: '/player/deposit',
+    },
+  ]
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
@@ -67,7 +198,7 @@ function Deposit({ providers }) {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {providers.map((item, key) => {
             return (
-              <Card key={key}>
+              <Card key={key} aria-selected className="hover:bg-accent">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     {item.name}
@@ -168,41 +299,10 @@ function Deposit({ providers }) {
             </CardContent>
           </Card> */}
         </div>
-        
-
-
-
-       <div className="space-y-6">
-               <form onSubmit={submit}>
-                 <div className="grid gap-2">
-                   <Label htmlFor="amount">amount address</Label>
-                   <Input
-                     id="amount"
-                     type="amount"
-                     name="amount"
-                     autoComplete="off"
-                     autoFocus
-                    //  onChange={e => setData('email', e.target.value)}
-                     placeholder="Enter Amount"
-                   />
-       
-                   {/* <InputError message={errors.email} /> */}
-                 </div>
-       
-                 <div className="my-6 flex items-center justify-start">
-                   <Button className="w-full" >
-                     Submit
-                   </Button>
-                 </div>
-               </form>
-       
-               <div className="text-muted-foreground space-x-1 text-center text-sm">
-                 <span>Or, return to</span>
-                 <TextLink href={route('login')}>log in</TextLink>
-               </div>
-             </div>
       </div>
-    
+
+      <DepForms xrftoken={xrftoken} />
+
     </AppLayout>
   )
 }

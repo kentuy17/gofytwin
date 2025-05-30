@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LastCallEvent;
 use App\Models\Bet;
 use App\Models\EventGame;
 use App\Models\Fight;
@@ -127,8 +128,15 @@ class HomeController extends Controller
 
     public function toggleVideo(Request $request)
     {
-        $update = Settings::where('field', 'show_video')
+        Settings::where('field', 'show_video')
             ->update(['value' => $request->show_video]);
+
+        $event_req = new Request([
+            'type' => 'show_video',
+            'value' => $request->show_video
+        ]);
+
+        event(new LastCallEvent($event_req));
 
         return Redirect::back()->with('success', 'Updated successfully.');
     }

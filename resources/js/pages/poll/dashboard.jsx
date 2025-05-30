@@ -194,6 +194,13 @@ export default function Dashboard({ commonData, player, user, settings }) {
     })
 
     pusher.bind('lastcall-event', (e) => {
+      if (Object.hasOwn(e.lastCall, 'type')
+        && (e.lastCall.type === 'show_video' && e.lastCall.value !== settings.show_video)) {
+        router.reload({ only: ['settings'] })
+
+        return
+      }
+
       setLastCall(e.lastCall)
     })
 
@@ -252,8 +259,6 @@ export default function Dashboard({ commonData, player, user, settings }) {
       router.post(route('logout'))
     }
   }, [logoutCtr])
-
-  console.log(settings)
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
