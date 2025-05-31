@@ -1,28 +1,19 @@
 /* eslint-disable no-console */
-import InputError from '@/components/input-error'
-import { Badge } from '@/components/ui/badge'
+/* eslint-disable no-alert */
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-// import React from 'react'
 import AppLayout from '@/layouts/app-layout'
-import { cn, formatMoney } from '@/lib/utils'
+import { formatMoney } from '@/lib/utils'
 import { Head, useForm } from '@inertiajs/react'
-import formatDistanceToNow from 'date-fns/formatDistanceToNow'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import '../../css/bet-arnie.css'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import InputError from '@/components/input-error'
-import { useEffect, useRef, useState } from 'react'
 
-function DepForms({xrftoken, inputValue}){
-
+function DepForms({ xrftoken, inputValue }) {
   const submitRef = useRef(null)
   const [submitDisabled, setSubmitDisabled] = useState(true)
-  const { data, setData, post, processing, reset } = useForm({
+  const { data, setData, processing } = useForm({
     amount: '',
     remember: true,
   })
@@ -31,23 +22,22 @@ function DepForms({xrftoken, inputValue}){
     val = val.replace(/\D/g, '')
     if (val.length > 6)
       return
-    setSubmitDisabled(val.length !== 6)
+    setSubmitDisabled(val.length < 2)
     setData('amount', val)
   }
 
   const submit = (e) => {
-
     e.preventDefault()
 
-    if(data.amount == ''){
-      alert('Plase input amount');
+    if (data.amount === '') {
+      alert('Plase input amount')
 
-      return;
+      return
     }
-    if(inputValue == null){
-      alert('Plase select gateway');
+    if (inputValue == null) {
+      alert('Plase select gateway')
 
-      return;
+      return
     }
 
     fetch('/cash-in', {
@@ -60,48 +50,36 @@ function DepForms({xrftoken, inputValue}){
       body: JSON.stringify({
         pg: inputValue,
         amount: data.amount,
-      })
-    }).then(response => {
-      return Promise.all([response.json(),response])
-    })
-    .then(([responseData,response]) => {
+      }),
+    }).then((response) => {
+      return Promise.all([response.json(), response])
+    }).then(([responseData]) => {
       // handle data here
 
-      if(responseData.status === true){
-        window.location.href=responseData.redirect_url;
-      } else {
+      if (responseData.status === true) {
+        window.location.href = responseData.redirect_url
+      }
+      else {
         console.log('wqewqe')
       }
       // console.log(response)
     })
-
-
-  }
-  const inputGradient = {
-    background: 'rgb(1, 1, 2)',
-    // eslint-disable-next-line no-dupe-keys
-    background: 'linear-gradient(90deg, rgba(1,1,2,1) 0%, rgba(34,34,49,1) 48%, rgba(84,84,84,1) 100%)',
-    borderColor: 'rgba(84,84,84,1)',
-    marginLeft: '16px',
-    width: 'calc(100% - 32px)',
   }
 
-
-
-  return(
+  return (
     <div className="space-y-6 p-6">
       <form onSubmit={submit}>
         <div className="grid my-6">
-              Gateway:  &nbsp;  {inputValue}
-          </div>
+          Gateway:  &nbsp;
+          {' '}
+          {inputValue}
+        </div>
         <div className="grid gap-2">
           <Label htmlFor="amount">Enter Amount</Label>
           <Input
             onChange={handleAmountInput}
             value={data.amount}
             // onChange={e => setData('amount', e.target.value)}
-            className="bg-gradient-to-l from-white to-zinc-900 to-75%"
-            style={inputGradient}
             placeholder="Enter Amount"
           />
           {/* <InputError message={errors.email} /> */}
@@ -109,27 +87,20 @@ function DepForms({xrftoken, inputValue}){
         {/* <Label htmlFor="amount">Chosen Gateway: </Label> */}
 
         <div className="my-6 flex items-center justify-start">
-          <Button type="submit" ref={submitRef}   tabIndex={4} disabled={processing}>
+          <Button type="submit" ref={submitRef} tabIndex={4} disabled={processing || submitDisabled}>
             Submit
           </Button>
         </div>
       </form>
 
-
     </div>
   )
-
 }
 
-
-
-
-
-
-function PaymentProvider({ value, onInputChange, item }) {
+function PaymentProvider({ onInputChange, item }) {
   const { name, icon, min, max } = item
-  const handleChange  = (e) => {
-    onInputChange(name);
+  const handleChange = () => {
+    onInputChange(name)
     // let val = e.target.value
     // val = val.replace(/\D/g, '')
     // if (val.length > 6)
@@ -165,12 +136,11 @@ function PaymentProvider({ value, onInputChange, item }) {
   )
 }
 
-function Deposit({ providers,xrftoken }) {
-  const [inputValue, setInputValue] = useState(null);
-
+function Deposit({ providers, xrftoken }) {
+  const [inputValue, setInputValue] = useState(null)
   const handleInputChange = (newValue) => {
-    setInputValue(newValue);
-  };
+    setInputValue(newValue)
+  }
 
   const breadcrumbs = [
     {
@@ -189,7 +159,7 @@ function Deposit({ providers,xrftoken }) {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {providers.map((item, key) => {
             return (
-              <Card key={key} aria-selected className="hover:bg-accent">
+              <Card key={key} className={inputValue === item.name ? 'border-4 border-yellow-400' : ''}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     {item.name}
@@ -214,8 +184,7 @@ function Deposit({ providers,xrftoken }) {
             )
           })}
         </div>
-  </div>
-
+      </div>
 
       <DepForms xrftoken={xrftoken} inputValue={inputValue} />
 

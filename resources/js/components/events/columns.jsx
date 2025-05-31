@@ -75,7 +75,6 @@ export function SetFightDialog({ children, fight, eventId }) {
 
 function ActionsComponents({ event }) {
   const { status } = useContext(OperatorContext)
-  console.log(status !== 'WAITING')
 
   if (!status || typeof status === 'undefined') {
     router.visit('/operator')

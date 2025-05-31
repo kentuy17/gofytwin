@@ -1,15 +1,16 @@
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { router } from '@inertiajs/react'
-import { MoreHorizontal } from 'lucide-react'
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from '@/components/ui/dropdown-menu'
+import { formatMoney } from '@/lib/utils'
+// import { router } from '@inertiajs/react'
+// import { MoreHorizontal } from 'lucide-react'
 import { DataTableColumnHeader } from './data-table-column-header'
 
 export const columns = [
@@ -35,13 +36,14 @@ export const columns = [
       />
     ),
     enableSorting: false,
-    enableHiding: false,
+    enableHiding: true,
   },
   {
     accessorKey: 'id',
     header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="#" />
+      return <DataTableColumnHeader className="hidden" column={column} title="#" />
     },
+    cell: ({ row }) => <div className="hidden">{row.getValue('id')}</div>,
   },
 
   {
@@ -56,15 +58,10 @@ export const columns = [
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
       const amount = Number.parseFloat(row.getValue('amount'))
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-right font-medium">{formatMoney(amount)}</div>
     },
   },
-  
+
   {
     accessorKey: 'side',
     header: ({ column }) => {
@@ -77,7 +74,7 @@ export const columns = [
       return <DataTableColumnHeader column={column} title="Status" />
     },
   },
-  
+
   {
     accessorKey: 'created_at',
     header: ({ column }) => {

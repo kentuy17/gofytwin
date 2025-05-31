@@ -1,15 +1,14 @@
-/* eslint-disable no-console */
-import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  // DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
+// import { Button } from '@/components/ui/button'
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   // DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from '@/components/ui/dropdown-menu'
+// import { Input } from '@/components/ui/input'
 
 import {
   Table,
@@ -20,8 +19,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { router } from '@inertiajs/react'
-
 import {
   flexRender,
   getCoreRowModel,
@@ -30,7 +27,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { PlusCircle, Settings2 } from 'lucide-react'
+// import { Settings2 } from 'lucide-react'
 import { useState } from 'react'
 import { DataTablePagination } from './data-table-pagination'
 
@@ -62,61 +59,8 @@ export function DataTable({
     },
   })
 
-  const handleAddEvent = () => {
-    router.post('/event/add', {})
-    router.on('finish', (e) => {
-      console.log(e)
-    })
-  }
-
   return (
     <div>
-      <div className="flex items-center justify-between py-4">
-        <Input
-          placeholder="Filter name..."
-          value={(table.getColumn('name')?.getFilterValue()) ?? ''}
-          onChange={event =>
-            table.getColumn('name')?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-        <div className="flex gap-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                <Settings2 />
-                View
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {table
-                .getAllColumns()
-                .filter(
-                  column => column.getCanHide(),
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={value =>
-                        column.toggleVisibility(!!value)}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button variant="outline" className="ml-auto" onClick={handleAddEvent}>
-            <PlusCircle />
-            Add
-          </Button>
-        </div>
-
-      </div>
       <div className="grid grid-cols-1 rounded-md border">
         <Table>
           <TableHeader className="">
