@@ -136,6 +136,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
       src: VIDEO_URL,
       type: 'application/x-mpegURL',
     }],
+    playsinline: true,
   }
 
   const handlePlayerReady = (player) => {
