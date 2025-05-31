@@ -33,7 +33,9 @@ const VideoJS = React.memo((props) => {
 
       player.autoplay(options.autoplay)
       player.src(options.sources)
+      player.playsinline(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Dispose the Video.js player when the functional component unmounts
