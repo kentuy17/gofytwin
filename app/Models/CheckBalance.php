@@ -85,7 +85,7 @@ class CheckBalance extends Model
         $actual_live_profit = number_format($correct_profit,2,'.',',');
         $responseData['wallets']['total_wallet'] = number_format($total,2,'.',',');
         $responseData['wallets']['total_manual_wallet'] = number_format($manual,2,'.',',');
-        $responseData['wallets']['total_pg3_wallet'] = number_format($pg3_walletBalance['balance'],2,'.',',');
+        $responseData['wallets']['total_pg3_wallet'] = number_format($pg3_walletBalance,2,'.',',');
         $responseData['wallets']['total_pg4_wallet'] = number_format($pg4_walletBalance['balance'],2,'.',',');
         $responseData['wallets']['gcash'] = $gcash_amount;
         $responseData['wallets']['gcash_qr'] = $gcash_qr_amount;
