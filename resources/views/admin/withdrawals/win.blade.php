@@ -129,19 +129,19 @@
 <x-js-lib />
 <script type="text/javascript">
     $(function () {
-        // $.ajax({
-        //     method: "POST",
-        //     url: "{{route('check.balance')}}",
-        //     headers: {
-        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     }
-        //         })
-        //     .success(function( msg ) {           
-        //         user_balance_maya = msg.data.paymaya;
-        //         user_balance_gcash = msg.data.gcash;  
-        //         $("#gcash_amount").text(user_balance_gcash);
-        //         $("#paymaya_amount").text(user_balance_maya);
-        // });  
+        $.ajax({
+            method: "POST",
+            url: "{{route('check.balance')}}",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+                })
+            .success(function( msg ) {           
+                user_balance_maya = msg.data.paymaya;
+                user_balance_gcash = msg.data.gcash;  
+                $("#gcash_amount").text(user_balance_gcash);
+                $("#paymaya_amount").text(user_balance_maya);
+        });  
         
         $(".status-message").blur(function(){
             let mess = $(this).val();
