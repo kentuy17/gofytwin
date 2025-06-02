@@ -47,6 +47,7 @@ class CheckBalance extends Model
         
         $from = date('Y-m-d');
         $to = date('Y-m-d');
+        $total = 0;
         $opex = 0;
         $gcash_amount = 0;
         $gcash_redirect = 0;
@@ -60,22 +61,16 @@ class CheckBalance extends Model
 
         $pg4_wallet = new JdPaymentGateway();
         $pg4_walletBalance = $pg4_wallet->checkBalance();
-        // dd();
+        dd($pg4_walletBalance);
 
         // $opex = AdminWithdrawals::whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->where('process_status','success')->sum('amount');
 
 
-            
-        $data['master_agent_earnings'] = number_format(0,2,'.',',');
-
-        $data['sub_agent_earnings'] = number_format(0,2,'.',',');
-
-
         #Agent commisions
         # total wallet sa MA + total wallet SA, exclude company accounts 
+        $gcash_amount+=$pg4_walletBalance['balance'];
 
-
-        $total = $pg4_walletBalance['balance'];
+        $total += $pg4_walletBalance['balance'];
         #withdrawals
         $callback_amount = Withdrawals::whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->where('process_status','success')->sum('amount');
 
