@@ -13,10 +13,15 @@ class ProcessPayment extends Model
 
     public $payment_type;
     public $bank_code;
+    
+    protected function generateTransactionId(){
+        
+        return str_pad(rand(), 6, '0', STR_PAD_LEFT).'_'.auth()->user()->id;
+    }
 
     public function pay($request){
         $amount = $request->amount;
-        $transactionId = str_pad(rand(), 6, '0', STR_PAD_LEFT).'_'.auth()->user()->id;
+        $transactionId = $this->generateTransactionId();
         
         if($request->getPg() == 'gcash_redirect'){
             
@@ -36,5 +41,8 @@ class ProcessPayment extends Model
 
         return $response;
     }
+
+    
+
     
 }
