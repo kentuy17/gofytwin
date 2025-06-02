@@ -63,6 +63,9 @@ class PlayController extends BaseController
      
     
     public function superTestTest(Request $request){
+        $balance = new CheckBalance;
+            $bal = $balance->getBalance($request); 
+            dd($bal);
         // $mobile = User::find(83940);
         // if($mobile){
         //     dd('found');
