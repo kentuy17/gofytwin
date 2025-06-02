@@ -65,7 +65,7 @@
 @endsection
 
 <x-js-lib />
-<x-datepicker />
+{{-- <x-datepicker /> --}}
 <script type="text/javascript">
     $(function () {
         $('.modal-close').on('click',function(){

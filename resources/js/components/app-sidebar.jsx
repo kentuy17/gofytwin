@@ -26,8 +26,26 @@ const navItems = [
         level: 0,
       },
       {
+        title: 'Cashout',
+        url: '/player/cashout',
+        icon: CoinsIcon,
+        level: 0,
+      },
+      {
         title: 'Bets',
         url: '/bets',
+        icon: CoinsIcon,
+        level: 0,
+      },
+      {
+        title: 'My Cashin List',
+        url: '/player/my/cash-in',
+        icon: CoinsIcon,
+        level: 0,
+      },
+      {
+        title: 'My Cashout List',
+        url: '/player/my/cash-out',
         icon: CoinsIcon,
         level: 0,
       },

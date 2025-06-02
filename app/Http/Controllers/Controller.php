@@ -5,38 +5,7 @@ namespace App\Http\Controllers;
 
 
 use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Carts;
-use App\Models\Bets1ds;
-use App\Models\Bets2ds;
-use App\Models\Bets3ds;
-use App\Models\Bets4ds;
-use App\Models\Bets6ds;
-use App\Models\Cart1ds;
-use App\Models\Cart2ds;
-use App\Models\Cart3ds;
-use App\Models\Cart4ds;
-use App\Models\Cashins;
-
-use App\Models\Pick2ds;
-use App\Models\JaiAlais;
-use App\Models\SubAgents;
-use App\Models\Cartpick2ds;
 use App\Models\ActivityLogs;
-use App\Models\MasterAgents;
-use App\Models\CartsJaiAlais;
-use App\Models\HotNumbers1ds;
-use App\Models\HotNumbers2ds;
-use App\Models\HotNumbers3ds;
-use App\Models\HotNumbers4ds;
-use App\Models\SettingsModel;
-use App\Models\HotNumbersjais;
-use App\Models\AgentReportGrids;
-use App\Models\Hotnumberspick2ds;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use App\Models\DailyActiveBettorGrid;
-use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Redis;
@@ -122,35 +91,35 @@ abstract class Controller
     public $csr = 0;
     public $remainingBalance = 0;
     public $allowed = [
-                        1, // Ryan
-                        2, // Dudes
-                        3, // Iero
-                        5, // bishop
-                        43768, // RAZOR
-                        79, // Nate
-                        15656, // pitbike
-                        15386, // Buluyagon
-                        18258, // PURPLE
-                        15655, // SATURDAY
-                        15659 // Green
+                        1,  
+                        2,  
+                        3,  
+                        5,  
+                        43768,  
+                        79,  
+                        15656,  
+                        15386,  
+                        18258,  
+                        15655,  
+                        15659  
                     ];
     public $allowed_access = [
-                        1, // Ryan
-                        2, // Dudes
-                        3, // Iero
-                        5, // bishop
-                        6, // Snow Bear
-                        11, // Sarge
-                        15, // Gomla
-                        17, // Spaz
-                        43768, // RAZOR
-                        79, // Nate
-                        15656, // pitbike
-                        15386, // Buluyagon
-                        18258, // PURPLE
-                        15655, // SATURDAY
-                        87, // Indigo
-                        15659 // Green
+                        1,  
+                        2,  
+                        3, 
+                        5,  
+                        6,  
+                        11,  
+                        15,  
+                        17,  
+                        43768,  
+                        79,  
+                        15656,  
+                        15386,  
+                        18258,  
+                        15655,  
+                        87,  
+                        15659  
                     ];
     public $operations = 1000;
     public $accounting = 2000;
@@ -191,5 +160,22 @@ abstract class Controller
     {
         $data = Redis::get($key);
         return json_decode($data);
+    }
+    
+    /**
+     * success response method.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendResponse($result, $message)
+    {
+    	$response = [
+            'success' => true,
+            'data'    => $result,
+            'message' => $message,
+        ];
+
+
+        return response()->json($response, 200);
     }
 }

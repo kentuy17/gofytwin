@@ -9,19 +9,21 @@ use App\Http\Controllers\FightController;
 use App\Http\Controllers\Admin\TotalGross;
 use App\Http\Controllers\CashinController;
 use App\Http\Controllers\AuthOtpController;
+use App\Http\Controllers\CashoutController;
 use App\Http\Controllers\Admin\BetsController;
+use App\Http\Controllers\API\PayoutController;
 use App\Http\Controllers\ClaimPrizeController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\AccountsController;
 use App\Http\Controllers\Admin\WithdrawController;
 use App\Http\Controllers\API\ServerInfoController;
+use App\Http\Controllers\PayoutController as PayOut;
 use App\Http\Controllers\Admin\CashinController as AdminCashIn;
 
 Route::get('/', function () {
     return Redirect::to(route('login'));
 })->middleware('guest');
 Route::get('/users/list', [AccountsController::class, 'users'])->name('users.list');
-// Route::get('/admin/user/cash-in/{id}',[AdminCashIn::class,'userCashin'])->middleware('auth')->name('admin.user.cashin');
 Route::get('/admin/users/view/{id}', [AccountsController::class, 'viewUser'])->name('view.user')->middleware('auth');
 Route::get('/test/login',[HomeController::class,'temporaryLogin'])->name('testttest.login');
 Route::get('/live-feed',[HomeController::class,'live_feed'])->name('testttest.live.feed');
@@ -50,22 +52,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/net-income',[AdminCashIn::class,'net_income'])->middleware('auth')->name('admin.net.income');
     Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
 
-    Route::get('/cash-in', [CashinController::class, 'cash_in'])->middleware('auth')->name('cashin');
     Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');
+    Route::post('/cash-out',[CashoutController::class,'processPlayerCashout'])->middleware('auth')->name('player.cashout');
     Route::get('/admin/core/statistics/won-amount', [ReportsController::class, 'wonAmount'])->middleware('auth')->name('won amount');
     Route::get('/admin/users', [AccountsController::class, 'users'])->middleware('auth')->name('users');
     Route::get('/admin/core/statistics/prizes-claimed', [ReportsController::class, 'prizesClaimed'])->middleware('auth')->name('prizes.claimed');
     Route::get('/admin/core/statistics/winners', [ReportsController::class, 'winners'])->middleware('auth')->name('winners');
-    // Route::get('/admin/claim/requests',[WithdrawController::class,'withdrawal'])->name('withdrawal')->middleware('auth');
     Route::post('/check-balance', [ServerInfoController::class,'check_balance'])->name('check.balance')->middleware('auth');
     Route::post('/get-bettors', [ServerInfoController::class,'get_bettors'])->name('get.bettors')->middleware('auth');
     Route::post('/get-total-agents-earnings', [ServerInfoController::class,'get_total_agent_earnings'])->name('get.total.agents.earnings')->middleware('auth');
     Route::post('/get-inactive', [ServerInfoController::class,'get_inactive'])->name('get.inactive')->middleware('auth');
-    // Route::get('/play/3d/receipt',[PlaythreeController::class,'pay'])->name('play.three.pay')->middleware('auth');
     Route::get('/winner/info/cashin', [ServerInfoController::class,'cashin_info_board'])->name('cashin.info')->middleware('auth');
 
     // React/Inertia Front-end
     Route::get('/player/deposit', [UserController::class, 'deposit'])->name('deposit');
+    Route::get('/player/cashout', [UserController::class, 'cashout'])->name('cashout');
+    Route::get('/player/my/cash-in', [UserController::class, 'my_cashin'])->name('my.cashin');
+    Route::get('/player/my/cash-out', [UserController::class, 'my_cashout'])->name('my.cashout');
     Route::get('/admin/config', [HomeController::class, 'adminConfig'])->name('admin.config');
     Route::post('/admin/config', [HomeController::class, 'updateConfig'])->name('update.config');
     Route::post('/admin/toggle-video', [HomeController::class, 'toggleVideo']);
@@ -91,12 +94,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/claim/requests/list',[WithdrawController::class,'list'])->name('withdrawal.list')->middleware('auth');
     Route::post('/claim-prize/process/referral',[ClaimPrizeController::class,'processReferral'])->name('claim.process.referral')->middleware('auth');
     Route::post('/winner/info/winner/board', [ServerInfoController::class,'winner_info_board'])->name('winner.info.winner.board')->middleware('auth');
-    // Route::get('/admin/winners-board/from/{from}/to/{to}',[WinnersDownloadController::class,'dldownload'])->name('winners.download')->middleware('auth');
 
-
-    Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');
-
-
+    Route::post('/payout/process/referral', [PayOut::class,'processReferral'])->middleware('auth')->name('payout.process.referral');
+    Route::post('/payout/re-process', [PayoutController::class,'reprocess'])->middleware('auth')->name('payout.reprocess');
+    Route::post('/payout/delete/referral', [PayOut::class,'deleteReferral'])->middleware('auth')->name('payout.delete.referral');
 });
 
 // Route::get('/otp/login', [AuthOtpController::class, 'redirectToHome']);
