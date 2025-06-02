@@ -61,7 +61,7 @@ class CheckBalance extends Model
 
         $pg4_wallet = new JdPaymentGateway();
         $pg4_walletBalance = $pg4_wallet->checkBalance();
-        dd($pg4_walletBalance);
+        // dd($pg4_walletBalance);
 
         // $opex = AdminWithdrawals::whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->where('process_status','success')->sum('amount');
 

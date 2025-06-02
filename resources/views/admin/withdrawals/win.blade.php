@@ -25,6 +25,7 @@
         <h1><?=$play;?></h1>
         <h3>{{__('GCash Balance: ')}} <strong id="gcash_amount">Loading...</strong></h3>
         <h3>{{__('PayMaya (maya) Balance: ')}} <strong id="paymaya_amount">Loading...</strong></h3>
+        <h3>{{__('Total Wallet Balance: ')}} <strong id="total">Loading...</strong></h3>
     </div>
     <table class="table winners">
         <thead>
@@ -139,8 +140,10 @@
             .success(function( msg ) {           
                 user_balance_maya = msg.data.paymaya;
                 user_balance_gcash = msg.data.gcash;  
+                total = msg.data.total;  
                 $("#gcash_amount").text(user_balance_gcash);
                 $("#paymaya_amount").text(user_balance_maya);
+                $("#total").text(total);
         });  
         
         $(".status-message").blur(function(){
