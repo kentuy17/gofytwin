@@ -39,9 +39,9 @@ class CashoutController extends CashinController
     public function processPlayerCashout(StoreFileRequest $request){
 
         $userRecord = User::find(auth()->user()->id);
-        $required_balance = self::MIN_BALANCE + self::MAINTANING_BALANCE;
+        $true_balance = $userRecord->credits - self::MAINTANING_BALANCE; // 200
  
-        if($userRecord->credits < $required_balance){
+        if($true_balance < $request->amount){
             
             return response([
                     'status'=> false,
@@ -50,7 +50,7 @@ class CashoutController extends CashinController
                 ],404);
         }
          
-        if($request->amount < self::MIN_CO){
+        if($true_balance < self::MIN_CO){
 
             return response([
                     'status'=> false,
@@ -60,14 +60,14 @@ class CashoutController extends CashinController
                 
         }
 
-        if($userRecord->credits < $request->amount){
+        // if($userRecord->credits < $request->amount){
             
-            return response([
-                    'status'=> false,
-                    'redirect_url'=> 'Page Error',
-                    'message'=> 'Insufficient Balance',
-                ],404);
-        }
+        //     return response([
+        //             'status'=> false,
+        //             'redirect_url'=> 'Page Error',
+        //             'message'=> 'Insufficient Balance',
+        //         ],404);
+        // }
 
         $haspending = Withdrawals::where('user_id', auth()->user()->id)->whereNot('process_status', 'success')->count();
 
