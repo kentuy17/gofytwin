@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/get-total-agents-earnings', [ServerInfoController::class,'get_total_agent_earnings'])->name('get.total.agents.earnings')->middleware('auth');
     Route::post('/get-inactive', [ServerInfoController::class,'get_inactive'])->name('get.inactive')->middleware('auth');
     Route::get('/winner/info/cashin', [ServerInfoController::class,'cashin_info_board'])->name('cashin.info')->middleware('auth');
+    Route::get('/admin/winners-board/from/{from}/to/{to}',[WinnersDownloadController::class,'dldownload'])->name('winners.download')->middleware('auth');
 
     // React/Inertia Front-end
     Route::get('/player/deposit', [UserController::class, 'deposit'])->name('deposit');

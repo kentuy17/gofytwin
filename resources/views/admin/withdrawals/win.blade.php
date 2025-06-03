@@ -57,8 +57,6 @@
                             $date_claimed = date_format($date, 'M d, Y h:iA');
                         }
                         $userdata = \App\Models\User::find($winner->id);
-                        $ref_code = 'User is not MA or SA';
-                        $role = 'Not Available';
 
                         $date = date_create($winner->created_at);
                         $date_won = date_format($date, 'M d, Y h:iA');
@@ -67,11 +65,11 @@
                     @endphp
                     <tr>
                         <td>{{$winner->id}}</td>
-                        <td>dsadas</td>{{--Contact No.--}}
+                        <td>{{$winner->contact_no}}</td>{{--Contact No.--}}
                         <td>{{$winner->user_id}}</td>{{--Reference No--}}
                         <td>{{$winner->merchant_order_no}}</td>{{--Reference No--}}
                         <td><span class="{{$winner->claimed !=0 ?'text-success':'text-danger'}}">{{$winner->claimed!=0?'claimed':'unclaimed'}}</span></td>{{--Status--}}
-                        <td>${{number_format($winner->amount,2,'.',',')}}</td>{{--Winning Amount--}}
+                        <td>₱{{number_format($winner->amount,2,'.',',')}}</td>{{--Winning Amount--}}
                         <td>{{isset($winner->claimed) ? $date_claimed : ''}}</td>{{--Date Claimed--}}
                         <td>
                             <div class="info-claim">
@@ -81,8 +79,7 @@
                                 Processed: <strong><?=$is_processed?></strong><br>
                                 Approved By: <strong><?=$winner->approved?></strong><br>
                                 Date Claimed: <strong><?=$bet_date?></strong><br>
-                                Referral Code: <strong><?=$ref_code?></strong><br>
-                                Role: <strong><?=$role?></strong><br>
+                                Referral Code: <strong><?=$winner->merchant_order_no?></strong><br>
                             </div>
                         </td>{{--Info Claim--}}
                         <td>{{$winner->process_status}}</td>{{--Upload--}}

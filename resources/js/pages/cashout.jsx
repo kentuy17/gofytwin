@@ -181,7 +181,7 @@ function Deposit({ providers, xrftoken }) {
 
   const breadcrumbs = [
     {
-      title: 'Cash-in',
+      title: 'Cash-Out',
       href: '/player/deposit',
     },
   ]
@@ -221,6 +221,10 @@ function Deposit({ providers, xrftoken }) {
             )
           })}
         </div>
+        
+        <span className="text-red-300 my-3">
+          Notice: A maintaining balance of ₱100.00 is required. <br></br>Ex: To withdraw ₱200.00 your min. balance should be ₱300.00.
+        </span>
       </div>
 
       <DepForms xrftoken={xrftoken} inputValue={inputValue} />
