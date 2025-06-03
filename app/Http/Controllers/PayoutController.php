@@ -124,19 +124,7 @@ class PayoutController extends Controller
 
             return $this->sendResponse('error', 'You are not allowed!.');
         }
-        if($request->play == 'PLAY 2D'){
-            $winner = Winners2ds::find($request->id);
-            $play = '2';
-        } elseif($request->play == 'PLAY 3D'){
-            $winner = Winners3ds::find($request->id);
-            $play = '3';
-        } elseif($request->play == 'PLAY 4D'){
-            $winner = Winners4ds::find($request->id);
-            $play = '4';
-        } elseif($request->play == 'JAI ALAI'){
-            $winner = Winnersjais::find($request->id);
-            $play = '7';
-        } elseif($request->play == 'admin_co'){
+        if($request->play == 'admin_co'){
             $winner = AdminWithdrawals::find($request->id);
             $play = '0';
         } else{
@@ -180,15 +168,7 @@ class PayoutController extends Controller
 
             return $this->sendResponse('error', 'You are not allowed!.');
         }
-        if($request->play == 'PLAY 2D'){
-            $winner = Winners2ds::find($request->id);
-        } elseif($request->play == 'PLAY 3D'){
-            $winner = Winners3ds::find($request->id);
-        } elseif($request->play == 'PLAY 4D'){
-            $winner = Winners4ds::find($request->id);
-        } elseif($request->play == 'JAI ALAI'){
-            $winner = Winnersjais::find($request->id);
-        } elseif($request->play == 'admin_co'){
+        if($request->play == 'admin_co'){
             $winner = AdminWithdrawals::find($request->id);
         } else{
             $winner = Winners6ds::find($request->id);

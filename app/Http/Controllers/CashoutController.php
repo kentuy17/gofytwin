@@ -21,6 +21,7 @@ use App\Http\Requests\StoreFileRequest;
 class CashoutController extends CashinController
 
 {
+    const MAINTANING_BALANCE = 100;
     const MIN_CO = 200;
     const MIN_BALANCE = 200;
     /**
@@ -38,13 +39,14 @@ class CashoutController extends CashinController
     public function processPlayerCashout(StoreFileRequest $request){
 
         $userRecord = User::find(auth()->user()->id);
+        $required_balance = self::MIN_BALANCE + self::MAINTANING_BALANCE;
  
-        if($userRecord->credits < self::MIN_BALANCE){
+        if($userRecord->credits < $required_balance){
             
             return response([
                     'status'=> false,
                     'redirect_url'=> 'Page Error',
-                    'message'=> 'Your Minimum Balance must be '.self::MIN_BALANCE,
+                    'message'=> 'Insufficient Funds',
                 ],404);
         }
          
@@ -53,7 +55,7 @@ class CashoutController extends CashinController
             return response([
                     'status'=> false,
                     'redirect_url'=> 'Page Error',
-                    'message'=> 'Minimum Cashout Amount is '.self::MIN_CO,
+                    'message'=> 'Minimum Cashout Amount is '.self::MIN_CO.' plus additional ₱100.00 maintaning balance.',
                 ],404);
                 
         }
