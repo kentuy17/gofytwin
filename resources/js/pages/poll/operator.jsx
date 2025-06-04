@@ -193,6 +193,7 @@ export default function Operator({ player, commonData, settings }) {
       src: VIDEO_URL,
       type: 'application/x-mpegURL',
     }],
+    playsinline: true,
   }
 
   const handlePlayerReady = (player) => {
