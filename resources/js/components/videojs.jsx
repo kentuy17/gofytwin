@@ -2,7 +2,7 @@ import React from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
-export function VideoJS(props) {
+const VideoJS = React.memo((props) => {
   const videoRef = React.useRef(null)
   const playerRef = React.useRef(null)
   const { options, onReady } = props
@@ -19,6 +19,10 @@ export function VideoJS(props) {
       const player = playerRef.current = videojs(videoElement, options, () => {
         videojs.log('player is ready')
         onReady && onReady(player)
+
+        // player.on('timeupdate', () => {
+        //   setTimestamp1(player.currentTime())
+        // })
       })
 
     // You could update an existing player in the `else` block here
@@ -30,7 +34,8 @@ export function VideoJS(props) {
       player.autoplay(options.autoplay)
       player.src(options.sources)
     }
-  }, [options, videoRef, onReady])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Dispose the Video.js player when the functional component unmounts
   React.useEffect(() => {
@@ -49,6 +54,6 @@ export function VideoJS(props) {
       <div ref={videoRef} />
     </div>
   )
-}
+})
 
 export default VideoJS

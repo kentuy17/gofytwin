@@ -12,6 +12,10 @@ class SettingsSeeder extends Seeder
      */
     public function run(): void
     {
+        // Delete all before adding data
+        Settings::truncate();
+
+        // Create data
         Settings::create([
             'field' => 'favicon',
             'value' => 'images/favicon.ico',
@@ -77,5 +81,43 @@ class SettingsSeeder extends Seeder
             'field' => 'account_endpoint',
             'value' => 'https://api.semaphore.co/api/v4/accoun',
         ]);
+
+        // Admin Config
+        Settings::insert([
+            [
+                'field' => 'enable_dummy',
+                'value' => true,
+            ],
+            [
+                'field' => 'dummy_bet_amount',
+                'value' => 20000,
+            ],
+            [
+                'field' => 'show_video',
+                'value' => true,
+            ],
+            [
+                'field' => 'commission_rate',
+                'value' => 6,
+            ],
+            [
+                'field' => 'max_bet',
+                'value' => 20000,
+            ],
+            [
+                'field' => 'min_bet',
+                'value' => 20,
+            ],
+            [
+                'field' => 'video_banner',
+                'value' => '/images/video-banner.jpeg',
+            ],
+            [
+                'field' => 'no_credits_banner',
+                'value' => '/images/video-banner.jpeg',
+            ]
+        ]);
+
+
     }
 }

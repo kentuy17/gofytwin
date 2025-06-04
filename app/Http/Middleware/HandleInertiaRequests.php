@@ -2,9 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Bet;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Middleware;
+use App\Http\Controllers\FightController;
+use App\Models\Settings;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,6 +42,30 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+        $global = [];
+
+        if(Auth::check()) {
+            $fight = json_decode(Redis::get('fight'));
+            $activeBets = Bet::where('fight_id', $fight->id)->get();
+            $playerActiveBets = $activeBets->where('user_id', Auth::user()->id);
+            $fightController = new FightController();
+
+            $global = [
+                'fight' => $fight,
+                'player' => [
+                    'meron' => $playerActiveBets->where('side','M')->sum('amount'),
+                    'wala' => $playerActiveBets->where('side','W')->sum('amount'),
+                ],
+                'total' => [
+                    'meron' => $activeBets->where('side','M')->sum('amount'),
+                    'wala' => $activeBets->where('side','W')->sum('amount'),
+                ],
+                'trend' => $fightController->getFightTrends($request),
+                'config' => [
+                    'show_video' => Settings::get('show_video'),
+                ]
+            ];
+        }
 
         return [
             ...parent::share($request),
@@ -46,6 +75,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'session' => $request->session()->all(),
             ],
+            'csrf_token' => csrf_token(),
+            'globals' => $global,
+            'user' => $request->user(),
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),
                 'error' => fn () => $request->session()->get('error'),

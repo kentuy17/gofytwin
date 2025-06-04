@@ -82,14 +82,14 @@ class BaseController extends Controller
         return false;
     }
     public function threeDigitRumbleWinner($input){
-        $results = DB::select("select 
+        $results = DB::select("select
                                 id, d1, d2, d3,
                                 (
-                                    (d1 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3'].")) ++ 
-                                    (d2 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3'].")) ++ 
+                                    (d1 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3'].")) ++
+                                    (d2 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3'].")) ++
                                     (d3 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3']."))
-                                ) AS main 
-                                FROM bets 
+                                ) AS main
+                                FROM bets
                                 HAVING main = 3");
                                 dd($results);
     }
@@ -144,7 +144,7 @@ class BaseController extends Controller
         curl_setopt($curl, CURLOPT_HEADER, false);
         $data = curl_exec($curl);
         curl_close($curl);
-        
+
         return $data;
 
     }
@@ -195,19 +195,19 @@ class BaseController extends Controller
     protected function get4dJackpot(){
         // $total = $this->jackpot_4d / $this->min_bet_4ds;
         // $winningAmount = ceil($total * $betAmount);
-        
+
         return $this->jackpot_4d;
     }
-    protected function get4dLastThree($betAmount){
+    protected function get4dLastThree($betAmount=null){
 
         return $this->last_three_4d;
     }
-    protected function get4dLastTwo($betAmount){
+    protected function get4dLastTwo($betAmount=null){
 
         return $this->last_two_4d;
     }
 
-   
+
 
     protected function getThreeDigitsRumble($winningComb){
 
@@ -238,7 +238,7 @@ class BaseController extends Controller
 
         return $winningAmount;
     }
-    
+
     protected function getThreeDigitsRumbleThreeWinningAmount($betAmount){
         $jackpot = $this->getJackpotThreeDigits();
         $perPesoValue = $jackpot / $this->getMinBetThreeDigits() / 6;
@@ -284,12 +284,12 @@ class BaseController extends Controller
     }
     public function dl($url){
         $file_name = basename($url);
-        
+
         if (file_put_contents($file_name, file_get_contents($url)))
         {
             return $file_name;
         }
-        
+
     }
 
     public function checkbet(Request $request){
@@ -301,11 +301,11 @@ class BaseController extends Controller
         } else {
             $row_position = Session::get('three_play.row_position');
         }
-        
+
         $result = false;
         $container = [];
         if($request->order == 'RUMBLE'){
-            
+
             $all_number_good = true;
             $original_combination = $request->combination;
             $combinations = $this->permutations3($request->combination);
@@ -335,7 +335,7 @@ class BaseController extends Controller
                 }
             }
             if($all_number_good !== false){
-                
+
                 $container = [];
                 array_push($container,[
                     'time'=>$request->draw_time,
@@ -369,9 +369,9 @@ class BaseController extends Controller
         }
         return $this->sendResponse($result, $this->errors);
     }
-    
+
     public function getUserBalance(){
-        $balance = User::find(auth()->user()->id); 
+        $balance = User::find(auth()->user()->id);
         $balance = $balance->credits->amount;
 
         return $balance;
@@ -389,9 +389,9 @@ class BaseController extends Controller
                                             ->where('d3',$request->combination[2])
                                             ->where('d4',$request->combination[3])
                                             ->where('draw_time',$request->draw_time)
-                                            ->where('draw_date',$request->draw_date)->sum('amount');   
-        $total = $request->amount + $cart_total_for_combination + $bets_total_for_combination;         
-        
+                                            ->where('draw_date',$request->draw_date)->sum('amount');
+        $total = $request->amount + $cart_total_for_combination + $bets_total_for_combination;
+
         if($total > $hot_number_limit){
 
             return false;
@@ -411,9 +411,9 @@ class BaseController extends Controller
                                             ->where('d2',$request->combination[1])
                                             ->where('d3',$request->combination[2])
                                             ->where('draw_time',$request->draw_time)
-                                            ->where('draw_date',$request->draw_date)->sum('amount');   
-        $total = $request->amount + $cart_total_for_combination + $bets_total_for_combination;         
-        
+                                            ->where('draw_date',$request->draw_date)->sum('amount');
+        $total = $request->amount + $cart_total_for_combination + $bets_total_for_combination;
+
         if($total > $hot_number_limit){
 
             return false;
@@ -434,9 +434,9 @@ class BaseController extends Controller
         $bets_total_for_combination = Bets2ds::where('d1',$request->d1)
                                             ->where('d2',$request->d2)
                                             ->where('draw_time',$request->draw_time)
-                                            ->where('draw_date',$request->draw_date)->sum('amount');   
-        $total = $request->amount + $cart_total_for_combination + $bets_total_for_combination;         
-        
+                                            ->where('draw_date',$request->draw_date)->sum('amount');
+        $total = $request->amount + $cart_total_for_combination + $bets_total_for_combination;
+
         if($total > $hot_number_limit){
 
             return false;

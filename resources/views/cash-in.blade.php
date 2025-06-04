@@ -176,11 +176,7 @@ function checkDetails(){
             checkDetails();
         });
 
-        // $(".pay").click(function(e){
-        //     e.preventDefault();
-        //     $("#three_digit_form").submit();
-        //     // window.location.href="{{route('play.three.pay')}}";
-        // });
+        
     });
 </script>
 {{-- <x-script-preventer /> --}}

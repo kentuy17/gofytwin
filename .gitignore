@@ -22,7 +22,8 @@ storage/pail
 
 !public/
 public/*
-!public/build
+#!public/build
+!public/images
 
 # Development files
 # --------------------------

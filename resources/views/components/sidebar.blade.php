@@ -18,15 +18,20 @@
 
 
     {{-- Nav item --}}
-    <li class="nav-item">
+    {{-- <li class="nav-item">
       <a class="nav-link" href="{{route('cashin')}}">
         Cash-In
       </a>
-    </li>
+    </li> --}}
     {{-- Nav item --}}
     <li class="nav-item">
+      <a class="nav-link" href="{{route('withdrawal')}}">
+        Withdrawal Requests
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" href="{{route('admin.cashin')}}">
-        Admin Cash-In List
+        Cash-In List
       </a>
     </li>
     <li class="nav-item">
@@ -39,6 +44,13 @@
         Total Gross
       </a>
     </li>
+    {{-- Nav item --}}
+    <li class="nav-item">
+      <a class="nav-link" href="{{route('admin.bets.list')}}">
+        Admin Bets
+      </a>
+    </li>
+    {{-- End Nav item --}}
     {{-- Nav item --}}
     <li class="nav-item">
       <a class="nav-link" href="{{route('users.list')}}">

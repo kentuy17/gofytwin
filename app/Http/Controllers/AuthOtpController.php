@@ -355,13 +355,17 @@ class AuthOtpController extends Controller
         // Congratulations!!!
         Auth::login($user);
 
-        return Inertia::render('dashboard', [
-            'commonData' => [
-                'code' => $verificationCode,
-                'user' => Auth::user(),
-                'ip' => $this->ip_address,
-                'session' => $request->session()->all()
-            ],
-        ]);
+        // if(Auth::user()) {
+        //     return Inertia::render('dashboard', [
+        //         'commonData' => [
+        //             'code' => $verificationCode,
+        //             'user' => Auth::user(),
+        //             'ip' => $this->ip_address,
+        //             'session' => $request->session()->all()
+        //         ],
+        //     ]);
+        // }
+
+        return Redirect::to('/home');
     }
 }

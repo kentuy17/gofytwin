@@ -23,6 +23,7 @@
     "strict": true /* Enable all strict type-checking options. */,
     "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
 
+    "useUnknownInCatchVariables": false,
     /* Emit */
     "noEmit": true /* Disable emitting files from a compilation. */,
     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
@@ -34,5 +35,19 @@
     /* Completeness */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["*.config.ts", "resources/client/**/*.ts", "resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/pages/welcome.jsx", "resources/js/pages/auth/login.jsx", "resources/js/pages/dashboard.jsx", "resources/js/components/app-logo-icon.jsx"]
+  "include": [
+    "*.config.ts",
+    "resources/client/**/*.ts",
+    "resources/js/**/*.ts",
+    "resources/js/**/*.tsx",
+    "resources/js/**/*.js",
+    "resources/js/**/*.jsx"
+    // "resources/js/pages/welcome.jsx",
+    // "resources/js/pages/auth/login.jsx",
+    // "resources/js/pages/dashboard.jsx",
+    // "resources/js/components/app-logo-icon.jsx",
+    // "resources/js/components/app-sidebar-header.jsx",
+    // "resources/js/components/app-sidebar.jsx",
+    // "resources/js/components/nav-main.jsx"
+  ]
 }
