@@ -174,13 +174,13 @@ class FightController extends Controller
         ]);
     }
 
-    public function addEvent()
+    public function addEvent(Request $request)
     {
         $event = EventGame::create([
-            'name' => 'GameFowl Master Event',
+            'name' => $request->event_name ?? 'GameFowl Master Event',
             'status' => 'WAITING',
-            'event_date' => Carbon::now()->toDateString(),
-            'added_by' => 1,
+            'event_date' => Carbon::parse($request->date)->toDateString(),
+            'added_by' => Auth::user()->id,
         ]);
 
         Fight::create([

@@ -1,6 +1,15 @@
 /* eslint-disable no-console */
 import { Button } from '@/components/ui/button'
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+
+import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -9,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+
 import { Input } from '@/components/ui/input'
 
 import {
@@ -20,7 +30,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { router } from '@inertiajs/react'
+import { cn } from '@/lib/utils'
+import { useForm } from '@inertiajs/react'
 
 import {
   flexRender,
@@ -30,9 +41,131 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { PlusCircle, Settings2 } from 'lucide-react'
-import { useState } from 'react'
+import { format } from 'date-fns'
+import { CalendarIcon, PlusCircle, Settings2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { Calendar } from '../ui/calendar'
+import { Label } from '../ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { DataTablePagination } from './data-table-pagination'
+
+function AddEvent({ children }) {
+  const [open, setOpen] = useState(false)
+  const [date, setDate] = useState()
+  const submitRef = useRef(null)
+
+  const { data, setData, post } = useForm({
+    event_name: null,
+    date: null,
+  })
+
+  const handleSumbit = (e) => {
+    e.preventDefault()
+    post('/event/add', {
+      onSuccess: () => {
+        setOpen(false)
+        toast('Success!', {
+          description: 'Event has been added.',
+          action: {
+            label: 'OK',
+            onClick: () => console.log('OK'),
+          },
+        })
+      },
+      onError: (errors) => {
+        toast('Error!', {
+          description: JSON.stringify(errors),
+          action: {
+            label: 'OK',
+            onClick: () => console.log(errors),
+          },
+        })
+      },
+    })
+  }
+
+  useEffect(() => {
+    setData('date', date)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date])
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {children}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Input Details</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-1 items-center gap-4">
+            <div className="grid gap-3">
+              <Label htmlFor="name-1">Event Name</Label>
+              <Input
+                id="name-1"
+                defaultValue={data.event_name}
+                onChange={e => setData('event_name', e.target.value)}
+                name="name"
+              />
+            </div>
+            <div className="grid gap-3">
+              <Label htmlFor="username-1">Date</Label>
+              {/* <Input id="username-1" name="username" defaultValue="@peduarte" /> */}
+              <div>
+                <DatePickerComponent asChild changeDate={setDate}>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      'w-full justify-start text-left font-normal',
+                      !date && 'text-muted-foreground',
+                    )}
+                  >
+                    <CalendarIcon />
+                    {date ? format(date, 'P') : <span>Pick a date</span>}
+                  </Button>
+                </DatePickerComponent>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit" ref={submitRef} onClick={handleSumbit}>
+            Add Event
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export function DatePickerComponent({ children, changeDate }) {
+  const [open, setOpen] = useState(false)
+  const [date, setDate] = useState()
+  const handleDateSelected = (e) => {
+    setDate(e)
+    changeDate(e)
+    setOpen(!open)
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen} modal>
+      <PopoverTrigger asChild>
+        {children}
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={handleDateSelected}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 export function DataTable({
   columns,
@@ -62,12 +195,12 @@ export function DataTable({
     },
   })
 
-  const handleAddEvent = () => {
-    router.post('/event/add', {})
-    router.on('finish', (e) => {
-      console.log(e)
-    })
-  }
+  // const handleAddEvent = () => {
+  //   router.post('/event/add', {})
+  //   router.on('finish', (e) => {
+  //     console.log(e)
+  //   })
+  // }
 
   return (
     <div>
@@ -110,10 +243,13 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" className="ml-auto" onClick={handleAddEvent}>
-            <PlusCircle />
-            Add
-          </Button>
+          <AddEvent>
+            <Button variant="outline" className="ml-auto">
+              <PlusCircle />
+              Add
+            </Button>
+          </AddEvent>
+          {/* <DatePickerComponent /> */}
         </div>
 
       </div>
