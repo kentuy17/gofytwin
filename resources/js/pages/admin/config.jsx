@@ -70,6 +70,30 @@ function Admin({ settings }) {
                   <Label htmlFor="name"></Label>
                   <div className="flex items-center space-x-2">
                     <Switch
+                      defaultChecked={data.pg_gcash === '1'}
+                      onCheckedChange={val => setData('pg_gcash', val)}
+                      id="pg_gcash"
+                      name="pg_gcash"
+                    />
+                    <Label htmlFor="pg_gcash">Enable Gcash</Label>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="name"></Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      defaultChecked={data.pg_maya === '1'}
+                      onCheckedChange={val => setData('pg_maya', val)}
+                      id="pg_maya"
+                      name="pg_maya"
+                    />
+                    <Label htmlFor="pg_maya">Enable PayMaya</Label>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="name"></Label>
+                  <div className="flex items-center space-x-2">
+                    <Switch
                       defaultChecked={data.show_video === '1'}
                       onCheckedChange={val => setData('show_video', val)}
                       id="show_video"

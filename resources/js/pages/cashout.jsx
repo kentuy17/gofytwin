@@ -135,15 +135,9 @@ function DepForms({ xrftoken, inputValue }) {
 }
 
 function PaymentProvider({ onInputChange, item }) {
-  const { name, icon, min, max } = item
+  const { name, icon, min, max, tag } = item
   const handleChange = () => {
     onInputChange(name)
-    // let val = e.target.value
-    // val = val.replace(/\D/g, '')
-    // if (val.length > 6)
-    //   return
-    // setSubmitDisabled(val.length !== 6)
-    // setData('amount', val)
   }
 
   return (
@@ -156,7 +150,7 @@ function PaymentProvider({ onInputChange, item }) {
           <div className="name" style={{ textTransform: 'uppercase' }}>
             {name}
             {' '}
-            (Instant)
+            {tag}
           </div>
           <div className="desc">
             <div>
@@ -173,7 +167,7 @@ function PaymentProvider({ onInputChange, item }) {
   )
 }
 
-function Deposit({ providers, xrftoken }) {
+function Cashout({ providers, xrftoken }) {
   const [inputValue, setInputValue] = useState(null)
   const handleInputChange = (newValue) => {
     setInputValue(newValue)
@@ -233,4 +227,4 @@ function Deposit({ providers, xrftoken }) {
   )
 }
 
-export default Deposit
+export default Cashout

@@ -73,7 +73,7 @@ class CashinController extends Controller
         switch ($request->getPg()) {
 
             #JDPay
-            case 'GCash': // primary PG | min amount = 50 | (JDpay)
+            case 'GCash Fast': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
                 $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
                 $processPayment->bank_code = self::GCASH_WORD;
