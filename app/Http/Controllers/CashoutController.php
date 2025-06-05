@@ -59,16 +59,7 @@ class CashoutController extends CashinController
                 ],404);
                 
         }
-
-        // if($userRecord->credits < $request->amount){
-            
-        //     return response([
-        //             'status'=> false,
-        //             'redirect_url'=> 'Page Error',
-        //             'message'=> 'Insufficient Balance',
-        //         ],404);
-        // }
-
+ 
         $haspending = Withdrawals::where('user_id', auth()->user()->id)->whereNot('process_status', 'success')->count();
 
         if($haspending > 0){
@@ -126,7 +117,7 @@ class CashoutController extends CashinController
         switch ($request->getPg()) {
 
             #JDPay
-            case 'GCash': // primary PG | min amount = 50 | (JDpay)
+            case 'GCash Fast': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
                 $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
                 $processPayment->bank_code = self::GCASH_WORD;

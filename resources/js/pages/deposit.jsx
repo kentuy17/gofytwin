@@ -60,7 +60,7 @@ function DepForms({ xrftoken, inputValue }) {
         window.location.href = responseData.redirect_url
       }
       else {
-        console.log('wqewqe')
+        console.log('Error fetching data..')
       }
       // console.log(response)
     })
@@ -98,15 +98,9 @@ function DepForms({ xrftoken, inputValue }) {
 }
 
 function PaymentProvider({ onInputChange, item }) {
-  const { name, icon, min, max } = item
+  const { name, icon, min, max, tag } = item
   const handleChange = () => {
     onInputChange(name)
-    // let val = e.target.value
-    // val = val.replace(/\D/g, '')
-    // if (val.length > 6)
-    //   return
-    // setSubmitDisabled(val.length !== 6)
-    // setData('amount', val)
   }
 
   return (
@@ -119,7 +113,7 @@ function PaymentProvider({ onInputChange, item }) {
           <div className="name" style={{ textTransform: 'uppercase' }}>
             {name}
             {' '}
-            (Instant)
+            {tag}
           </div>
           <div className="desc">
             <div>

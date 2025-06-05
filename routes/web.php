@@ -15,6 +15,7 @@ use App\Http\Controllers\API\PayoutController;
 use App\Http\Controllers\ClaimPrizeController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\AccountsController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\WithdrawController;
 use App\Http\Controllers\API\ServerInfoController;
 use App\Http\Controllers\PayoutController as PayOut;
@@ -64,6 +65,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/get-inactive', [ServerInfoController::class,'get_inactive'])->name('get.inactive')->middleware('auth');
     Route::get('/winner/info/cashin', [ServerInfoController::class,'cashin_info_board'])->name('cashin.info')->middleware('auth');
     Route::get('/admin/winners-board/from/{from}/to/{to}',[WinnersDownloadController::class,'dldownload'])->name('winners.download')->middleware('auth');
+
+    Route::get('/admin/general-settings',[SettingsController::class,'index'])->middleware('auth');
 
     // React/Inertia Front-end
     Route::get('/player/deposit', [UserController::class, 'deposit'])->name('deposit');

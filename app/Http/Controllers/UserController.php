@@ -30,7 +30,15 @@ class UserController extends Controller
         return Inertia::render('cashout', [
             'providers' => [
                 [
-                    'name' => 'GCash',
+                    'name' => 'GCash Fast',
+                    'tag' => '(INSTANT)',
+                    'icon' => '/images/gcash.png',
+                    'min' => 100,
+                    'max' => 10000
+                ],
+                [
+                    'name' => 'GCash Safe',
+                    'tag' => '(8 Min. Processing)',
                     'icon' => '/images/gcash.png',
                     'min' => 100,
                     'max' => 10000
@@ -51,7 +59,15 @@ class UserController extends Controller
         return Inertia::render('deposit', [
             'providers' => [
                 [
-                    'name' => 'GCash',
+                    'name' => 'GCash Fast',
+                    'tag' => '(INSTANT)',
+                    'icon' => '/images/gcash.png',
+                    'min' => 100,
+                    'max' => 10000
+                ],
+                [
+                    'name' => 'GCash Safe',
+                    'tag' => '(8 Min. Processing)',
                     'icon' => '/images/gcash.png',
                     'min' => 100,
                     'max' => 10000

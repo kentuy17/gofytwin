@@ -51,6 +51,8 @@ class HomeController extends Controller
             ],
             'settings' => [
                 'show_video' => Settings::get('show_video'),
+                'pg_gcash' => Settings::get('pg_gcash'),
+                'pg_maya' => Settings::get('pg_maya'),
                 'video_banner' => Settings::get('video_banner'),
                 'no_credits_banner' => Settings::get('no_credits_banner'),
             ]
@@ -59,8 +61,14 @@ class HomeController extends Controller
 
     public function adminConfig()
     {
+        if(auth()->user()->user_level < self::SUPER_ADMIN){
+
+            return Redirect::back()->with('error', 'You are not allowed!.');
+        }
         $settings = Settings::whereIn('field', [
             'show_video',
+            'pg_maya',
+            'pg_gcash',
             'video_banner',
             'dummy_bet_amount',
             'min_bet',
@@ -77,8 +85,14 @@ class HomeController extends Controller
 
     public function updateConfig(Request $request)
     {
+        if(auth()->user()->user_level < self::SUPER_ADMIN){
+
+            return Redirect::back()->with('error', 'You are not allowed!.');
+        }
         $configs = [
             "show_video",
+            "pg_gcash",
+            "pg_maya",
             // "video_banner",
             "dummy_bet_amount",
             'min_bet',
