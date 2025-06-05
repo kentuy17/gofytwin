@@ -71,7 +71,7 @@ export function PhoneInputCountry({ inputStr }) {
   )
 }
 
-function OtpDialog({ user }) {
+function OtpDialog({ user, code }) {
   const submitRef = useRef(null)
 
   const { data, setData, post, errors, processing } = useForm({
@@ -105,6 +105,13 @@ function OtpDialog({ user }) {
       submitRef.current.click()
     }
   }, [data.otp])
+
+  useEffect(() => {
+    if (import.meta.env.VITE_DISPLAY_OTP) {
+      setData('otp', code)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <AlertDialog open className="flex flex-col items-center">
@@ -164,12 +171,11 @@ function OtpDialog({ user }) {
 }
 
 export default function Otp({ user, code }) {
-  console.log(code.otp)
-
+  // console.log(code)
   return (
     <AuthLayout>
       <Head title="Log in" />
-      <OtpDialog user={user} />
+      <OtpDialog code={code.otp} user={user} />
       {/* {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>} */}
     </AuthLayout>
   )

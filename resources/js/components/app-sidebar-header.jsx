@@ -1,25 +1,60 @@
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  // AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { OperatorContext } from '@/context/operator-context'
 import { formatMoney } from '@/lib/utils'
 import { Link, router, usePage } from '@inertiajs/react'
 import { PlusIcon, VideoIcon, VideoOffIcon } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
+
 import { Button } from './ui/button'
+
+function VideoToggle({ children, showVideo, setShowVideo }) {
+  const [open, setOpen] = useState(false)
+  const action = showVideo ? 'OFF' : 'ON'
+
+  const toggleVideoBtn = (e) => {
+    e.preventDefault()
+    setOpen(false)
+    setShowVideo(!showVideo)
+    router.post('/admin/toggle-video', {
+      show_video: !showVideo,
+    })
+  }
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        {children}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{`TURN ${action} VIDEO?`}</AlertDialogTitle>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={toggleVideoBtn}>Yes</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
 
 export function AppSidebarHeader({ breadcrumbs }) {
   const { setCredits, credits } = useContext(OperatorContext)
   const { auth, globals } = usePage().props
   const [showVideo, setShowVideo] = useState(globals.config.show_video === '1')
   const pts = auth?.user?.credits
-
-  const toggleVideoBtn = (e) => {
-    e.preventDefault()
-    setShowVideo(!showVideo)
-    router.post('/admin/toggle-video', {
-      show_video: !showVideo,
-    })
-  }
 
   useEffect(() => {
     setCredits(pts)
@@ -41,9 +76,12 @@ export function AppSidebarHeader({ breadcrumbs }) {
       <div className="">
         {Number.parseInt(auth.user.user_level) > 0
           ? (
-              <Button onClick={toggleVideoBtn} variant="default" size="icon">
-                {showVideo ? <VideoIcon /> : <VideoOffIcon />}
-              </Button>
+              <VideoToggle showVideo={showVideo} setShowVideo={setShowVideo} asChild>
+                <Button variant="default" size="icon">
+                  {showVideo ? <VideoIcon /> : <VideoOffIcon />}
+                </Button>
+              </VideoToggle>
+
             )
           : (
               <Button size="sm" className="bg-blue-500 text-white font-bold" asChild>

@@ -67,7 +67,7 @@ export function InputOtpDialog() {
   )
 }
 
-function LoginDialog() {
+function LoginDialog({ site }) {
   const submitRef = useRef(null)
   const [submitDisabled, setSubmitDisabled] = useState(true)
   const { data, setData, post, processing, reset } = useForm({
@@ -125,6 +125,8 @@ function LoginDialog() {
     marginLeft: '16px',
     width: 'calc(100% - 32px)',
   }
+
+  console.log(site)
 
   return (
     <AlertDialog open>
@@ -201,14 +203,8 @@ function LoginDialog() {
   )
 }
 
-
-
-
 export default function Login({ site }) {
   const { flash } = usePage().props
-  console.log(flash)
-
-  console.log(site)
 
   if (flash && flash.error) {
     alert(flash.error)
@@ -217,8 +213,7 @@ export default function Login({ site }) {
   return (
     <AuthLayout>
       <Head title="Log in" />
-      <LoginDialog />
-
+      <LoginDialog site={site} />
     </AuthLayout>
   )
 }
