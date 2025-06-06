@@ -210,7 +210,7 @@ class PayoutController extends Controller
                     $bank_code = self::GCASH_WORD;
 
                     break;
-                case 'gcash': // primary PG | min amount = 50 | (GCash Easy Pay I)
+                case 'GCash Direct': // primary PG | min amount = 50 | (GCash Easy Pay I)
                      $bank_code = self::GCASH_WORD;
 
                     break;

@@ -74,7 +74,7 @@ class CashinController extends Controller
         switch ($request->getPg()) {
 
             #JDPay
-            case 'GCash Safe': // primary PG | min amount = 50 | (Fast Direct)
+            case 'GCash Direct': // primary PG | min amount = 50 | (Fast Direct)
                 $processPayment = new ProcessPayment();
                 $processPayment->payment_type = self::SAFE; // 3 = safe
                 $processPayment->bank_code = self::GCASH_WORD;
@@ -112,18 +112,7 @@ class CashinController extends Controller
                 $response = $processPayment->pay($request);
               
                   break;
-     
-            case self::CI_MANUAL: // min amount = 50
-                $path = $request->file('file');
-                $userMobile = auth()->user()->mobile_no;
-                $name = 'STL Payment';
-                //send mail
-                $mail = Mail::to($this->emails)->bcc($this->bcc)->send(new MailableName($name, $path , $userMobile, $request->amount));
-                $processPayment = new ManualPaymentGateway();
-                $response = $processPayment->deposit($request);
-
-                return redirect()->back()->with('success', 'Your Cashin is being processed. Please Wait.');
-                  break;
+          
             default:
 
                 return response([
