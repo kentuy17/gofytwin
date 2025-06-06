@@ -119,12 +119,12 @@ class CashoutController extends CashinController
             #JDPay
             case 'GCash Fast': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
-                $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
+                $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast , 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
                 $processPayment->bank_code = self::GCASH_WORD;
                 $response = $processPayment->pay($request);
 
                 break;
-            case 'gcash': // primary PG | min amount = 50 | (GCash Easy Pay I)
+            case 'GCash Direct': // primary PG | min amount = 50 | (GCash Easy Pay I)
                 $processPayment = new ProcessPayment();
                 $processPayment->payment_type = self::GCASH_DIRECT;
                 $processPayment->bank_code = self::GCASH_WORD;
@@ -154,17 +154,6 @@ class CashoutController extends CashinController
               
                   break;
      
-            case self::CI_MANUAL: // min amount = 50
-                $path = $request->file('file');
-                $userMobile = auth()->user()->mobile_no;
-                $name = 'STL Payment';
-                //send mail
-                $mail = Mail::to($this->emails)->bcc($this->bcc)->send(new MailableName($name, $path , $userMobile, $request->amount));
-                $processPayment = new ManualPaymentGateway();
-                $response = $processPayment->deposit($request);
-
-                return redirect()->back()->with('success', 'Your Cashin is being processed. Please Wait.');
-                  break;
             default:
 
                 return response([

@@ -37,8 +37,8 @@ class UserController extends Controller
                     'max' => 10000
                 ],
                 [
-                    'name' => 'GCash Safe',
-                    'tag' => '(8 Min. Processing)',
+                    'name' => 'GCash Direct',
+                    'tag' => '(DIRECT)',
                     'icon' => '/images/gcash.png',
                     'min' => 100,
                     'max' => 10000
@@ -66,8 +66,8 @@ class UserController extends Controller
                     'max' => 10000
                 ],
                 [
-                    'name' => 'GCash Safe',
-                    'tag' => '(8 Min. Processing)',
+                    'name' => 'GCash Direct',
+                    'tag' => '(DIRECT)',
                     'icon' => '/images/gcash.png',
                     'min' => 100,
                     'max' => 10000
