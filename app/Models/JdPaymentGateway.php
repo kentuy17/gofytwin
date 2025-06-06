@@ -79,6 +79,7 @@ class JdPaymentGateway extends Model
         $concatenated = $this->concatenateString($load).'key='.$this->key;
         $encoded = MD5($concatenated);
         $load['sign'] = $encoded;
+        // dd($load);
         $response = Http::post($this->withdrawal_endpoint, $load);
         $transactionStatus = json_decode($response->body(), true);
       

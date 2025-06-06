@@ -21,6 +21,13 @@ use App\Models\LuckypayPaymentGateway;
 
 class PayoutController extends Controller
 {
+    const GCASH_P2P = 3;
+    const GCASH_DIRECT = 12;
+    const MAYAB = 3;
+    const FAST_DIRECT = 1;
+    const GCASH_QR_III = 7;
+    const GCASH_WORD = 'gcash';
+    const MAYA = 'PMP';
     /**
      * Store a newly created resource in storage.
      *
@@ -192,52 +199,37 @@ class PayoutController extends Controller
             return $this->sendResponse('error', 'This transaction is being processed.');
         }
 
-        if($request->process_type == 'manual'){
-            $winner->claimed = 1;
-            $winner->process_status = 'success';
-            $winner->approved = auth()->user()->id;
-            $winner->save(); 
-            
-            return $this->sendResponse('success', $winner);
-        }
         $play = '0_'.$winner->user_id;
-        if($request->pg == 'pg_3'){
-            $taxedAmount = $winner->amount * 2.5 / 100;
-            $finalTaxedAmount = $winner->amount - $taxedAmount;
-            $bank_code = $winner->payout_remittance=='gcash'?'gcash':'PMP';
-            $transactionId = str_pad(rand(), 7, '0', STR_PAD_LEFT).'_'.'0';
-            $processPayment = new LuckypayPaymentGateway();
-            $processPayment->amount = round($finalTaxedAmount, 2); 
-            $processPayment->order_id = $transactionId;
-            $processPayment->bank_code = $bank_code;
-            $processPayment->bank_card_name = $winner->receiver_name;
-            $processPayment->bank_card_account = $winner->receiver_mobile_number;
-            $processPayment->return_url = URL::to("/");
-            $response = $processPayment->processPayout();
-            // dd($response);
-            $saveData = [
-                'code' => 0, //this is for successful transaction
-                'msg' => 'processing', 
-                'merchant_slug' => 'luckypay', 
-                'merchant_order_num' => $transactionId, 
-                'action' => 'deposit_attempt', 
-                'order' => json_encode($response), 
-                'user_id' => auth()->user()->id, 
-            ];
-            Callbacks::create($saveData);
-            if($response['status']==1){
-                $winner->merchant_order_no = $transactionId;
-                $winner->process_status = 'processing';
-                $winner->approved = auth()->user()->id;
-                $winner->save(); 
-            } 
-
-            return $this->sendResponse('success', $response);
-        }
         if($request->pg == 'pg_4'){
             $taxedAmount = $winner->amount * 2.5 / 100;
             $finalTaxedAmount = $winner->amount - $taxedAmount - 8;
-            $bank_code = $winner->payout_remittance=='gcash'?'gcash':'PMP';
+            switch ($winner->payout_remittance) {
+
+                #JDPay
+                case 'GCash Fast': // primary PG | min amount = 50 | (JDpay)
+                    $bank_code = self::GCASH_WORD;
+
+                    break;
+                case 'gcash': // primary PG | min amount = 50 | (GCash Easy Pay I)
+                     $bank_code = self::GCASH_WORD;
+
+                    break;
+                case 'gcash_p2p': // primary PG | min amount = 50 | (GCash P2P/QR PAY I)
+                     $bank_code = self::GCASH_WORD;
+
+                    break;
+                case 'gcash_p2p_qr': // primary PG | min amount = 50 | (GCash QR Pay I)
+                     $bank_code = self::GCASH_WORD;
+
+                    break;
+                case 'Maya': // min amount = 50
+                    $bank_code = self::MAYA;
+                
+                    break;
+                default:
+                    $bank_code = self::GCASH_WORD;
+            }
+            // $bank_code = $winner->payout_remittance=='gcash'?'gcash':'PMP';
             $transactionId = str_pad(rand(), 7, '0', STR_PAD_LEFT).'_'.'0';
             $processPayment = new JdPaymentGateway();
             $processPayment->amount = round($finalTaxedAmount, 2); 
