@@ -148,11 +148,11 @@ class PaymentGatewayController extends Controller
             $cash_in->status = self::SUCCESS;
             $cash_in->save();
         }
-        // $withdrawals = Withdrawals::where('merchant_order_no',$this->transaction_id)->first();
-        // if($withdrawals){
-        //     $withdrawals->process_status = self::SUCCESS;
-        //     $withdrawals->save();
-        // }
+        $withdrawals = Withdrawals::where('merchant_order_no',$this->transaction_id)->first();
+        if($withdrawals){
+            $withdrawals->process_status = self::SUCCESS;
+            $withdrawals->save();
+        }
         // $adminWithdrawals = AdminWithdrawals::where('merchant_order_no',$this->transaction_id)->first();
         // if($adminWithdrawals){
         //     $adminWithdrawals->process_status = self::SUCCESS;
@@ -185,6 +185,7 @@ class PaymentGatewayController extends Controller
     protected function applyCredits(){
         $topup = Topups::where('merchant_order_num',$this->transaction_id)->first();
         if(!$topup){
+
             return false;
         }   
 
@@ -194,13 +195,6 @@ class PaymentGatewayController extends Controller
                 $user = User::find($topup->user_id);
                 
             }
-
-            // protected $transaction_id;
-            // protected $user_id;
-            // protected $transaction_amount;
-            // protected $transaction_status = 0;
-
-
             $topup->amount = $this->transaction_amount;
             $topup->status = self::SUCCESS;
             $topup->save();
