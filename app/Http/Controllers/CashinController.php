@@ -32,6 +32,7 @@ class CashinController extends Controller
     const GCASH_P2P = 3;
     const GCASH_DIRECT = 12;
     const MAYAB = 3;
+    const SAFE = 3;
     const FAST_DIRECT = 1;
     const GCASH_QR_III = 7;
     const GCASH_WORD = 'gcash';
@@ -73,20 +74,22 @@ class CashinController extends Controller
         switch ($request->getPg()) {
 
             #JDPay
+            case 'GCash Safe': // primary PG | min amount = 50 | (Fast Direct)
+                $processPayment = new ProcessPayment();
+                $processPayment->payment_type = self::SAFE; // 3 = safe
+                $processPayment->bank_code = self::GCASH_WORD;
+                $response = $processPayment->pay($request);
+
+                break;
+
             case 'GCash Fast': // primary PG | min amount = 50 | (JDpay)
                 $processPayment = new ProcessPayment();
-                $processPayment->payment_type = self::MAYAB; // JDpay 3 = Fast Direct, 1 = Qrcode (same as LukyPay) | JDpay want to use either 7 or 12
+                $processPayment->payment_type = self::FAST_DIRECT; // JDpay 1 = fast 
                 $processPayment->bank_code = self::GCASH_WORD;
                 $response = $processPayment->pay($request);
 
                 break;
-            case 'gcash': // primary PG | min amount = 50 | (GCash Easy Pay I)
-                $processPayment = new ProcessPayment();
-                $processPayment->payment_type = self::GCASH_DIRECT;
-                $processPayment->bank_code = self::GCASH_WORD;
-                $response = $processPayment->pay($request);
-
-                break;
+            
             case 'gcash_p2p': // primary PG | min amount = 50 | (GCash P2P/QR PAY I)
                 $processPayment = new ProcessPayment();
                 $processPayment->payment_type = self::GCASH_P2P;
