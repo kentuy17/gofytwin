@@ -2,23 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Carbon\Carbon;
-use App\Models\Log;
-use App\Models\User;
 use App\Models\Fight;
-use App\Models\Topups;
-use App\Models\Cashins;
-use App\Models\Credits;
-use App\Models\Callbacks;
-use App\Models\DrawTypes;
-use App\Models\Winners3ds;
-use App\Models\ActivityLogs;
 use Illuminate\Http\Request;
-use App\Models\AgentReportGrids;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\DailyActiveBettorGrid;
 
 class TotalGross extends Controller
 {
@@ -51,23 +38,10 @@ class TotalGross extends Controller
 
             return redirect('home');
         }
-        // $bets
         $from = isset($request->from) ? $request->from : date('Y-m-d');
         $to = isset($request->to) ? $request->to : date('Y-m-d');
         // dd($from);
-
-        // $winners = DB::select("SELECT fights.fight_no, 
-        //                 fights.status, 
-        //                 fights.game_winner, 
-        //                 fights.event_id, 
-        //                 fights.created_at 
-        //             FROM
-        //                 fights  
-        //             LEFT JOIN bet_histories ON fights.fight_no=bet_histories.fight_id 
-
-        //             WHERE  bet_histories.created_at >= '".$from." 00:00:00' AND bet_histories.created_at <= '".$to." 23:59:59'  ORDER BY fight_no");
-        $fights = Fight::whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->orderBy('id', 'DESC')->get();
-
+        $fights = Fight::whereBetween('created_at', [$from." 00:00:00", $from." 23:59:59"])->orderBy('id', 'DESC')->get();
         $total_sales = 0;
 
         return view(

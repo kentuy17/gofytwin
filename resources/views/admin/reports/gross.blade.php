@@ -5,6 +5,7 @@
 @endsection
 @section('content')
 <script>
+    var total_income = 0;
     function loadRowData(e){
         setTimeout(function(){
             $.ajax({
@@ -26,7 +27,8 @@
                     $(".total_meron_" + e).text( response.data.total_meron);
                     $(".total_wala_" + e).text( response.data.total_wala);
                     $(".company_share_" + e).text( response.data.company_share);
-                   
+                    total_income = total_income + response.data.total_bets;
+                    $(".totall").text(total_income);
                 },
                 complete: function(response){
                     // $('#create_new').html('Create New');
@@ -50,7 +52,9 @@
                 </div>
             </div>
         </form>
-        <a class="btn btn-primary" href="{{route('winners.download',[$from,$to])}}">Download</a>
+    </div>
+    <div class="button-container  p-2 my-2">
+      <span>Total Income: </span> <span class="totall">0</span>
     </div>
     <div class="row">
         <h1>Game Fights Report Bets</h1>
@@ -68,17 +72,9 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                        $total_no_of_hits = 0;
-                        $total__hits = 0;
-                    @endphp
-                @if(isset($fights) && count($fights) > 0)
-                    @php
-                        $cntr = 1;
-                    @endphp
                     @foreach($fights as $fight)
                     @php
-                       
+                        $cntr = 1;
 
                         $profitability = 100;
                         
@@ -96,11 +92,8 @@
                         </tr>
                         @php
                             $cntr ++;
-                            $total_no_of_hits += $fight->hits;
-                            $total__hits += $fight->won_amount;
                         @endphp
                     @endforeach
-                @endif
                  
             </tbody>
         </table>
