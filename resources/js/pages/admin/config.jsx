@@ -122,6 +122,16 @@ function Admin({ settings }) {
                   />
                 </div>
                 <div className="space-y-1">
+                  <Label htmlFor="dummy_exec_time">Dummy Exec Time (seconds)</Label>
+                  <Input
+                    id="dummy_exec_time"
+                    type="number"
+                    name="dummy_exec_time"
+                    onChange={e => setData('dummy_exec_time', e.target.value)}
+                    defaultValue={data.dummy_exec_time}
+                  />
+                </div>
+                <div className="space-y-1">
                   <Label htmlFor="dummy_bet_amount">Min Bet</Label>
                   <Input
                     id="min_bet"

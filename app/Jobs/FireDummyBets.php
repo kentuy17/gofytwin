@@ -16,14 +16,16 @@ class FireDummyBets implements ShouldQueue
     use Queueable;
     private $currentFight;
     private $dummy_limit;
+    private $exec_time;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(Fight $currentFight, $dummy_limit)
+    public function __construct(Fight $currentFight, $dummy_limit, $exec_time)
     {
         $this->currentFight = $currentFight;
         $this->dummy_limit = $dummy_limit;
+        $this->exec_time = $exec_time;
     }
 
     /**
@@ -31,13 +33,13 @@ class FireDummyBets implements ShouldQueue
      */
     public function handle(): void
     {
-        //
         $betController = new BetController();
         $limit = $this->dummy_limit;
         $option = ['M' => 0, 'W' => 0];
 
         $choices = array('M', 'W');
         $amount = range(100,1500);
+        $dummy_bets = [];
 
         while($option['M'] <= $limit || $option['W'] <= $limit) {
             $side = $choices[array_rand($choices)];
@@ -45,7 +47,7 @@ class FireDummyBets implements ShouldQueue
             if($option[$side] > $limit) continue;
             if($option['M'] > $limit && $option['W'] > $limit) break;
 
-            $bet = [
+            $dummy_bets[] = [
                 'fight_id' => $this->currentFight->id,
                 'fight_no' => $this->currentFight->fight_no,
                 'uuid' => Str::uuid(),
@@ -56,10 +58,15 @@ class FireDummyBets implements ShouldQueue
             ];
 
             // Log::channel('test')->info(json_encode($bet));
-            $betController->dummyBets($bet);
             $option[$side] += $money;
+        }
 
-            usleep(rand(20,100) * 1000);
+        $delay = ($this->exec_time * 1000000) / count($dummy_bets);
+        // Log::channel('test')->info($delay);
+        foreach($dummy_bets as $bet) {
+            $betController->dummyBets($bet);
+            // Log::channel('test')->info(json_encode($bet));
+            usleep(floor($delay));
         }
 
 
