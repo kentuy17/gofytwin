@@ -41,6 +41,7 @@ class CashoutController extends CashinController
         $userRecord = User::find(auth()->user()->id);
         $true_balance = $userRecord->credits - self::MAINTANING_BALANCE; // 200
  
+        
         if($true_balance < $request->amount){
             
             return response([
@@ -58,6 +59,14 @@ class CashoutController extends CashinController
                     'message'=> 'Minimum Cashout Amount is '.self::MIN_CO.' plus additional ₱100.00 maintaning balance.',
                 ],404);
                 
+        }
+        if($request->amount < self::MIN_CO){
+            
+            return response([
+                    'status'=> false,
+                    'redirect_url'=> 'Page Error',
+                    'message'=> 'Minimum Cashout Amount is '.self::MIN_CO,
+                ],404);
         }
  
         $haspending = Withdrawals::where('user_id', auth()->user()->id)->whereNot('process_status', 'success')->count();
