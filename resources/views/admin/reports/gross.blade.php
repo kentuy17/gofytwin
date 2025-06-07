@@ -42,10 +42,8 @@
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                 <div class="input-group align-items-center">
                     <div class="input-group align-items-center my-2">
-                        <label class="draw-label mx-1">From</label>
+                        <label class="draw-label mx-1">Date</label>
                         <input type="text" class="form-control datepicker"  name="from" value="<?= isset($_GET['from']) ? $_GET['from'] : date('Y-m-d', strtotime(date('Y-m-d')));  ?>"/>
-                        <label class="draw-label mx-1">To</label>
-                        <input type="text" class="form-control mx-1 datepicker" name="to" value="<?= isset($_GET['to']) ? $_GET['to'] : date('Y-m-d') ?>"/>
                         <button type="submit" class="btn btn-primary mx-2">Filter</button>
 
                     </div>
