@@ -221,13 +221,13 @@
         <div class="col-4">
             <div class="card widget-flat">
                 <div class="card-body">
-                    <h1 class="mt-3 mb-3"><span class="bi text-danger bi-currency-dollar"></span><span id="total_pg3_wallet">Fetching...</span></h1>
+                    <h1 class="mt-3 mb-3"><span class="bi text-danger bi-currency-dollar"></span><span id="total_pg1_wallet">Fetching...</span></h1>
                     <h5 class="text-white fw-normal mt-0" title="Number of Customers">PG1 Wallet</h5>
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col-->
 
-        
+
         <div class="col-4">
             <div class="card widget-flat">
                 <div class="card-body">
