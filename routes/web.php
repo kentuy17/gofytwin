@@ -33,7 +33,7 @@ Route::post('/webrequest/captcha', [AuthOtpController::class,'check'])->name('ca
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    Route::get('/admin/bets/list', [BetsController::class, 'bets'])->name('admin.bets.list');
+    // Route::get('/admin/bets/list', [BetsController::class, 'bets'])->name('admin.bets.list');
 
     Route::get('/test/logout',[HomeController::class,'temporaryLogout'])->name('testttest.logout');
     Route::get('/admin/users/list', [AccountsController::class, 'users'])->name('admin.users.list');

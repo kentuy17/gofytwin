@@ -6,6 +6,7 @@ use DataTables;
 use Carbon\Carbon;
 use App\Models\Bet;
 use App\Models\User;
+use App\Models\Fight;
 use App\Models\Promos;
 use App\Models\Topups;
 use App\Models\Bets1ds;
@@ -122,12 +123,20 @@ class ServerInfoController extends BaseController
         $from = isset($request->from) ? $request->from : date('Y-m-d');
         $to = isset($request->to) ? $request->to : date('Y-m-d');
         $type = $request->play;
+        $total_bets = 0;
+        $total_meron = 0;
+        $total_wala = 0;
         $total_win_amount = 0;
+        $fight = Fight::where('fight_no',$request->record_id)->first();
         switch ($type) {
             case 'players':
-                $total_bets = BetHistory::where('fight_no',$request->record_id)->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                $total_meron = BetHistory::where('fight_no',$request->record_id)->where('side','M')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                $total_wala = BetHistory::where('fight_no',$request->record_id)->where('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                if($fight){
+                    if($fight->game_winner == 'W' OR $fight->game_winner == 'M'){
+                        $total_bets = BetHistory::where('fight_no',$request->record_id)->where('side','M')->orWhere('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                        $total_meron = BetHistory::where('fight_no',$request->record_id)->where('side','M')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                        $total_wala = BetHistory::where('fight_no',$request->record_id)->where('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                    }
+                }
                 break;
             case 'bots_playes':
                 $total_bets = Bet::where('user_id',$request->record_id)->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
@@ -137,28 +146,14 @@ class ServerInfoController extends BaseController
                 break;
         }
 
-        // $total_win_amount_1= \App\Models\Winners1ds::where('user_id', $request->record_id)->sum('winning_amount');
-        // $total_win_amount_2= \App\Models\Winners2ds::where('user_id', $request->record_id)->sum('winning_amount');
-        // $total_win_amount_3= \App\Models\Winners3ds::where('user_id', $request->record_id)->sum('winning_amount');
-        // $total_win_amount_4= \App\Models\Winners4ds::where('user_id', $request->record_id)->sum('winning_amount');
-        // $total_win_amount_6= \App\Models\Winners6ds::where('user_id', $request->record_id)->sum('winning_amount');
-        // $total_win_amount_pick_2= \App\Models\Winnerspick2ds::where('user_id', $request->record_id)->sum('winning_amount');
-        // $total_win_amount = $total_win_amount_1 + $total_win_amount_2 + $total_win_amount_3 + $total_win_amount_4 + $total_win_amount_6 + $total_win_amount_pick_2;
-        
-        
-        
-        // ->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-        // Cashin / total winnings x 100 - 100 = %
-        // $profitability_1 = $total_bets / $cashin->won_amount;
-        // $profitability_2 = $profitability_1 * 100;
-        $company_share = $total_meron + $total_meron;
-        
+        $company_share = $total_meron + $total_wala;
  
         $data['total_meron'] = $total_meron;
         $data['total_wala'] = $total_wala;
         $data['company_share'] = $company_share * 0.06;
         $data['total_winnings'] = number_format($total_win_amount, 2, '.',',');
-        $data['total_bets'] = number_format($total_bets, 2, '.',',');
+        // $data['total_bets'] = number_format($total_bets, 2, '.',',');
+        $data['total_bets'] = $total_bets;
 
         return $this->sendResponse($data, 'Response passed..');
     }
