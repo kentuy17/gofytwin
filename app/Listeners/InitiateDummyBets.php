@@ -34,7 +34,8 @@ class InitiateDummyBets implements ShouldQueue
         if ($event->currentFight->status === 'OPEN') {
             // dispatch(new FireDummyBets($event->currentFight));
             $limit = Settings::get('dummy_bet_amount');
-            FireDummyBets::dispatch($event->currentFight, $limit);
+            $exec_time = Settings::get('dummy_exec_time');
+            FireDummyBets::dispatch($event->currentFight, $limit, $exec_time);
         }
     }
 }

@@ -115,7 +115,19 @@ class SettingsSeeder extends Seeder
             [
                 'field' => 'no_credits_banner',
                 'value' => '/images/video-banner.jpeg',
-            ]
+            ],
+            [
+                'field' => 'pg_gcash',
+                'value' => false,
+            ],
+            [
+                'field' => 'pg_maya',
+                'value' => false,
+            ],
+            [
+                'field' => 'dummy_exec_time',
+                'value' => 60,
+            ],
         ]);
 
 

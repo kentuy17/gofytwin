@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 /* eslint-disable no-alert */
 // import TextLink from '@/components/text-link'
 
@@ -126,7 +124,8 @@ function LoginDialog({ site }) {
     width: 'calc(100% - 32px)',
   }
 
-  console.log(site)
+  // eslint-disable-next-line no-console, react-hooks/exhaustive-deps
+  useEffect(() => console.log(site), [])
 
   return (
     <AlertDialog open>

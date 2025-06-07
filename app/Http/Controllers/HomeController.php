@@ -74,6 +74,7 @@ class HomeController extends Controller
             'min_bet',
             'max_bet',
             'no_credits_banner',
+            'dummy_exec_time',
         ])->get();
 
         return Inertia::render('admin/config', [
@@ -98,12 +99,21 @@ class HomeController extends Controller
             'min_bet',
             'max_bet',
             // 'no_credits_banner',
+            'dummy_exec_time',
         ];
 
         foreach ($configs as $conf) {
             $item = Settings::where('field', $conf)->first();
-            $item->value = $request->{$conf};
-            $item->save();
+
+            if($item) {
+                $item->value = $request->{$conf};
+                $item->save();
+            } else {
+                Settings::create([
+                    'field' => $conf,
+                    'value' => $request->{$conf}
+                ]);
+            }
         }
 
         $upload_configs = [
@@ -132,10 +142,6 @@ class HomeController extends Controller
                 $banner->save();
             }
         }
-
-        // Log::channel('test')->info($request->file('video_banner')->extension());
-
-
 
         return Redirect::back()->with('success', 'File uploaded successfully');
     }
