@@ -5,7 +5,7 @@
 @endsection
 @section('content')
 <div class="container-fluid">
-    <div class="row">
+    {{-- <div class="row">
         <h1>Statistics Report</h1>
         <div class="col-12">
             <div class="button-container  p-2 my-2">
@@ -55,8 +55,9 @@
                 </a>
             </div> <!-- end card-->
         </div> <!-- end col-->
-    </div>
-    <div class="row mt-4">
+    </div> --}}
+
+    {{-- <div class="row mt-4">
         <div class="col-4">
             <div class="card widget-flat">
                     <div class="card-body">
@@ -90,8 +91,9 @@
                 </a>
             </div> <!-- end card-->
         </div> <!-- end col-->
-    </div>
-    <div class="row mt-4">
+    </div> --}}
+
+    {{-- <div class="row mt-4">
         <div class="col-4">
             <div class="card widget-flat">
                 <div class="card-body">
@@ -124,8 +126,9 @@
         </div> <!-- end col-->
 
         
-    </div>
-    <div class="row mt-4">
+    </div> --}}
+
+    {{-- <div class="row mt-4">
         <div class="col-4">
             <div class="card widget-flat">
                 <div class="card-body">
@@ -155,18 +158,9 @@
             </div> <!-- end card-->
         </div> <!-- end col-->
          
-    </div>
-    <div class="row mt-4">
- 
- 
- 
-
-        
-    </div>
-    
-  
+    </div> --}}
    
-    <div class="row mt-4">
+    {{-- <div class="row mt-4">
         
         <div class="col-4">
             <div class="card widget-flat">
@@ -178,8 +172,9 @@
         </div> <!-- end col-->
        
         
-    </div>
-    <div class="row mt-4">
+    </div> --}}
+
+    {{-- <div class="row mt-4">
         <div class="col-4">
             <div class="card widget-flat">
                 <a href="{{route('admin.cashin')}}" class="reports-links">
@@ -208,8 +203,10 @@
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col-->
-    </div>
-    <div class="row mt-4">
+    </div> --}}
+
+
+    {{-- <div class="row mt-4">
         <div class="col-4">
             <div class="card widget-flat">
                     <div class="card-body">
@@ -218,16 +215,19 @@
                     </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col-->
-         
+    </div> --}}
 
-         
-    </div>
     <div class="row mt-4">
- 
-  
-      
-    </div>
-    <div class="row mt-4">
+        <div class="col-4">
+            <div class="card widget-flat">
+                <div class="card-body">
+                    <h1 class="mt-3 mb-3"><span class="bi text-danger bi-currency-dollar"></span><span id="total_pg3_wallet">Fetching...</span></h1>
+                    <h5 class="text-white fw-normal mt-0" title="Number of Customers">PG1 Wallet</h5>
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+
+        
         <div class="col-4">
             <div class="card widget-flat">
                 <div class="card-body">
@@ -236,26 +236,11 @@
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col-->
-        {{-- <div class="col-4">
-            <div class="card widget-flat">
-                <div class="card-body">
-                    <h1 class="mt-3 mb-3"><span class="bi text-danger bi-currency-dollar"></span><span id="total_manual_wallet">Fetching...</span></h1>
-                    <h5 class="text-white fw-normal mt-0" title="Number of Customers">Manual Amount</h5>
-                </div> <!-- end card-body-->
-            </div> <!-- end card-->
-        </div> <!-- end col--> --}}
-        <div class="col-4">
-            <div class="card widget-flat">
-                <div class="card-body">
-                    <h1 class="mt-3 mb-3"><span class="bi text-danger bi-currency-dollar"></span><span id="total_pg3_wallet">Fetching...</span></h1>
-                    <h5 class="text-white fw-normal mt-0" title="Number of Customers">PG3 Wallet</h5>
-                </div> <!-- end card-body-->
-            </div> <!-- end card-->
-        </div> <!-- end col-->
 
-    
-         
+        
+
     </div>
+    
 </div>
 @endsection
 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
