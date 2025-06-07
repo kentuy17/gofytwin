@@ -28,7 +28,6 @@ class PayoutController extends Controller
     const GCASH_QR_III = 7;
     const GCASH_WORD = 'gcash';
     const MAYA = 'PMP';
-    const MIN_CO = 200;
     /**
      * Store a newly created resource in storage.
      *
