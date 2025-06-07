@@ -31,6 +31,7 @@
                 paymaya_qr = msg.data.paymaya_qr;  
                 total_wallet = msg.data.total_wallet;  
                 total_manual_wallet = msg.data.total_manual_wallet;  
+                total_pg1_wallet = msg.data.total_pg1_wallet;  
                 total_pg3_wallet = msg.data.total_pg3_wallet;  
                 pg_1_wallet = msg.data.pg_1_wallet;  
                 actual_live_profit = msg.data.actual_live_profit;  
@@ -47,6 +48,7 @@
                 $("#total_wallet").text(total_wallet);
                 $("#total_manual_wallet").text(total_manual_wallet);
                 $("#total_pg3_wallet").text(total_pg3_wallet);
+                $("#total_pg1_wallet").text(total_pg1_wallet);
         }); 
     }
     function getTotalBettors(){

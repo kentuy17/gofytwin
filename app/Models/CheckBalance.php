@@ -70,6 +70,7 @@ class CheckBalance extends Model
         # total wallet sa MA + total wallet SA, exclude company accounts 
         $gcash_amount+=$pg4_walletBalance['balance'];
 
+        $total_pg1_wallet = $pg4_walletBalance['balance'];
         $total += $pg4_walletBalance['balance'];
         #withdrawals
         $callback_amount = Withdrawals::whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->where('process_status','success')->sum('amount');
@@ -80,6 +81,7 @@ class CheckBalance extends Model
         $actual_live_profit = number_format($correct_profit,2,'.',',');
         $responseData['wallets']['total_wallet'] = number_format($total,2,'.',',');
         $responseData['wallets']['total_manual_wallet'] = number_format($manual,2,'.',',');
+        $responseData['wallets']['total_pg1_wallet'] = number_format($total_pg1_wallet,2,'.',',');
         $responseData['wallets']['total_pg3_wallet'] = number_format($pg3_walletBalance,2,'.',',');
         $responseData['wallets']['total_pg4_wallet'] = number_format($pg4_walletBalance['balance'],2,'.',',');
         $responseData['wallets']['gcash'] = $gcash_amount;
