@@ -239,11 +239,11 @@ class PayoutController extends Controller
             $processPayment->bank_card_account = $winner->receiver_mobile_number;
             $processPayment->return_url = URL::to("/");
             $response = $processPayment->processPayout();
-            // dd($response);
+            dd($response);
             $saveData = [
                 'code' => 0, //this is for successful transaction
                 'msg' => 'processing', 
-                'merchant_slug' => 'luckypay', 
+                'merchant_slug' => 'jdpay', 
                 'merchant_order_num' => $transactionId, 
                 'action' => 'deposit_attempt', 
                 'order' => json_encode($response), 

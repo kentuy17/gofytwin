@@ -46,7 +46,7 @@ class WithdrawController extends Controller
         // ->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])
 
         $winners = Withdrawals::whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->get();
-        $draw_types = DrawTypes::all();
+        $draw_types = null;
 
         return view(
             'admin.withdrawals.trace',[
