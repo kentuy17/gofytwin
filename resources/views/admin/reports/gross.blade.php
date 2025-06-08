@@ -53,9 +53,9 @@
             </div>
         </form>
     </div>
-    <div class="button-container  p-2 my-2">
+    {{-- <div class="button-container  p-2 my-2">
       <span>Total Income: </span> <span class="totall">0</span>
-    </div>
+    </div> --}}
     <div class="row">
         <h1>Game Fights Report Bets</h1>
     </div>
