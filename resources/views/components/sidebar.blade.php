@@ -26,11 +26,6 @@
       </a>
     </li>
     {{-- Nav item --}}
-    {{-- <li class="nav-item">
-      <a class="nav-link" href="{{route('admin.bets.list')}}">
-        Admin Bets
-      </a>
-    </li> --}}
     {{-- End Nav item --}}
     {{-- Nav item --}}
     <li class="nav-item">
