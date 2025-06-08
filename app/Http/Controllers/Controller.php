@@ -103,23 +103,23 @@ abstract class Controller
                         15655,  
                         15659  
                     ];
+    //admin accounts
     public $allowed_access = [
-                        1,  
-                        2,  
-                        3, 
-                        5,  
-                        6,  
-                        11,  
-                        15,  
-                        17,  
-                        43768,  
-                        79,  
-                        15656,  
-                        15386,  
-                        18258,  
-                        15655,  
-                        87,  
-                        15659  
+                        10,  // 09155558006 Dudes
+                        12,  // 09171577839
+                        13,  // 09364550882 Roy
+                        15,  // 09624304182	Userlevel 2
+                        16,  // 09087076302	Super Admmin
+                        18,  // 09659086255	Super Admmin
+                        27,  // 09154547876	Super Admmin
+                        33,  // 09111111111	Super Admmin
+                        37,  // 09151439675	Super Admmin
+                        38,  // 09959905382	100
+                        40,  // 09102257551	Userlevel 2
+                        41,  // 09651475619	Userlevel 2
+                        42,  // 09956474559	Userlevel 2
+                        57,  // 09956474559	Operator
+                          
                     ];
     public $operations = 1000;
     public $accounting = 2000;
