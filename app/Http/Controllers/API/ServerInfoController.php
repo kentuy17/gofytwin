@@ -161,6 +161,7 @@ class ServerInfoController extends BaseController
         $to = isset($request->to) ? $request->to : date('Y-m-d');
         $type = $request->play;
         $total_bets = 0;
+        $company_share = 0;
         $total_meron = 0;
         $total_wala = 0;
         $total_win_amount = 0;
@@ -168,11 +169,13 @@ class ServerInfoController extends BaseController
         switch ($type) {
             case 'players':
                 if($fight){
-                    // if($fight->game_winner == 'W' OR $fight->game_winner == 'M'){
-                        $total_bets = BetHistory::where('fight_no',$request->record_id)->where('side','M')->orWhere('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                        $total_meron = BetHistory::where('fight_no',$request->record_id)->where('side','M')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                        $total_wala = BetHistory::where('fight_no',$request->record_id)->where('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                    // }
+                    
+                    $total_bets = BetHistory::where('fight_no',$request->record_id)->where('side','M')->orWhere('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                    $total_meron = BetHistory::where('fight_no',$request->record_id)->where('side','M')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                    $total_wala = BetHistory::where('fight_no',$request->record_id)->where('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                    if($fight->game_winner == 'W' OR $fight->game_winner == 'M'){
+                        $company_share = $total_meron + $total_wala;
+                    }
                 }
                 break;
             case 'bots_playes':
@@ -183,7 +186,7 @@ class ServerInfoController extends BaseController
                 break;
         }
 
-        $company_share = $total_meron + $total_wala;
+        
  
         $data['total_meron'] = $total_meron;
         $data['total_wala'] = $total_wala;
