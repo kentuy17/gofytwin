@@ -19,7 +19,7 @@
             $('#create_new').html('....Please wait');
         },
         success: function(response){
-            $(".daily_company_share").text( response.data.daily_company_share);
+            $(".overall_company_share").text( response.data.overall_company_share);
         },
         complete: function(response){
             // $('#create_new').html('Create New');
@@ -96,7 +96,7 @@
     <div class="button-container  p-2 ">
       <span>Daily Company Share: </span> <span class="daily_company_share">Loading...</span>
       <br>
-      <span>Overall Company Share: </span> <span class="company_share">Loading...</span>
+      <span>Overall Company Share: </span> <span class="overall_company_share">Loading...</span>
     </div>
 
     <div class="row">

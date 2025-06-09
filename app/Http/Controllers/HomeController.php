@@ -37,7 +37,8 @@ class HomeController extends Controller
             Inertia::clearHistory();
         }
 
-        // $bets = Bet::where('user_id', Auth::user()->id)->get();
+        $bets = Bet::where('user_id', Auth::user()->id)->get();
+        $userCredits = User::find(Auth::user()->id)->credits;
 
         return Inertia::render('poll/dashboard', [
             'user' => Auth::user(),
@@ -50,6 +51,7 @@ class HomeController extends Controller
                 'credits' => Auth::user()->credits,
             ],
             'settings' => [
+                'user_credits' => $userCredits,
                 'show_video' => Settings::get('show_video'),
                 'pg_gcash' => Settings::get('pg_gcash'),
                 'pg_maya' => Settings::get('pg_maya'),
