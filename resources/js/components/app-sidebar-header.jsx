@@ -55,11 +55,32 @@ export function AppSidebarHeader({ breadcrumbs }) {
   const { auth, globals } = usePage().props
   const [showVideo, setShowVideo] = useState(globals.config.show_video === '1')
   const pts = auth?.user?.credits
+  const true_credits = 0
 
-  useEffect(() => {
-    setCredits(pts)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // useEffect(() => {
+  //   setCredits(pts)
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
+  // console.log(usePage().props.csrf_token)
+  fetch('/get-credits', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': usePage().props.csrf_token,
+    },
+    body: JSON.stringify({
+      user_id: auth.user.id,
+    }),
+  }).then((response) => {
+    return Promise.all([response.json(), response])
+  }).then(([responseData]) => {
+    if (responseData.success === true) {
+      setCredits(responseData.data)
+    }
+  })
+
+  
 
   return (
     <header className="justify-between items-center border-sidebar-border/50 flex h-16 shrink-0 gap-2 border-b px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">

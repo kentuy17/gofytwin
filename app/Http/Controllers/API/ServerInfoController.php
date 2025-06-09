@@ -74,6 +74,12 @@ class ServerInfoController extends BaseController
             return $this->sendResponse($data, 'Response passed..');
         }
     }
+    
+
+
+
+
+    
     public function serverTime(Request $request){
         if ($request->ajax()) {
             
@@ -455,6 +461,11 @@ class ServerInfoController extends BaseController
             
             return $this->sendResponse($data, 'Response passed..');
         }
+    }
+    public function check_credits(Request $request){
+        $user = User::find($request->user_id);
+        
+        return $this->sendResponse($user->credits, 'Response passed..');
     }
     public function check_balance(Request $request){
         if ($request->ajax()) {
