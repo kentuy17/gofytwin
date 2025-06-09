@@ -126,8 +126,8 @@ class ServerInfoController extends BaseController
         $totalEarnings = 0;
         $fights = Fight::all();
         foreach($fights as $fight){
-            if($fight->game_winner == 'M' || $fight->game_winner == 'W'){
-                $fightBets = BetHistory::all();
+            if($fight->game_winner == 'M' || $fight->game_winner == 'W'){ //there is winning side already
+                $fightBets = BetHistory::where('fight_id', $fight->id)->get();
                 foreach($fightBets as $bet){
                     $totalEarnings += $bet->amount;
                 }
