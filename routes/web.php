@@ -98,6 +98,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/claim/requests/list',[WithdrawController::class,'list'])->name('withdrawal.list')->middleware('auth');
     Route::post('/claim-prize/process/referral',[ClaimPrizeController::class,'processReferral'])->name('claim.process.referral')->middleware('auth');
     Route::post('/winner/info/winner/board', [ServerInfoController::class,'winner_info_board'])->name('winner.info.winner.board')->middleware('auth');
+    Route::post('/winner/company-share', [ServerInfoController::class,'company_share_info_board'])->name('winner.info.company.share')->middleware('auth');
+    Route::post('/winner/company-share/birth', [ServerInfoController::class,'company_share_info_board_birth'])->name('winner.info.company.share.since.birth')->middleware('auth');
 
     Route::post('/payout/process/referral', [PayOut::class,'processReferral'])->middleware('auth')->name('payout.process.referral');
     Route::post('/payout/re-process', [PayoutController::class,'reprocess'])->middleware('auth')->name('payout.reprocess');
