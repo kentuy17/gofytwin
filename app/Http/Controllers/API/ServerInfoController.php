@@ -145,7 +145,7 @@ class ServerInfoController extends BaseController
         $fights = Fight::whereBetween('created_at', [$from." 00:00:00", $from." 23:59:59"])->get();
         foreach($fights as $fight){
             if($fight->game_winner == 'M' || $fight->game_winner == 'W'){
-                $fightBets = Bet::where('fight_id', $fight->fight_no)->whereBetween('created_at', [$from." 00:00:00", $from." 23:59:59"])->get();
+                $fightBets = Bet::where('fight_no', $fight->fight_no)->whereBetween('created_at', [$from." 00:00:00", $from." 23:59:59"])->get();
                 foreach($fightBets as $bet){
                     $totalEarnings += $bet->amount;
                 }
