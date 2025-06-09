@@ -281,7 +281,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
                 )}
 
           <div className="font-xs text-[9px] text-center italic py-2 text-red-500">
-            Note Gamefowl Master available from 8AM-3AM daily with 250 Game Fights. Play Today!
+            Note: Payout is processed hourly from 11:00 AM to 11:00 PM Daily. Play Now!
           </div>
           <BetStats />
           <PlaceBets reset={setLogoutCtr} />
