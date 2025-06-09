@@ -134,7 +134,7 @@ class ServerInfoController extends BaseController
             }
         }
         $total = $totalEarnings * 0.06;
-        $data['daily_company_share'] = number_format($total, 2, '.',',');
+        $data['overall_company_share'] = number_format($total, 2, '.',',');
 
         return $this->sendResponse($data, 'Response passed..');
     }
