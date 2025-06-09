@@ -6,6 +6,46 @@
 @section('content')
 <script>
     var total_income = 0;
+    $.ajax({
+        type: 'post',
+        url: "{{route('winner.info.company.share.since.birth')}}",
+        data: {
+            from:"{{$from}}",
+        },  
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        beforeSend: function(){
+            $('#create_new').html('....Please wait');
+        },
+        success: function(response){
+            $(".daily_company_share").text( response.data.daily_company_share);
+        },
+        complete: function(response){
+            // $('#create_new').html('Create New');
+        }
+    });
+    setTimeout(function(){
+        $.ajax({
+            type: 'post',
+            url: "{{route('winner.info.company.share')}}",
+            data: {
+                from:"{{$from}}",
+            },  
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function(){
+                $('#create_new').html('....Please wait');
+            },
+            success: function(response){
+                $(".daily_company_share").text( response.data.daily_company_share);
+            },
+            complete: function(response){
+                // $('#create_new').html('Create New');
+            }
+        });
+    },30000);
     function loadRowData(e){
         setTimeout(function(){
             $.ajax({
@@ -35,7 +75,6 @@
                 }
             });
        },1000);
-        
     }
 </script>
 <div class="container-fluid">
@@ -53,9 +92,13 @@
             </div>
         </form>
     </div>
-    {{-- <div class="button-container  p-2 my-2">
-      <span>Total Income: </span> <span class="totall">0</span>
-    </div> --}}
+
+    <div class="button-container  p-2 ">
+      <span>Daily Company Share: </span> <span class="daily_company_share">Loading...</span>
+      <br>
+      <span>Overall Company Share: </span> <span class="company_share">Loading...</span>
+    </div>
+
     <div class="row">
         <h1>Game Fights Report Bets</h1>
     </div>
@@ -72,9 +115,12 @@
                 </tr>
             </thead>
             <tbody>
-                    @foreach($fights as $fight)
                     @php
                         $cntr = 1;
+                        
+                    @endphp
+                    @foreach($fights as $fight)
+                    @php
 
                         $profitability = 100;
                         

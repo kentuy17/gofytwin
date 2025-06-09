@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use DataTables;
 use Carbon\Carbon;
 use App\Models\Bet;
+use App\Models\Bets;
 use App\Models\User;
 use App\Models\Fight;
 use App\Models\Promos;
@@ -118,6 +119,42 @@ class ServerInfoController extends BaseController
 
         return $this->sendResponse($data, 'Response passed..');
                        
+    }
+    public function company_share_info_board_birth(Request $request){
+        $from = isset($request->from) ? $request->from : date('Y-m-d');
+      
+        $totalEarnings = 0;
+        $fights = Fight::all();
+        foreach($fights as $fight){
+            if($fight->game_winner == 'M' || $fight->game_winner == 'W'){
+                $fightBets = Bet::all();
+                foreach($fightBets as $bet){
+                    $totalEarnings += $bet->amount;
+                }
+            }
+        }
+        $total = $totalEarnings * 0.06;
+        $data['daily_company_share'] = number_format($total, 2, '.',',');
+
+        return $this->sendResponse($data, 'Response passed..');
+    }
+    public function company_share_info_board(Request $request){
+        $from = isset($request->from) ? $request->from : date('Y-m-d');
+      
+        $totalEarnings = 0;
+        $fights = Fight::whereBetween('created_at', [$from." 00:00:00", $from." 23:59:59"])->get();
+        foreach($fights as $fight){
+            if($fight->game_winner == 'M' || $fight->game_winner == 'W'){
+                $fightBets = Bet::where('fight_id', $fight->fight_no)->whereBetween('created_at', [$from." 00:00:00", $from." 23:59:59"])->get();
+                foreach($fightBets as $bet){
+                    $totalEarnings += $bet->amount;
+                }
+            }
+        }
+        $total = $totalEarnings * 0.06;
+        $data['daily_company_share'] = number_format($total, 2, '.',',');
+
+        return $this->sendResponse($data, 'Response passed..');
     }
     public function winner_info_board(Request $request){
         $from = isset($request->from) ? $request->from : date('Y-m-d');
