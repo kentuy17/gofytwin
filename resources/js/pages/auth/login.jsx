@@ -86,6 +86,34 @@ function LoginDialog({ site }) {
       const tmp = data.mobile_no.replace('+63', '0')
       setData('mobile_no', tmp)
     }
+    grecaptcha.ready(function() {
+        // do request for recaptcha token
+        // response is promise with passed token
+        grecaptcha.execute('6LfLkEspAAAAAFgK-lhx8CN54F0bsvVUCUzESQ_h', {action: 'create_comment'}).then(function(token) {
+            // console.log(console.log(token));
+            // add token to form
+            $('#mobile_no').prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
+            $.ajax({
+                method: "POST",
+                url: "{{route('captcha')}}",
+                data: { token: token },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+                    })
+                .success(function( msg ) {           
+                    var obj = jQuery.parseJSON(msg);
+                    console.log(obj.success);
+                    if(obj.success === true){
+                        $('#stl_login_frm').submit();
+                    } else {
+                        $('#user_login_status').text('We are detecting some unusual traffic from this device, please check your internet connection and try again after some time. ');
+                    }   
+            }); 
+        });
+    });
+    console.log(token)
+    return
 
     post('/otp/generate', {
       onFinish: () => reset('password'),

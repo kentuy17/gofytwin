@@ -10,6 +10,7 @@
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"> @routes
   @viteReactRefresh @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.jsx"]) @inertiaHead
   <script src="https://www.google.com/recaptcha/api.js"></script>
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
   <style>
     .g-recaptcha {
         padding: 10px
