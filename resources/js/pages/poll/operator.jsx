@@ -178,7 +178,7 @@ export default function Operator({ player, commonData, settings }) {
   } = useContext(OperatorContext)
 
   const { flash } = usePage().props
-  // eslint-disable-next-line no-console
+
   flash.error && alert(flash.error)
 
   const playerRef = React.useRef(null)
