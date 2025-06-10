@@ -290,6 +290,11 @@ function BetTrends() {
     ? formattedFights.row1.length + 10
     : 50
 
+  lastResult.forEach((last) => {
+    const index = globals.trend.summary.findIndex(item => item.class === last.itemClass)
+    globals.trend.summary[index].count += 1
+  })
+
   return (
     <div>
       <div>
