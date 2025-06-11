@@ -13,7 +13,7 @@ import {
 import { OperatorContext } from '@/context/operator-context'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
@@ -280,6 +280,7 @@ function createFightArray(results) {
 function BetTrends() {
   const { lastResult } = useContext(OperatorContext)
   const { globals } = usePage().props
+  const [trendSummary, setTrendSummary] = useState(globals.trend.summary)
   const fightArray = createFightArray(globals.trend.results)
   const formattedFights = useMemo(
     () => reconstructTrend(fightArray, lastResult),
@@ -290,10 +291,18 @@ function BetTrends() {
     ? formattedFights.row1.length + 10
     : 50
 
-  lastResult.forEach((last) => {
-    const index = globals.trend.summary.findIndex(item => item.class === last.itemClass)
-    globals.trend.summary[index].count += 1
-  })
+  useEffect(() => {
+    if (lastResult.length === 0)
+      return
+    const lastItem = lastResult[lastResult.length - 1]
+    const index = trendSummary.findIndex(item => item.class === lastItem.itemClass)
+    setTrendSummary((old) => {
+      const newItems = [...old]
+      newItems[index].count += 1
+      return newItems
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastResult])
 
   return (
     <div>
@@ -307,7 +316,7 @@ function BetTrends() {
             )}
         {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">
-          {globals.trend.summary.map((item, key) => {
+          {trendSummary.map((item, key) => {
             return (
               <div key={key} className="bad-cont d-inline-flex align-items-center mr-1">
                 <span className={`count rounded-circle ${item.class}`}>{item.count}</span>
