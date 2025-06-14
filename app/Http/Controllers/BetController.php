@@ -67,6 +67,14 @@ class BetController extends Controller
                 ], 400);
             }
 
+            if(Auth::user()->credits < $request->amount) {
+                $this->hacking($request, 'Insufficient credits');
+                return response()->json([
+                    'status' => 400,
+                    'error' => 'Insufficient credits',
+                ], 400);
+            }
+
             // if ($this->current_fight->fight_no !== $request->fight_no) {
             //     $this->hacking($request, 'Fight number');
             //     return response()->json([
