@@ -123,9 +123,9 @@ class CashinController extends Controller
         );
     }
     public function index(Request $request){
-        if(auth()->user()->userlevel < self::CSR){
+        if(auth()->user()->user_level < self::CSR){
 
-            // return redirect('home');
+            return redirect('home');
         }
         // $bets
         $from = isset($request->from) ? $request->from : date('Y-m-d');
@@ -143,9 +143,9 @@ class CashinController extends Controller
         );
     }
     public function net_income(Request $request){
-        if(auth()->user()->userlevel < self::CSR){
+        if(auth()->user()->user_level < self::CSR){
 
-            // return redirect('home');
+            return redirect('home');
         }
         // $bets
         $from = isset($request->from) ? $request->from : date('Y-m-d');

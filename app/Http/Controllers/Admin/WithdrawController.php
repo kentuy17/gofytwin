@@ -41,6 +41,10 @@ class WithdrawController extends Controller
         );
     }
     public function list(Request $request){
+        if(auth()->user()->user_level < self::CSR){
+
+            return redirect('home');
+        }
         $from = isset($request->from) ? $request->from : date('Y-m-d');
         $to = isset($request->to) ? $request->to : date('Y-m-d');
         // ->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])
