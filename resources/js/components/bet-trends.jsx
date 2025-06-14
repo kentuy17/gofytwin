@@ -175,7 +175,6 @@ function OperatorControls() {
         </Button>
         <Button
           onClick={handleClosed()}
-          disabled={status === 'CLOSED'}
           variant="destructive"
           className="cursor-pointer"
         >
