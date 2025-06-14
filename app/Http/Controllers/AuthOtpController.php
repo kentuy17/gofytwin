@@ -23,6 +23,7 @@ class AuthOtpController extends Controller
 
     protected $background_image = 'images/site-bg.png';
 
+    const SECRET_KEY = '6Le8DV4rAAAAAKdagCqivkdkiYNLof0j16nJw1TZ';
     const SUCCESSFUL_OTP = 'successful_otp';
 
     const FREE_CREDITS = 0;
@@ -48,9 +49,11 @@ class AuthOtpController extends Controller
     // Return View of OTP Login Page
     public function login(Request $request)
     {
+        
         return [
             'status' => $request->session()->get('status'),
             'app_url' => self::MOBILE_APP_URL,
+            'csrf_token' => csrf_token(),
             'landing_page' => true,
             'ref_code' => null,
             'settings' => $this->settings,
@@ -63,11 +66,11 @@ class AuthOtpController extends Controller
     public function check(Request $request)
     {
         $recaptcha_resp = $request->all();
-        $token = $recaptcha_resp['token'];
+        $token = $recaptcha_resp['data']['token'];
         // return json_encode(array('success' => false, "msg"=>$token));
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $data = [
-            'secret' => '6LfLkEspAAAAAKCYLnhlpR3pXVpC_UVDIsDtpVZl',
+            'secret' => self::SECRET_KEY,
             'response' => $token,
         ];
 

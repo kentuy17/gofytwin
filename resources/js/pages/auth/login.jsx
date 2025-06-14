@@ -86,38 +86,37 @@ function LoginDialog({ site }) {
       const tmp = data.mobile_no.replace('+63', '0')
       setData('mobile_no', tmp)
     }
+    // console.log(site.csrf_token)
     grecaptcha.ready(function() {
         // do request for recaptcha token
         // response is promise with passed token
-        grecaptcha.execute('6LfLkEspAAAAAFgK-lhx8CN54F0bsvVUCUzESQ_h', {action: 'create_comment'}).then(function(token) {
-            // console.log(console.log(token));
-            // add token to form
-            $('#mobile_no').prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
-            $.ajax({
-                method: "POST",
-                url: "{{route('captcha')}}",
+        grecaptcha.execute('6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm', {action: 'create_comment'}).then(function(token) {
+            fetch('/webrequest/captcha', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': site.csrf_token,
+              },
+              body: JSON.stringify({
                 data: { token: token },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-                    })
-                .success(function( msg ) {           
-                    var obj = jQuery.parseJSON(msg);
-                    console.log(obj.success);
-                    if(obj.success === true){
-                        $('#stl_login_frm').submit();
-                    } else {
-                        $('#user_login_status').text('We are detecting some unusual traffic from this device, please check your internet connection and try again after some time. ');
-                    }   
-            }); 
+              }),
+            }).then((response) => {
+              return Promise.all([response.json(), response])
+            }).then(([responseData]) => {
+              // handle data here
+              
+              if (responseData.success === true) {
+                post('/otp/generate', {
+                  onFinish: () => reset('password'),
+                })
+              } else {
+                alert('not working')
+                return
+              }
+            })
         });
     });
-    console.log(token)
-    return
-
-    post('/otp/generate', {
-      onFinish: () => reset('password'),
-    })
   }
 
   const handleMobileInput = (e) => {
@@ -153,7 +152,7 @@ function LoginDialog({ site }) {
   }
 
   // eslint-disable-next-line no-console, react-hooks/exhaustive-deps
-  useEffect(() => console.log(site), [])
+  useEffect(() => console.log(null), [])
 
   return (
     <AlertDialog open>
@@ -175,6 +174,10 @@ function LoginDialog({ site }) {
           <Button type="submit" ref={submitRef} className="hidden" tabIndex={4} disabled={processing}>
             Log in
           </Button>
+          <div id="recaptcha" className="g-recaptcha"
+              data-sitekey="6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm"
+              data-callback="onSubmit"
+              data-size="invisible"></div>
         </form>
         <AlertDialogFooter className="sm:justify-center">
           {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
