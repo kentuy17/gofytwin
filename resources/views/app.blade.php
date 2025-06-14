@@ -9,7 +9,7 @@
   <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"> @routes
   @viteReactRefresh @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.jsx"]) @inertiaHead
-  <script src="https://www.google.com/recaptcha/api.js"></script>
+
   <style>
     .g-recaptcha {
         padding: 10px
@@ -19,13 +19,14 @@
 <body class="font-sans antialiased">
   @inertia
 </body>
-
 <script>
   function onSubmit(token) {
     document.getElementById("demo-form").submit();
   }
-
+  
 </script>
+
+<script src='https://www.google.com/recaptcha/api.js?render=6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm'></script>
 {{-- <button class="g-recaptcha" data-sitekey="reCAPTCHA_site_key" data-callback='onSubmit' data-action='submit'>Submit</button> --}}
 
 </html>
