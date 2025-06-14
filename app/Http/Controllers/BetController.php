@@ -90,13 +90,13 @@ class BetController extends Controller
             // event(new BetEvent('hello world'));
 
             if (Auth::user()->user_level < 5) {
-                $points_after_bet = $points_before_bet - $request->amount;
+                // $points_after_bet -= $request->amount;
 
                 $user = User::find(Auth::user()->id);
-                $user->credits = $points_after_bet;
+                $user->credits -= $request->amount;
                 $user->save();
 
-                $current_points = $user->credits;
+                $current_points = $points_after_bet = $user->credits;
 
                 //Add in Bet History
                 BetHistory::create([
