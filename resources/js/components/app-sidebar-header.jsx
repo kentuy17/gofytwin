@@ -51,13 +51,27 @@ function VideoToggle({ children, showVideo, setShowVideo }) {
 }
 
 export function AppSidebarHeader({ breadcrumbs }) {
-  const { setCredits, credits } = useContext(OperatorContext)
+  const { setCredits, credits, status } = useContext(OperatorContext)
   const { auth, globals } = usePage().props
   const [showVideo, setShowVideo] = useState(globals.config.show_video === '1')
   const pts = auth?.user?.credits
   // const true_credits = 0
 
-  usePoll(5000)
+  // usePoll(5000)
+
+  const { start, stop } = usePoll(5000, {}, {
+    autoStart: false,
+  })
+
+  useEffect(() => {
+    if (status === 'OPEN') {
+      start()
+    }
+    if (status === 'CLOSED') {
+      stop()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
 
   useEffect(() => {
     setCredits(pts)
