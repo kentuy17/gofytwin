@@ -4,9 +4,11 @@ import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { Link, usePage } from '@inertiajs/react'
-import { Calendar, CoinsIcon, Folder, HandCoinsIcon, Joystick, LayoutGrid, Settings, UserCog2Icon } from 'lucide-react'
+import { Calendar, ChartAreaIcon, CoinsIcon, Folder, HandCoinsIcon, Joystick, LayoutGrid, Settings, UserCog2Icon } from 'lucide-react'
 import AppLogo from './app-logo'
 import { NavAdmin } from './nav-admin'
+import { BanknoteArrowDown } from './svg/BanknoteArrowDown'
+import { BanknoteArrowUp } from './svg/BanknoteArrowUp'
 
 const navItems = [
   {
@@ -38,21 +40,21 @@ const navItems = [
     level: 0,
     items: [
       {
-        title: 'Transaction Records',
+        title: 'Deposits',
         url: '/player/my/cash-in',
-        icon: CoinsIcon,
+        icon: BanknoteArrowUp,
         level: 0,
       },
       {
-        title: 'Withdrawal Records',
+        title: 'Withdrawals',
         url: '/player/my/cash-out',
-        icon: CoinsIcon,
+        icon: BanknoteArrowDown,
         level: 0,
       },
       {
         title: 'Bets',
         url: '/bets',
-        icon: CoinsIcon,
+        icon: ChartAreaIcon,
         level: 0,
       },
     ],
@@ -140,7 +142,7 @@ export function AppSidebar() {
       <SidebarContent>
         {navItems.map(navItem => (
           (userLevel === navItem.level || userLevel >= 2)
-          && <NavMain key={navItem.level} group={navItem.name} items={navItem.items} />
+          && <NavMain key={`${navItem.level}-${navItem.name}`} group={navItem.name} items={navItem.items} />
         ))}
         {userLevel >= 2 && <NavAdmin items={adminNavItems} />}
       </SidebarContent>
