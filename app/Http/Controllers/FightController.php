@@ -321,7 +321,7 @@ class FightController extends Controller
                     $bet->percent = $commission;
                     $bet->status = 'W';
 
-                    $bet->user->credits = intval($bet->user->credits) + intval($win_amount);
+                    $bet->user->credits += intval($win_amount);
                     $bet->user->save();
 
                     // if($accumulated[$bet->user_id]) {

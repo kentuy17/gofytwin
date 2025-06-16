@@ -126,6 +126,7 @@ export function BetDialog({ children, side, reset }) {
   const submitRef = useRef(null)
   const { credits, playerBet, setPlayerBet, setCredits } = useContext(OperatorContext)
   const [open, setOpen] = useState(false)
+  const [disabled, setDisabled] = useState(false)
   const [bet, setBet] = useState(100)
   const betMeron = Number.parseFloat(playerBet.meron)
   const betWala = Number.parseFloat(playerBet.wala)
@@ -146,7 +147,7 @@ export function BetDialog({ children, side, reset }) {
     }
 
     setOpen(false)
-
+    setDisabled(true)
     const resp = await addBet({
       message: 'OPEN',
       amount: bet,
@@ -163,10 +164,11 @@ export function BetDialog({ children, side, reset }) {
       setCredits(prev => prev - bet)
       reset(-1)
       localStorage.setItem('ctr', 0)
+      setDisabled(false)
     }
     else {
-      // eslint-disable-next-line no-console
-      console.log(resp)
+      setDisabled(false)
+      // console.log(resp)
     }
   }
 
@@ -203,7 +205,7 @@ export function BetDialog({ children, side, reset }) {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" ref={submitRef} onClick={handleSumbit}>
+          <Button type="submit" disabled={disabled} ref={submitRef} onClick={handleSumbit}>
             {`BET ${side === 'M' ? 'MERON' : 'WALA'}`}
           </Button>
         </DialogFooter>

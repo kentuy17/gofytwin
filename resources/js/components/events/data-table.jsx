@@ -42,6 +42,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { CalendarIcon, PlusCircle, Settings2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -52,7 +53,7 @@ import { DataTablePagination } from './data-table-pagination'
 
 function AddEvent({ children }) {
   const [open, setOpen] = useState(false)
-  const [date, setDate] = useState()
+  const [date, setDate] = useState(new Date())
   const submitRef = useRef(null)
 
   const { data, setData, post } = useForm({
@@ -86,7 +87,11 @@ function AddEvent({ children }) {
   }
 
   useEffect(() => {
-    setData('date', date)
+    // const d = new Date(date)
+    // console.log(date)
+    const localizedDate = formatInTimeZone(date, 'Asia/Manila', 'yyyy-MM-dd HH:mm:ss zzz')
+    setData('date', localizedDate)
+    console.log(localizedDate)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date])
 

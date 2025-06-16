@@ -32,6 +32,7 @@ Route::post('/webrequest/captcha', [AuthOtpController::class,'check'])->name('ca
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/testing/fck', [HomeController::class, 'testing_fuck']);
 
     // Route::get('/admin/bets/list', [BetsController::class, 'bets'])->name('admin.bets.list');
 
@@ -54,7 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
 
     Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');
-    
+
     Route::get('/admin/core/statistics/won-amount', [ReportsController::class, 'wonAmount'])->middleware('auth')->name('won amount');
     Route::get('/admin/users', [AccountsController::class, 'users'])->middleware('auth')->name('users');
     Route::get('/admin/core/statistics/prizes-claimed', [ReportsController::class, 'prizesClaimed'])->middleware('auth')->name('prizes.claimed');
@@ -64,7 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/cash-out',[CashoutController::class,'processPlayerCashout'])->middleware('auth')->name('player.cashout');
     Route::post('/get-credits', [ServerInfoController::class,'check_credits'])->name('check.credits')->middleware('auth');
 
-    
+
     Route::post('/check-balance', [ServerInfoController::class,'check_balance'])->name('check.balance')->middleware('auth');
     Route::post('/get-bettors', [ServerInfoController::class,'get_bettors'])->name('get.bettors')->middleware('auth');
     Route::post('/get-total-agents-earnings', [ServerInfoController::class,'get_total_agent_earnings'])->name('get.total.agents.earnings')->middleware('auth');

@@ -67,6 +67,14 @@ class BetController extends Controller
                 ], 400);
             }
 
+            if(Auth::user()->credits < $request->amount) {
+                $this->hacking($request, 'Insufficient credits');
+                return response()->json([
+                    'status' => 400,
+                    'error' => 'Insufficient credits',
+                ], 400);
+            }
+
             // if ($this->current_fight->fight_no !== $request->fight_no) {
             //     $this->hacking($request, 'Fight number');
             //     return response()->json([
@@ -90,13 +98,13 @@ class BetController extends Controller
             // event(new BetEvent('hello world'));
 
             if (Auth::user()->user_level < 5) {
-                $points_after_bet = $points_before_bet - $request->amount;
+                // $points_after_bet -= $request->amount;
 
                 $user = User::find(Auth::user()->id);
-                $user->credits = $points_after_bet;
+                $user->credits -= $request->amount;
                 $user->save();
 
-                $current_points = $user->credits;
+                $current_points = $points_after_bet = $user->credits;
 
                 //Add in Bet History
                 BetHistory::create([

@@ -4,13 +4,15 @@ import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { Link, usePage } from '@inertiajs/react'
-import { Calendar, CoinsIcon, Folder, Joystick, LayoutGrid, Settings, UserCog2Icon } from 'lucide-react'
+import { Calendar, ChartAreaIcon, CoinsIcon, Folder, HandCoinsIcon, Joystick, LayoutGrid, Settings, UserCog2Icon } from 'lucide-react'
 import AppLogo from './app-logo'
 import { NavAdmin } from './nav-admin'
+import { BanknoteArrowDown } from './svg/BanknoteArrowDown'
+import { BanknoteArrowUp } from './svg/BanknoteArrowUp'
 
 const navItems = [
   {
-    name: 'Player',
+    name: 'Account',
     level: 0,
     items: [
       {
@@ -20,33 +22,39 @@ const navItems = [
         level: 0,
       },
       {
-        title: 'Cashin',
+        title: 'Cash-In',
         url: '/player/deposit',
         icon: CoinsIcon,
         level: 0,
       },
       {
-        title: 'Cashout',
+        title: 'Cash Out',
         url: '/player/cashout',
-        icon: CoinsIcon,
+        icon: HandCoinsIcon,
+        level: 0,
+      },
+    ],
+  },
+  {
+    name: 'History',
+    level: 0,
+    items: [
+      {
+        title: 'Deposits',
+        url: '/player/my/cash-in',
+        icon: BanknoteArrowUp,
+        level: 0,
+      },
+      {
+        title: 'Withdrawals',
+        url: '/player/my/cash-out',
+        icon: BanknoteArrowDown,
         level: 0,
       },
       {
         title: 'Bets',
         url: '/bets',
-        icon: CoinsIcon,
-        level: 0,
-      },
-      {
-        title: 'My Cashin List',
-        url: '/player/my/cash-in',
-        icon: CoinsIcon,
-        level: 0,
-      },
-      {
-        title: 'My Cashout List',
-        url: '/player/my/cash-out',
-        icon: CoinsIcon,
+        icon: ChartAreaIcon,
         level: 0,
       },
     ],
@@ -75,12 +83,6 @@ const navItems = [
       },
     ],
   },
-  // {
-  //   title: 'My Bets',
-  //   url: '/bets',
-  //   icon: Calendar,
-  //   level: 1,
-  // },
 ]
 
 const adminNavItems = [
@@ -119,44 +121,6 @@ const adminNavItems = [
   },
 ]
 
-// const footerNavItems = [
-//   {
-//     title: 'Total Gross',
-//     url: '/admin/total-gross',
-//     icon: Folder,
-//   },
-//   {
-//     title: 'Admin Bets',
-//     url: '/admin/bets/list',
-//     icon: Folder,
-//   },
-//   {
-//     title: 'Users List',
-//     url: '/admin/users/list',
-//     icon: Folder,
-//   },
-//   {
-//     title: 'Verification OTP Codes',
-//     url: '/admin/users/otp/list',
-//     icon: Folder,
-//   },
-//   {
-//     title: 'Spam Players List',
-//     url: '/admin/users/spam',
-//     icon: Folder,
-//   },
-//   // {
-//   //   title: 'Repository',
-//   //   url: 'https://github.com/laravel/react-starter-kit',
-//   //   icon: Folder,
-//   // },
-//   // {
-//   //   title: 'Documentation',
-//   //   url: 'https://laravel.com/docs/starter-kits',
-//   //   icon: BookOpen,
-//   // },
-// ]
-
 export function AppSidebar() {
   const { auth } = usePage().props
   const userLevel = Number.parseInt(auth.user.user_level)
@@ -178,7 +142,7 @@ export function AppSidebar() {
       <SidebarContent>
         {navItems.map(navItem => (
           (userLevel === navItem.level || userLevel >= 2)
-          && <NavMain key={navItem.level} group={navItem.name} items={navItem.items} />
+          && <NavMain key={`${navItem.level}-${navItem.name}`} group={navItem.name} items={navItem.items} />
         ))}
         {userLevel >= 2 && <NavAdmin items={adminNavItems} />}
       </SidebarContent>

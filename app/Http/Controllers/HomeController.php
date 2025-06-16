@@ -148,6 +148,16 @@ class HomeController extends Controller
         return Redirect::back()->with('success', 'File uploaded successfully');
     }
 
+    public function testing_fuck()
+    {
+
+        // Auth::user()->credits -= 910;
+
+
+        $user = Auth::user()->credits;
+        dd($user);
+    }
+
     public function toggleVideo(Request $request)
     {
         Settings::where('field', 'show_video')
