@@ -237,8 +237,9 @@ function reconstructTrend(talpak, lastResult) {
     let b = y // vertial
     let isSame = false
 
-    if ((isConsecutive && prevResult) && (c <= objLen && isConsecutive)) {
-      a = c === objLen ? 1 : x + 1
+    if (isConsecutive && prevResult) {
+      const r = c % objLen === 0 ? objLen : c % objLen
+      a = r === objLen ? 1 : x + 1
       isSame = true
       formatted[`row${a}`].push(element)
     }
