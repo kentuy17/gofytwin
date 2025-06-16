@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-alert */
 // import TextLink from '@/components/text-link'
 
@@ -87,36 +88,36 @@ function LoginDialog({ site }) {
       setData('mobile_no', tmp)
     }
     // console.log(site.csrf_token)
-    grecaptcha.ready(function() {
-        // do request for recaptcha token
-        // response is promise with passed token
-        grecaptcha.execute('6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm', {action: 'create_comment'}).then(function(token) {
-            fetch('/webrequest/captcha', {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': site.csrf_token,
-              },
-              body: JSON.stringify({
-                data: { token: token },
-              }),
-            }).then((response) => {
-              return Promise.all([response.json(), response])
-            }).then(([responseData]) => {
-              // handle data here
-              
-              if (responseData.success === true) {
-                post('/otp/generate', {
-                  onFinish: () => reset('password'),
-                })
-              } else {
-                alert('not working')
-                return
-              }
+    grecaptcha.ready(() => {
+      // do request for recaptcha token
+      // response is promise with passed token
+      grecaptcha.execute('6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm', { action: 'create_comment' }).then((token) => {
+        fetch('/webrequest/captcha', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': site.csrf_token,
+          },
+          body: JSON.stringify({
+            data: { token },
+          }),
+        }).then((response) => {
+          return Promise.all([response.json(), response])
+        }).then(([responseData]) => {
+          // handle data here
+
+          if (responseData.success === true) {
+            post('/otp/generate', {
+              onFinish: () => reset('password'),
             })
-        });
-    });
+          }
+          else {
+            alert('not working')
+          }
+        })
+      })
+    })
   }
 
   const handleMobileInput = (e) => {
@@ -151,7 +152,7 @@ function LoginDialog({ site }) {
     width: 'calc(100% - 32px)',
   }
 
-  // eslint-disable-next-line no-console, react-hooks/exhaustive-deps
+  // eslint-disable-next-line no-console
   useEffect(() => console.log(null), [])
 
   return (
@@ -174,10 +175,14 @@ function LoginDialog({ site }) {
           <Button type="submit" ref={submitRef} className="hidden" tabIndex={4} disabled={processing}>
             Log in
           </Button>
-          <div id="recaptcha" className="g-recaptcha"
-              data-sitekey="6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm"
-              data-callback="onSubmit"
-              data-size="invisible"></div>
+          <div
+            id="recaptcha"
+            className="g-recaptcha"
+            data-sitekey="6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm"
+            data-callback="onSubmit"
+            data-size="invisible"
+          >
+          </div>
         </form>
         <AlertDialogFooter className="sm:justify-center">
           {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
@@ -199,7 +204,7 @@ function LoginDialog({ site }) {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="bg-background px-2 text-yellow-500 text-muted-foreground" tabIndex={5}>
+            <span className="bg-background px-2 text-muted-foreground" tabIndex={5}>
               Contact Us at our Facebook Page: Gamefowl Master
             </span>
           </div>
