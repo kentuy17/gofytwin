@@ -192,12 +192,20 @@ class ServerInfoController extends BaseController
                         $house_cut += $total_pool * 0.06;
                         $net_pool += $total_pool - $house_cut;
                         if($fight->game_winner = 'M'){
-                            $divider = $net_pool / $total_meron;
-                            $payout_rate += $divider * 100;
+                            if($total_meron == 0){
+                                $payout_rate = 0;
+                            } else {
+                                $divider = $net_pool / $total_meron;
+                                $payout_rate += $divider * 100;
+                            }
                         }
                         if($fight->game_winner = 'W'){
-                            $divider = $net_pool / $total_wala;
-                            $payout_rate += $divider * 100;
+                            if($total_meron == 0){
+                                $payout_rate = 0;
+                            } else {
+                                $divider = $net_pool / $total_wala;
+                                $payout_rate += $divider * 100;
+                            }
                         }
 
                         $multiplied = $total_pool * $payout_rate;
