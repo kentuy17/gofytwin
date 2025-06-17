@@ -98,8 +98,8 @@ const adminNavItems = [
         icon: Folder,
       },
       {
-        title: 'Admin Bets',
-        url: '/admin/bets/list',
+        title: 'Cash In List',
+        url: '/admin/cash-in',
         icon: Folder,
       },
       {
@@ -115,6 +115,11 @@ const adminNavItems = [
       {
         title: 'Spam Players List',
         url: '/admin/users/spam',
+        icon: Folder,
+      },
+      {
+        title: 'Statistics Page',
+        url: '/admin/core/statistics',
         icon: Folder,
       },
     ],

@@ -160,11 +160,11 @@
                                 break;
                             
                             case 'C':
-                                    $winSide = '<span class="text-warning">CANCELLED</span>';
+                                    $winSide = '<span class="text-secondary">CANCELLED</span>';
                                 break;
 
                             case 'X':
-                                    $winSide = '<span class="text-secondary">DRAW</span>';
+                                    $winSide = '<span class="text-warning">DRAW</span>';
                                 break;
                             
                             default:
