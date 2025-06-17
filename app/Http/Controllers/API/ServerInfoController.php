@@ -230,9 +230,9 @@ class ServerInfoController extends BaseController
         $data['win_player_profit'] = number_format($win_player_profit, 2, '.', ',');
 
 
-        $data['total_meron'] = number_format($total_meron, 2, '.', ',');
-        $data['total_wala'] = number_format($total_wala, 2, '.', ',');
-        $data['company_share'] = number_format($company_share * 0.06, 2, '.', ',');
+        $data['total_meron'] = "₱".number_format($total_meron, 2, '.', ',');
+        $data['total_wala'] = "₱".number_format($total_wala, 2, '.', ',');
+        $data['company_share'] = "₱".number_format($company_share * 0.06, 2, '.', ',');
         $data['total_winnings'] = number_format($total_win_amount, 2, '.',',');
         // $data['total_bets'] = number_format($total_bets, 2, '.',',');
         $data['total_bets'] = $total_bets;
