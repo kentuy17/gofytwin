@@ -200,7 +200,7 @@ class ServerInfoController extends BaseController
                             }
                         }
                         if($fight->game_winner = 'W'){
-                            if($total_meron == 0){
+                            if($total_wala == 0){
                                 $payout_rate = 0;
                             } else {
                                 $divider = $net_pool / $total_wala;

@@ -181,7 +181,7 @@
                             <td class="text-danger total_meron_{{$fight->id}}">Loading...</td>
                             <td class="text-primary total_wala_{{$fight->id}}">Loading...</td>
                             <td><?php echo $winSide ?></td>
-                            <td class="company_share_{{$fight->id}}">Loading...</td> {{--company share--}}
+                            <td class="company_share_{{$fight->id}} text-success">Loading...</td> {{--company share--}}
                             <td>6%</td>
                             <td><?php echo date('M d, Y h:iA',strtotime($fight->created_at)) ?></td>
                             <td>{{$fight->id}}</td>
