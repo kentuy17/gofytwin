@@ -131,8 +131,8 @@
                     <th>Fight No.</th>
                     <th class="text-danger" >Meron Bets (Red Color)</th>
                     <th class="text-primary">Wala Bets (Blue Color)</th>
-                    <th>Company Share</th>
                     <th>Winner</th>
+                    <th>Company Share</th>
                     <th>Company Cut: 6% (0.06)</th>
                     <th>Date Timestamp</th>
                     <th>Fight ID</th>
@@ -180,8 +180,8 @@
                             <td>{{$fight->fight_no}}</td>
                             <td class="text-danger total_meron_{{$fight->id}}">Loading...</td>
                             <td class="text-primary total_wala_{{$fight->id}}">Loading...</td>
-                            <td class="company_share_{{$fight->id}}">Loading...</td> {{--company share--}}
                             <td><?php echo $winSide ?></td>
+                            <td class="company_share_{{$fight->id}}">Loading...</td> {{--company share--}}
                             <td>6%</td>
                             <td><?php echo date('M d, Y h:iA',strtotime($fight->created_at)) ?></td>
                             <td>{{$fight->id}}</td>
