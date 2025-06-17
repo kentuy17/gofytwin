@@ -131,9 +131,9 @@
                     <th>Fight No.</th>
                     <th class="text-danger" >Meron Bets (Red Color)</th>
                     <th class="text-primary">Wala Bets (Blue Color)</th>
-                    <th>Company Cut: 6% (0.06)</th>
-                    <th>Winner</th>
                     <th>Company Share</th>
+                    <th>Winner</th>
+                    <th>Company Cut: 6% (0.06)</th>
                     <th>Date Timestamp</th>
                     <th>Fight ID</th>
                     <th>Net Pool</th>
@@ -162,6 +162,10 @@
                             case 'C':
                                     $winSide = '<span class="text-warning">CANCELLED</span>';
                                 break;
+
+                            case 'X':
+                                    $winSide = '<span class="text-secondary">DRAW</span>';
+                                break;
                             
                             default:
                                 # code...
@@ -176,11 +180,10 @@
                             <td>{{$fight->fight_no}}</td>
                             <td class="text-danger total_meron_{{$fight->id}}">Loading...</td>
                             <td class="text-primary total_wala_{{$fight->id}}">Loading...</td>
-                            {{-- <td class="company_cut_{{$fight->id}}">Loading...</td> --}}
-                            <td>6%</td>
+                            <td class="company_share_{{$fight->id}}">Loading...</td> {{--company share--}}
                             <td><?php echo $winSide ?></td>
-                            <td class="company_share_{{$fight->id}}">Loading...</td>
-                            <td>{{$fight->created_at}}</td>
+                            <td>6%</td>
+                            <td><?php echo date('M d, Y h:iA',strtotime($fight->created_at)) ?></td>
                             <td>{{$fight->id}}</td>
                             <td class="net_pool_{{$fight->id}}">Loading...</td>
                             <td class="payout_rate_{{$fight->id}}">Loading...</td>
