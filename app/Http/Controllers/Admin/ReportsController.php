@@ -113,7 +113,7 @@ class ReportsController extends Controller
         );
     }
     public function statistics(Request $request){
-        if(auth()->user()->user_level < 50){
+        if(auth()->user()->user_level < self::SUPER_ADMIN){
 
             return redirect('home');
         }

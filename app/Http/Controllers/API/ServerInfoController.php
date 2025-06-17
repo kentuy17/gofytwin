@@ -171,16 +171,39 @@ class ServerInfoController extends BaseController
         $total_meron = 0;
         $total_wala = 0;
         $total_win_amount = 0;
-        $fight = Fight::where('fight_no',$request->record_id)->first();
+        $total_pool = 0;
+        $house_cut = 0;
+        $net_pool = 0;
+        $payout_rate = 0;
+        $win_player_return = 0;
+        $multiplied = 0;
+        $win_player_profit = 0;
+        $fight = Fight::where('id',$request->record_id)->first();
         switch ($type) {
             case 'players':
                 if($fight){
-                    
-                    $total_bets = BetHistory::where('fight_no',$request->record_id)->where('side','M')->orWhere('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                    $total_meron = BetHistory::where('fight_no',$request->record_id)->where('side','M')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                    $total_wala = BetHistory::where('fight_no',$request->record_id)->where('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
-                    if($fight->game_winner == 'W' OR $fight->game_winner == 'M'){
+                    // $total_bets = BetHistory::where('fight_id',$request->record_id)->where('side','M')->orWhere('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                    $total_meron = BetHistory::where('fight_id',$request->record_id)->where('side','M')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                    $total_wala = BetHistory::where('fight_id',$request->record_id)->where('side','W')->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])->sum('amount');
+                    if($fight->game_winner == 'W' || $fight->game_winner == 'M'){
                         $company_share = $total_meron + $total_wala;
+                        $total_bets += $company_share;
+                        $total_pool += $total_meron + $total_wala;
+                        $house_cut += $total_pool * 0.06;
+                        $net_pool += $total_pool - $house_cut;
+                        if($fight->game_winner = 'M'){
+                            $divider = $net_pool / $total_meron;
+                            $payout_rate += $divider * 100;
+                        }
+                        if($fight->game_winner = 'W'){
+                            $divider = $net_pool / $total_wala;
+                            $payout_rate += $divider * 100;
+                        }
+
+                        $multiplied = $total_pool * $payout_rate;
+                        $win_player_return += $multiplied / 100;
+
+                        $win_player_profit += $win_player_return - $total_pool;
                     }
                 }
                 break;
@@ -191,12 +214,17 @@ class ServerInfoController extends BaseController
                 # code...
                 break;
         }
+        $data['total_pool'] = number_format($total_pool, 2, '.', ',');
+        $data['house_cut'] = number_format($house_cut, 2, '.', ',');
+        $data['net_pool'] = number_format($net_pool, 2, '.', ',');
+        $data['payout_rate'] = number_format($payout_rate, 2, '.', '');
+        $data['win_player_return'] = number_format($win_player_return, 2, '.', ',');
+        $data['win_player_profit'] = number_format($win_player_profit, 2, '.', ',');
 
-        
- 
-        $data['total_meron'] = $total_meron;
-        $data['total_wala'] = $total_wala;
-        $data['company_share'] = $company_share * 0.06;
+
+        $data['total_meron'] = number_format($total_meron, 2, '.', ',');
+        $data['total_wala'] = number_format($total_wala, 2, '.', ',');
+        $data['company_share'] = number_format($company_share * 0.06, 2, '.', ',');
         $data['total_winnings'] = number_format($total_win_amount, 2, '.',',');
         // $data['total_bets'] = number_format($total_bets, 2, '.',',');
         $data['total_bets'] = $total_bets;

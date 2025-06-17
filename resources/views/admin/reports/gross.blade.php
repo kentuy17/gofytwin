@@ -67,6 +67,13 @@
                     $(".total_meron_" + e).text( response.data.total_meron);
                     $(".total_wala_" + e).text( response.data.total_wala);
                     $(".company_share_" + e).text( response.data.company_share);
+                    // $(".company_cut_" + e).text( response.data.company_share);
+
+
+                    $(".net_pool_" + e).text( response.data.net_pool);
+                    $(".payout_rate_" + e).text( response.data.payout_rate);
+
+
                     total_income = total_income + response.data.total_bets;
                     $(".totall").text(total_income);
                 },
@@ -93,10 +100,24 @@
         </form>
     </div>
 
-    <div class="button-container  p-2 ">
-      <span>Daily Company Share: </span> <span class="daily_company_share">Loading...</span>
-      <br>
-      <span>Overall Company Share: </span> <span class="overall_company_share">Loading...</span>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-row justify-content-between">
+                <div>
+                    <p class="draw-label total-amounts">Daily Company Share: ₱ <span class="text-success daily_company_share">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-row justify-content-between">
+                <div>
+                    <p class="draw-label total-amounts">Overall Company Share: ₱ <span class="text-success overall_company_share">Loading...</span></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -107,11 +128,16 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Fight Number</th>
-                    <th>Total Meron</th>
-                    <th>Total Wala</th>
+                    <th>Fight No.</th>
+                    <th class="text-danger" >Meron Bets (Red Color)</th>
+                    <th class="text-primary">Wala Bets (Blue Color)</th>
+                    <th>Company Cut: 6% (0.06)</th>
+                    <th>Winner</th>
                     <th>Company Share</th>
-                    <th>Winning Side</th>
+                    <th>Date Timestamp</th>
+                    <th>Fight ID</th>
+                    <th>Net Pool</th>
+                    <th>Payout Rate</th>
                 </tr>
             </thead>
             <tbody>
@@ -123,6 +149,24 @@
                     @php
 
                         $profitability = 100;
+                        $winSide = null;
+
+                        switch ($fight->game_winner) {
+                            case 'M':
+                                    $winSide = '<span class="text-primary">MERON</span>';
+                                break;
+                            case 'W':
+                                    $winSide = '<span class="text-danger">WALA</span>';
+                                break;
+                            
+                            case 'C':
+                                    $winSide = '<span class="text-warning">CANCELLED</span>';
+                                break;
+                            
+                            default:
+                                # code...
+                                break;
+                        }
                         
                     @endphp
                     @php
@@ -130,11 +174,19 @@
                         <tr>
                             <td>{{$cntr}}</td>
                             <td>{{$fight->fight_no}}</td>
-                            <td class="total_meron_{{$fight->fight_no}}">Loading...</td>
-                            <td class="total_wala_{{$fight->fight_no}}">Loading...</td>
-                            <td class="company_share_{{$fight->fight_no}}">Loading...</td>
-                            <td>{{$fight->game_winner}}</td>
-                            <script>loadRowData({{$fight->fight_no}})</script>
+                            <td class="text-danger total_meron_{{$fight->id}}">Loading...</td>
+                            <td class="text-primary total_wala_{{$fight->id}}">Loading...</td>
+                            {{-- <td class="company_cut_{{$fight->id}}">Loading...</td> --}}
+                            <td>6%</td>
+                            <td><?php echo $winSide ?></td>
+                            <td class="company_share_{{$fight->id}}">Loading...</td>
+                            <td>{{$fight->created_at}}</td>
+                            <td>{{$fight->id}}</td>
+                            <td class="net_pool_{{$fight->id}}">Loading...</td>
+                            <td class="payout_rate_{{$fight->id}}">Loading...</td>
+
+
+                            <script>loadRowData({{$fight->id}})</script>
                         </tr>
                         @php
                             $cntr ++;

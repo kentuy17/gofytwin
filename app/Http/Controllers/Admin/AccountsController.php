@@ -127,16 +127,12 @@ class AccountsController extends Controller
         );
     }
     public function spam(Request $request){
-        // if(auth()->user()->user_level < self::ACCOUNTING){
-            
-        //     return redirect('home');
-        // }
+        if(auth()->user()->user_level < self::CSR){
+
+            return redirect('home');
+        }
         $q = $request->q;
-        // $users = User::where('user_level', 0)->where(function($query) use ($q) {
-        //     $query->where('id', 'LIKE', '%'.$q.'%')
-        //         ->orWhere('mobile_no', 'LIKE', '%'.$q.'%')
-        //         ->orWhere('ip', 'LIKE', '%'.$q.'%');
-        // })->orderBy('id','desc')->paginate(50);
+    
         $users = User::where('user_level', 0)->where('account_status','spam')->orderBy('id','desc')->paginate(100);
 
         return view(
@@ -172,10 +168,10 @@ class AccountsController extends Controller
         );
     }
     public function users(Request $request){
-        // if(auth()->user()->user_level < self::ACCOUNTING){
-            
-        //     return redirect('home');
-        // }
+        if(auth()->user()->user_level < self::CSR){
+
+            return redirect('home');
+        }
         $q = $request->q;
         $users = User::query()
         ->where('user_level', 0)->where(function($query) use ($q) {
@@ -195,10 +191,10 @@ class AccountsController extends Controller
         );
     }
     public function user_otp(Request $request){
-        // if(auth()->user()->user_level < self::ACCOUNTING){
-            
-        //     return redirect('home');
-        // }
+        if(auth()->user()->user_level < self::CSR){
+
+            return redirect('home');
+        }
         $q = $request->q;
         $users = VerificationCode::query()->where(function($query) use ($q) {
                 $query->where('user_id', 'LIKE', '%'.$q.'%')
