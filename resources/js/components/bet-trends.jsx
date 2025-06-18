@@ -215,7 +215,12 @@ function TrendRows({ data, limit }) {
 }
 
 function reconstructTrend(talpak, lastResult) {
-  const fights = [...talpak, ...lastResult]
+  // const fights = [...talpak, ...lastResult]
+  const fights = [...talpak]
+  if (lastResult.length > 0) {
+    fights.push(lastResult[lastResult.length - 1])
+  }
+
   const formatted = {
     row1: [],
     row2: [],
@@ -284,7 +289,8 @@ function BetTrends() {
   const fightArray = createFightArray(globals.trend.results)
   const formattedFights = useMemo(
     () => reconstructTrend(fightArray, lastResult),
-    [fightArray, lastResult],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [lastResult],
   )
 
   const limit = formattedFights.row1.length > 50
