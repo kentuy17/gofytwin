@@ -15,11 +15,11 @@
         Cash-In List
       </a>
     </li>
-    <li class="nav-item">
+    {{-- <li class="nav-item">
       <a class="nav-link" href="{{route('admin.net.income')}}">
         Net Income
       </a>
-    </li>
+    </li> --}}
     <li class="nav-item">
       <a class="nav-link" href="{{route('admin.total.gross')}}">
         Total Gross

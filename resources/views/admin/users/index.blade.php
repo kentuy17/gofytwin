@@ -30,9 +30,6 @@
                     <tr>
                         <th>User ID</th>
                         <th>Contact No.</th>
-                        <th>Credits</th>
-                        <th>Cash In Total</th>
-                        <th>Location</th>
                         <th>IP</th>
                         <th>Login Attempts</th>
                         <th>User Status</th>
@@ -47,17 +44,10 @@
                     @if(isset($users))
                        
                         @foreach($users as $user)
-                        @php
-                        //    $total_cashin = $user->topups->where('status','success')->sum('amount');
-                           $total_cashin = 0;
-           
-                        @endphp
+                      
                             <tr class="odd">
                                 <td>{{$user->id}}</td>
                                 <td><a href="{{route('admin.user.cashin',$user->id)}}">{{$user->mobile_no}}</a></td>
-                                <td>{{isset($user->credits->amount) ? '$'.number_format($user->credits->amount, 2, '.',',') : '0'}}</td>
-                                <td>${{number_format($total_cashin, 2, '.',',')}}</td>
-                                <td>{{$user->location}}</td>
                                 <td>{{$user->ip}}</td>
                                 <td>{{$user->user_attempts}}</td>
                                 <td>{{$user->account_status}}</td>

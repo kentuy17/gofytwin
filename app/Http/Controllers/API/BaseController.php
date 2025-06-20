@@ -81,18 +81,7 @@ class BaseController extends Controller
 
         return false;
     }
-    public function threeDigitRumbleWinner($input){
-        $results = DB::select("select
-                                id, d1, d2, d3,
-                                (
-                                    (d1 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3'].")) ++
-                                    (d2 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3'].")) ++
-                                    (d3 IN (".$input['d1'].", ".$input['d2'].", ".$input['d3']."))
-                                ) AS main
-                                FROM bets
-                                HAVING main = 3");
-                                dd($results);
-    }
+    
     /**
      * success response method.
      *
@@ -192,20 +181,9 @@ class BaseController extends Controller
 
         return $this->min_bet_3ds;
     }
-    protected function get4dJackpot(){
-        // $total = $this->jackpot_4d / $this->min_bet_4ds;
-        // $winningAmount = ceil($total * $betAmount);
-
-        return $this->jackpot_4d;
-    }
-    protected function get4dLastThree($betAmount=null){
-
-        return $this->last_three_4d;
-    }
-    protected function get4dLastTwo($betAmount=null){
-
-        return $this->last_two_4d;
-    }
+ 
+ 
+  
 
 
 
