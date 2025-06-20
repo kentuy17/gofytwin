@@ -153,10 +153,10 @@
 
                         switch ($fight->game_winner) {
                             case 'M':
-                                    $winSide = '<span class="text-primary">MERON</span>';
+                                    $winSide = '<span class="text-danger">MERON</span>';
                                 break;
                             case 'W':
-                                    $winSide = '<span class="text-danger">WALA</span>';
+                                    $winSide = '<span class="text-primary">WALA</span>';
                                 break;
                             
                             case 'C':

@@ -18,6 +18,10 @@ class WithdrawController extends Controller
     
   
     public function withdrawal(Request $request){
+        if(auth()->user()->user_level == 0){
+
+            return redirect('home');
+        }
         $winners = Withdrawals::whereNot(function (Builder $query) {
             $query->where('claimed', 1)
                   ->where('approved', '>', 0)

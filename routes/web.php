@@ -51,7 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/core/statistics', [ReportsController::class, 'statistics'])->middleware('auth')->name('statistics');
     Route::get('/admin/core/statistics/gross-income', [ReportsController::class, 'grossIncome'])->middleware('auth')->name('gross');
     Route::get('/admin/cash-in',[AdminCashIn::class,'index'])->middleware('auth')->name('admin.cashin');
-    Route::get('/admin/net-income',[AdminCashIn::class,'net_income'])->middleware('auth')->name('admin.net.income');
+    // Route::get('/admin/net-income',[AdminCashIn::class,'net_income'])->middleware('auth')->name('admin.net.income');
     Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
 
     Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');
