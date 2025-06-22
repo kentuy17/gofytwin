@@ -26,16 +26,12 @@ Route::get('/', function () {
 })->middleware('guest');
 Route::get('/users/list', [AccountsController::class, 'users'])->name('users.list');
 Route::get('/admin/users/view/{id}', [AccountsController::class, 'viewUser'])->name('view.user')->middleware('auth');
-Route::get('/test/login',[HomeController::class,'temporaryLogin'])->name('testttest.login');
-Route::get('/live-feed',[HomeController::class,'live_feed'])->name('testttest.live.feed');
+// Route::get('/test/login',[HomeController::class,'temporaryLogin'])->name('testttest.login');
+// Route::get('/live-feed',[HomeController::class,'live_feed'])->name('testttest.live.feed');
 Route::post('/webrequest/captcha', [AuthOtpController::class,'check'])->name('captcha');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/testing/fck', [HomeController::class, 'testing_fuck']);
-
-    // Route::get('/admin/bets/list', [BetsController::class, 'bets'])->name('admin.bets.list');
-
     Route::get('/test/logout',[HomeController::class,'temporaryLogout'])->name('testttest.logout');
     Route::get('/admin/users/list', [AccountsController::class, 'users'])->name('admin.users.list');
     Route::get('/admin/users/otp/list', [AccountsController::class, 'user_otp'])->name('users.otp.list');
@@ -51,7 +47,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/core/statistics', [ReportsController::class, 'statistics'])->middleware('auth')->name('statistics');
     Route::get('/admin/core/statistics/gross-income', [ReportsController::class, 'grossIncome'])->middleware('auth')->name('gross');
     Route::get('/admin/cash-in',[AdminCashIn::class,'index'])->middleware('auth')->name('admin.cashin');
-    // Route::get('/admin/net-income',[AdminCashIn::class,'net_income'])->middleware('auth')->name('admin.net.income');
     Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
 
     Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');

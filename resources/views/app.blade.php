@@ -25,8 +25,7 @@
   }
   
 </script>
-
-<script src='https://www.google.com/recaptcha/api.js?render=6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm'></script>
-{{-- <button class="g-recaptcha" data-sitekey="reCAPTCHA_site_key" data-callback='onSubmit' data-action='submit'>Submit</button> --}}
-
+@if (Request::is('login'))
+  <script src='https://www.google.com/recaptcha/api.js?render=6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm'></script>
+@endif
 </html>
