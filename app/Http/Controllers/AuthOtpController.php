@@ -49,7 +49,7 @@ class AuthOtpController extends Controller
     // Return View of OTP Login Page
     public function login(Request $request)
     {
-        
+        // dd('qwewq');
         return [
             'status' => $request->session()->get('status'),
             'app_url' => self::MOBILE_APP_URL,
