@@ -47,7 +47,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/core/statistics', [ReportsController::class, 'statistics'])->middleware('auth')->name('statistics');
     Route::get('/admin/core/statistics/gross-income', [ReportsController::class, 'grossIncome'])->middleware('auth')->name('gross');
     Route::get('/admin/cash-in',[AdminCashIn::class,'index'])->middleware('auth')->name('admin.cashin');
-    Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
 
     Route::post('/cash-in',[CashinController::class,'processPayment'])->middleware('auth')->name('cashin.pay');
 
@@ -75,25 +74,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/player/cashout', [UserController::class, 'cashout'])->name('cashout');
     Route::get('/player/my/cash-in', [UserController::class, 'my_cashin'])->name('my.cashin');
     Route::get('/player/my/cash-out', [UserController::class, 'my_cashout'])->name('my.cashout');
-    Route::get('/admin/config', [HomeController::class, 'adminConfig'])->name('admin.config');
-    Route::post('/admin/config', [HomeController::class, 'updateConfig'])->name('update.config');
-    Route::post('/admin/toggle-video', [HomeController::class, 'toggleVideo']);
 
     // Betting
     Route::post('/bet/add', [BetController::class, 'addBet'])->name('add.bet');
-    Route::get('/fight/update', [FightController::class, 'updateFight'])->name('update.fight');
-    Route::post('/fight/update', [FightController::class, 'updateFight'])->name('post.update.fight');
-    Route::get('/operator', [FightController::class, 'operator'])->name('operator');
     Route::get('/fight/trend', [FightController::class, 'getFightTrends'])->name('fight.trend');
-    Route::post('/fight/lastcall', [FightController::class, 'updateLastCall'])->name('update.lastcall');
     Route::get('/bets', [FightController::class, 'bets'])->name('bets');
 
+    // Admin
+    Route::group(['middleware' => ['admin']], function () {
+        Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
+    });
 
-
-    Route::get('/events', [FightController::class, 'events'])->name('events');
-    Route::post('/event/add', [FightController::class, 'addEvent'])->name('add.event');
-    Route::post('/event/activate/{id}', [FightController::class, 'activateEvent'])->name('activate.event');
-    Route::post('/event/update-fight', [FightController::class, 'updateFightNumber'])->name('activate.update-fight');
+    // Operator
+    Route::group(['middleware' => ['operator']], function () {
+        Route::get('/fight/update', [FightController::class, 'updateFight'])->name('update.fight');
+        Route::post('/fight/update', [FightController::class, 'updateFight'])->name('post.update.fight');
+        Route::post('/fight/lastcall', [FightController::class, 'updateLastCall'])->name('update.lastcall');
+        Route::get('/operator', [FightController::class, 'operator'])->name('operator');
+        Route::get('/events', [FightController::class, 'events'])->name('events');
+        Route::post('/event/add', [FightController::class, 'addEvent'])->name('add.event');
+        Route::post('/event/activate/{id}', [FightController::class, 'activateEvent'])->name('activate.event');
+        Route::post('/event/update-fight', [FightController::class, 'updateFightNumber'])->name('activate.update-fight');
+        Route::get('/admin/config', [HomeController::class, 'adminConfig'])->name('admin.config');
+        Route::post('/admin/config', [HomeController::class, 'updateConfig'])->name('update.config');
+        Route::post('/admin/toggle-video', [HomeController::class, 'toggleVideo']);
+    });
 
     //referral processes
     Route::get('/admin/claim/requests',[WithdrawController::class,'withdrawal'])->name('withdrawal')->middleware('auth');
