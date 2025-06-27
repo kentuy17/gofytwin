@@ -66,7 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/get-inactive', [ServerInfoController::class,'get_inactive'])->name('get.inactive')->middleware('auth');
     Route::get('/winner/info/cashin', [ServerInfoController::class,'cashin_info_board'])->name('cashin.info')->middleware('auth');
     Route::get('/admin/winners-board/from/{from}/to/{to}',[WinnersDownloadController::class,'dldownload'])->name('winners.download')->middleware('auth');
-
+    Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
     Route::get('/admin/general-settings',[SettingsController::class,'index'])->middleware('auth');
 
     // React/Inertia Front-end
@@ -81,9 +81,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/bets', [FightController::class, 'bets'])->name('bets');
 
     // Admin
-    Route::group(['middleware' => ['admin']], function () {
-        Route::get('/admin/total-gross',[TotalGross::class,'total_gross'])->middleware('auth')->name('admin.total.gross');
-    });
+    // Route::group(['middleware' => ['admin']], function () {
+
+    // });
 
     // Operator
     Route::group(['middleware' => ['operator']], function () {
