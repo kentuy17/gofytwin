@@ -164,6 +164,15 @@ function Admin({ settings }) {
                       />
                     </div>
                     <div className="space-y-1">
+                      <Label htmlFor="ci_promo_banner">CI Promo Banner</Label>
+                      <Input
+                        id="ci_promo_banner"
+                        type="file"
+                        name="ci_promo_banner"
+                        onChange={e => setData('ci_promo_banner', e.target.files[0])}
+                      />
+                    </div>
+                    <div className="space-y-1">
                       <Label htmlFor="video_banner">Video Banner</Label>
                       <Input
                         id="video_banner"
