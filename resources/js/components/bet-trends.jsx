@@ -19,6 +19,7 @@ import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Switch } from './ui/switch'
 import '../../css/bet-arnie.css'
+import { PromoBanner } from './bet-dialog'
 
 const statuses = {
   OPEN: {
@@ -54,18 +55,21 @@ export const trendClasses = {
   C: 'bg-secondary',
 }
 
-function StatusBar() {
+function StatusBar({ image }) {
   const { status, lastCall } = useContext(OperatorContext)
 
   return (
-    <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
-      <span className="text-black text-xl">Game Fight Results</span>
-      {lastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
-      <div className={`uppercase ${statuses[status] && statuses[status].backgroundColor} py-2 px-4 ${status && statuses[status].textColor}`}>
-        {status && statuses[status].text}
+    <div>
+      <PromoBanner image={image} />
+      <div className="bet-yellow h6 m-0 rounded-top flex flex-row justify-around items-center py-3">
+        <span className="text-black text-xl">Game Fight Results</span>
+        {lastCall && <div className="uppercase bg-black py-2 px-4 text-red-500 animate-blink">LAST CALL</div>}
+        <div className={`uppercase ${statuses[status] && statuses[status].backgroundColor} py-2 px-4 ${status && statuses[status].textColor}`}>
+          {status && statuses[status].text}
+        </div>
       </div>
-
     </div>
+
   )
 }
 
@@ -282,7 +286,7 @@ function createFightArray(results) {
   return fights
 }
 
-function BetTrends() {
+function BetTrends({ image }) {
   const { lastResult } = useContext(OperatorContext)
   const { globals } = usePage().props
   const [trendSummary, setTrendSummary] = useState(globals.trend.summary)
@@ -318,7 +322,7 @@ function BetTrends() {
               <OperatorControls />
             )
           : (
-              <StatusBar />
+              <StatusBar image={image} />
             )}
         {' '}
         <div className="trend-legend gp-panel-bg d-flex justify-content-between align-items-center py-3 px-2">

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { BetDialog, CongratsDialog, PromoBanner } from '@/components/bet-dialog'
+import { BetDialog, CongratsDialog } from '@/components/bet-dialog'
 import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 import VideoJS from '@/components/videojs'
@@ -288,8 +288,8 @@ export default function Dashboard({ commonData, player, user, settings }) {
           <BetStats />
           <PlaceBets reset={setLogoutCtr} points={user.credits} />
         </div>
-        <PromoBanner image={settings.ci_promo_banner} />
-        <BetTrends />
+        {/* <PromoBanner image={settings.ci_promo_banner} /> */}
+        <BetTrends image={settings.ci_promo_banner} />
         {/* </div> */}
         <CongratsDialog win_amount={winAmount} status={betStatus}>
           <Button hidden ref={btnRef} variant="outline">Show Congrats Dialog</Button>
