@@ -57,6 +57,8 @@ class HomeController extends Controller
                 'pg_maya' => Settings::get('pg_maya'),
                 'video_banner' => Settings::get('video_banner'),
                 'no_credits_banner' => Settings::get('no_credits_banner'),
+                'header_banner' => Settings::get('header_banner'),
+                'ci_promo_banner' => Settings::get('ci_promo_banner'),
             ]
         ]);
     }
@@ -77,6 +79,8 @@ class HomeController extends Controller
             'max_bet',
             'no_credits_banner',
             'dummy_exec_time',
+            'header_banner',
+            'ci_promo_banner',
         ])->get();
 
         return Inertia::render('admin/config', [
@@ -120,7 +124,9 @@ class HomeController extends Controller
 
         $upload_configs = [
             'no_credits_banner',
-            'video_banner'
+            'video_banner',
+            'header_banner',
+            'ci_promo_banner',
         ];
 
         foreach ($upload_configs as $config) {

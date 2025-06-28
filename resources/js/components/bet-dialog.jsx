@@ -238,3 +238,11 @@ export function CongratsDialog({ children, win_amount, status }) {
     </AlertDialog>
   )
 }
+
+export function PromoBanner({ image }) {
+  return (
+    <div className="flex flex-col">
+      <img src={image} style={{ height: '55px' }} className="max-w-full" />
+    </div>
+  )
+}

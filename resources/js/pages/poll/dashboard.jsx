@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { BetDialog, CongratsDialog } from '@/components/bet-dialog'
+import { BetDialog, CongratsDialog, PromoBanner } from '@/components/bet-dialog'
 import BetTrends, { trendClasses } from '@/components/bet-trends'
 import { Button } from '@/components/ui/button'
 import VideoJS from '@/components/videojs'
@@ -24,13 +24,13 @@ const COMMISSION = 6
 
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 
-function PlaceBets({ reset }) {
+function PlaceBets({ reset, points }) {
   const { status } = useContext(OperatorContext)
   return (
-    <div className="bg-black justify-around flex flex-row w-full p-2">
+    <div className="bg-black justify-around flex flex-row w-full py-2">
       <div className="flex w-2/5 justify-center items-center">
         <BetDialog reset={reset} side="M">
-          <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-red-500 font-bold">
+          <Button size="sm" disabled={status !== 'OPEN' || points < 20} className="text-white bg-red-500 font-bold">
             <PlusCircleIcon />
             BET MERON
           </Button>
@@ -40,7 +40,7 @@ function PlaceBets({ reset }) {
       <div className="w-1/5"></div>
       <div className="flex w-2/5 justify-center items-center">
         <BetDialog reset={reset} side="W">
-          <Button size="sm" disabled={status !== 'OPEN'} className="text-white bg-blue-500 font-bold">
+          <Button size="sm" disabled={status !== 'OPEN' || points < 20} className="text-white bg-blue-500 font-bold">
             <PlusCircleIcon />
             BET WALA
           </Button>
@@ -266,8 +266,8 @@ export default function Dashboard({ commonData, player, user, settings }) {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
-      <Banner />
-      <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
+      <Banner image={settings.header_banner} />
+      <div className="h-full flex-1 flex-col gap-2 rounded-xl grid md:grid-cols-2 grid-cols-1">
         {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
         <div className="border-sidebar-border/70">
           {settings.show_video === '1' && (user.credits >= 20 || playerHasBet)
@@ -286,8 +286,9 @@ export default function Dashboard({ commonData, player, user, settings }) {
             Note: Payout is processed hourly from 11:00 AM to 11:00 PM Daily. Play Now!
           </div>
           <BetStats />
-          <PlaceBets reset={setLogoutCtr} />
+          <PlaceBets reset={setLogoutCtr} points={user.credits} />
         </div>
+        <PromoBanner image={settings.ci_promo_banner} />
         <BetTrends />
         {/* </div> */}
         <CongratsDialog win_amount={winAmount} status={betStatus}>

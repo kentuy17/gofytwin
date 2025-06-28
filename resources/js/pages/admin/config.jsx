@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import AppLayout from '@/layouts/app-layout'
 import { Head, useForm } from '@inertiajs/react'
 import { toast } from 'sonner'
@@ -66,100 +67,124 @@ function Admin({ settings }) {
           <form onSubmit={handleSave}>
             <Card>
               <CardContent className="space-y-4 lg:columns-1 lg:max-w-1/2">
-                <div className="space-y-1">
-                  <Label htmlFor="name"></Label>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      defaultChecked={data.pg_gcash === '1'}
-                      onCheckedChange={val => setData('pg_gcash', val)}
-                      id="pg_gcash"
-                      name="pg_gcash"
-                    />
-                    <Label htmlFor="pg_gcash">Enable Gcash</Label>
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="name"></Label>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      defaultChecked={data.pg_maya === '1'}
-                      onCheckedChange={val => setData('pg_maya', val)}
-                      id="pg_maya"
-                      name="pg_maya"
-                    />
-                    <Label htmlFor="pg_maya">Enable PayMaya</Label>
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="name"></Label>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      defaultChecked={data.show_video === '1'}
-                      onCheckedChange={val => setData('show_video', val)}
-                      id="show_video"
-                      name="show_video"
-                    />
-                    <Label htmlFor="show_video">Show Video</Label>
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="video_banner">Video Banner</Label>
-                  <Input
-                    id="video_banner"
-                    type="file"
-                    name="video_banner"
-                    onChange={e => setData('video_banner', e.target.files[0])}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="dummy_bet_amount">Dummy Bets Amount</Label>
-                  <Input
-                    id="dummy_bet_amount"
-                    type="number"
-                    name="dummy_bet_amount"
-                    onChange={e => setData('dummy_bet_amount', e.target.value)}
-                    defaultValue={data.dummy_bet_amount}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="dummy_exec_time">Dummy Exec Time (seconds)</Label>
-                  <Input
-                    id="dummy_exec_time"
-                    type="number"
-                    name="dummy_exec_time"
-                    onChange={e => setData('dummy_exec_time', e.target.value)}
-                    defaultValue={data.dummy_exec_time}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="dummy_bet_amount">Min Bet</Label>
-                  <Input
-                    id="min_bet"
-                    type="number"
-                    name="min_bet"
-                    onChange={e => setData('min_bet', e.target.value)}
-                    defaultValue={data.min_bet}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="dummy_bet_amount">Max Bet</Label>
-                  <Input
-                    id="max_bet"
-                    type="number"
-                    name="max_bet"
-                    onChange={e => setData('max_bet', e.target.value)}
-                    defaultValue={data.max_bet}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="no_credits_banner">No Credits Banner</Label>
-                  <Input
-                    id="no_credits_banner"
-                    type="file"
-                    name="no_credits_banner"
-                    onChange={e => setData('no_credits_banner', e.target.files[0])}
-                  />
-                </div>
+                <Tabs defaultValue="general" className="w-[400px]">
+                  <TabsList>
+                    <TabsTrigger value="general">General</TabsTrigger>
+                    <TabsTrigger value="banners">Banners</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="general" className="space-y-4 lg:columns-1 lg:max-w-1/2">
+                    <div className="space-y-1 mt-2">
+                      <Label htmlFor="name"></Label>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          defaultChecked={data.pg_gcash === '1'}
+                          onCheckedChange={val => setData('pg_gcash', val)}
+                          id="pg_gcash"
+                          name="pg_gcash"
+                        />
+                        <Label htmlFor="pg_gcash">Enable Gcash</Label>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="name"></Label>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          defaultChecked={data.pg_maya === '1'}
+                          onCheckedChange={val => setData('pg_maya', val)}
+                          id="pg_maya"
+                          name="pg_maya"
+                        />
+                        <Label htmlFor="pg_maya">Enable PayMaya</Label>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="name"></Label>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          defaultChecked={data.show_video === '1'}
+                          onCheckedChange={val => setData('show_video', val)}
+                          id="show_video"
+                          name="show_video"
+                        />
+                        <Label htmlFor="show_video">Show Video</Label>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="dummy_bet_amount">Dummy Bets Amount</Label>
+                      <Input
+                        id="dummy_bet_amount"
+                        type="number"
+                        name="dummy_bet_amount"
+                        onChange={e => setData('dummy_bet_amount', e.target.value)}
+                        defaultValue={data.dummy_bet_amount}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="dummy_exec_time">Dummy Exec Time (seconds)</Label>
+                      <Input
+                        id="dummy_exec_time"
+                        type="number"
+                        name="dummy_exec_time"
+                        onChange={e => setData('dummy_exec_time', e.target.value)}
+                        defaultValue={data.dummy_exec_time}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="dummy_bet_amount">Min Bet</Label>
+                      <Input
+                        id="min_bet"
+                        type="number"
+                        name="min_bet"
+                        onChange={e => setData('min_bet', e.target.value)}
+                        defaultValue={data.min_bet}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="dummy_bet_amount">Max Bet</Label>
+                      <Input
+                        id="max_bet"
+                        type="number"
+                        name="max_bet"
+                        onChange={e => setData('max_bet', e.target.value)}
+                        defaultValue={data.max_bet}
+                      />
+                    </div>
+
+                  </TabsContent>
+                  {/* END ------------------- */}
+
+                  <TabsContent value="banners" className="space-y-4 lg:columns-1 lg:max-w-1/2">
+                    <div className="space-y-1">
+                      <Label htmlFor="header_banner">Header Banner (Homepage)</Label>
+                      <Input
+                        id="header_banner"
+                        type="file"
+                        name="header_banner"
+                        onChange={e => setData('header_banner', e.target.files[0])}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="video_banner">Video Banner</Label>
+                      <Input
+                        id="video_banner"
+                        type="file"
+                        name="video_banner"
+                        onChange={e => setData('video_banner', e.target.files[0])}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="no_credits_banner">No Credits Banner</Label>
+                      <Input
+                        id="no_credits_banner"
+                        type="file"
+                        name="no_credits_banner"
+                        onChange={e => setData('no_credits_banner', e.target.files[0])}
+                      />
+                    </div>
+
+                  </TabsContent>
+                </Tabs>
+
               </CardContent>
               <CardFooter>
                 <Button>Save changes</Button>

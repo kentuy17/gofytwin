@@ -6,8 +6,8 @@ import { AppSidebar } from '@/components/app-sidebar'
 import { AppSidebarHeader } from '@/components/app-sidebar-header'
 import { ThemeProvider } from '@/components/theme-provider'
 
-export function Banner() {
-  return <img src="/images/gamefowl-master-header-v2.gif" style={{ height: '55px' }} className="max-w-full" />
+export function Banner({ image }: { image: string }) {
+  return <img src={image} style={{ height: '55px' }} className="max-w-full" />
 }
 
 export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {

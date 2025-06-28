@@ -128,6 +128,10 @@ class SettingsSeeder extends Seeder
                 'field' => 'dummy_exec_time',
                 'value' => 60,
             ],
+            [
+                'field' => 'header_banner',
+                'value' => '/images/gamefowl-master-header-v2.gif',
+            ],
         ]);
 
 
