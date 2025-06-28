@@ -152,13 +152,10 @@ function LoginDialog({ site }) {
     width: 'calc(100% - 32px)',
   }
 
-  // eslint-disable-next-line no-console
-  useEffect(() => console.log(null), [])
-
   return (
     <AlertDialog open>
       <AlertDialogTrigger></AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="top-[60%]">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-yellow-500">Login / Register Here:</AlertDialogTitle>
           <AlertDialogDescription></AlertDialogDescription>

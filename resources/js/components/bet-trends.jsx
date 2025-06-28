@@ -14,12 +14,12 @@ import { OperatorContext } from '@/context/operator-context'
 import { usePage } from '@inertiajs/react'
 import axios from 'axios'
 import { useContext, useEffect, useMemo, useState } from 'react'
+import { PromoBanner } from './bet-dialog'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Switch } from './ui/switch'
 import '../../css/bet-arnie.css'
-import { PromoBanner } from './bet-dialog'
 
 const statuses = {
   OPEN: {

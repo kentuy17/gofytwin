@@ -22,7 +22,7 @@ const navItems = [
         level: 0,
       },
       {
-        title: 'Cash-In',
+        title: 'Cash In',
         url: '/player/deposit',
         icon: CoinsIcon,
         level: 0,

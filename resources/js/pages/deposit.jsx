@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
+import { PromoBanner } from '@/components/bet-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -130,7 +131,7 @@ function PaymentProvider({ onInputChange, item }) {
   )
 }
 
-function Deposit({ providers, xrftoken }) {
+function Deposit({ providers, xrftoken, ci_promo_banner }) {
   const [inputValue, setInputValue] = useState(null)
   const handleInputChange = (newValue) => {
     setInputValue(newValue)
@@ -146,6 +147,7 @@ function Deposit({ providers, xrftoken }) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="flex flex-col m-6">
+        <PromoBanner image={ci_promo_banner} />
         <div className="text-center mb-3">
           Click to select outlet:
         </div>

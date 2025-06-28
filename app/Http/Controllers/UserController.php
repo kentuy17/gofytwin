@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cashins;
+use App\Models\Settings;
 use App\Models\User;
 use App\Models\Withdrawals;
 use Inertia\Inertia;
@@ -79,7 +80,8 @@ class UserController extends Controller
                     'max' => 10000
                 ],
             ],
-            'xrftoken'=>csrf_token()
+            'ci_promo_banner' => Settings::get('ci_promo_banner'),
+            'xrftoken'=>csrf_token(),
         ]);
     }
     public function my_cashin()
