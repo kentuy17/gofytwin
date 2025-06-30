@@ -8,13 +8,14 @@ interface AuthLayoutProps {
   name?: string
   title?: string
   description?: string
+  login_promo_banner?: string
 }
 
 function MyManok() {
-  return <img src="/images/gamefowl-master-logo-official.png" className="w-[100px] my-3" />
+  return <img src="/images/gamefowl-master-logo-official.png" className="max-w-[90px] my-3" />
 }
 
-export default function AuthSimpleLayout({ children, title, description }: PropsWithChildren<AuthLayoutProps>) {
+export default function AuthSimpleLayout({ children, title, description, login_promo_banner }: PropsWithChildren<AuthLayoutProps>) {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10 bg-image-login">
@@ -25,7 +26,7 @@ export default function AuthSimpleLayout({ children, title, description }: Props
               <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
                 <div className=" flex flex-col h-12 w-12 items-center justify-center rounded-md">
                   <MyManok />
-                  <img className="block max-w-[235px] mb-36" src="/images/LEADERBOARD-BANNER-FRONT-PAGE-3.gif" alt="LEADERBOARD-BANNER-FRONT-PAGE" />
+                  {login_promo_banner && <img className="block max-w-[235px] mb-36" src={login_promo_banner} alt="LEADERBOARD-BANNER-FRONT-PAGE" />}
                 </div>
                 <span className="sr-only">{title}</span>
               </Link>

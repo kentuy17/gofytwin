@@ -153,9 +153,10 @@ function Admin({ settings }) {
                   </TabsContent>
                   {/* END ------------------- */}
 
+                  {/* START BANNERS TAB */}
                   <TabsContent value="banners" className="space-y-4 lg:columns-1 lg:max-w-1/2">
                     <div className="space-y-1">
-                      <Label htmlFor="header_banner">Header Banner (Homepage)</Label>
+                      <Label htmlFor="header_banner">Header (Homepage)</Label>
                       <Input
                         id="header_banner"
                         type="file"
@@ -164,16 +165,7 @@ function Admin({ settings }) {
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label htmlFor="ci_promo_banner">CI Promo Banner</Label>
-                      <Input
-                        id="ci_promo_banner"
-                        type="file"
-                        name="ci_promo_banner"
-                        onChange={e => setData('ci_promo_banner', e.target.files[0])}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="video_banner">Video Banner</Label>
+                      <Label htmlFor="video_banner">No video</Label>
                       <Input
                         id="video_banner"
                         type="file"
@@ -182,7 +174,7 @@ function Admin({ settings }) {
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label htmlFor="no_credits_banner">No Credits Banner</Label>
+                      <Label htmlFor="no_credits_banner">No credits</Label>
                       <Input
                         id="no_credits_banner"
                         type="file"
@@ -190,7 +182,24 @@ function Admin({ settings }) {
                         onChange={e => setData('no_credits_banner', e.target.files[0])}
                       />
                     </div>
-
+                    <div className="space-y-1">
+                      <Label htmlFor="ci_promo_banner">CI Promo</Label>
+                      <Input
+                        id="ci_promo_banner"
+                        type="file"
+                        name="ci_promo_banner"
+                        onChange={e => setData('ci_promo_banner', e.target.files[0])}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="login_promo_banner">Splash Screen</Label>
+                      <Input
+                        id="login_promo_banner"
+                        type="file"
+                        name="login_promo_banner"
+                        onChange={e => setData('login_promo_banner', e.target.files[0])}
+                      />
+                    </div>
                   </TabsContent>
                 </Tabs>
 

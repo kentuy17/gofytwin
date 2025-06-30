@@ -8,7 +8,6 @@ import AppLayout from '@/layouts/app-layout'
 import { Banner } from '@/layouts/app/app-sidebar-layout'
 import { formatMoney } from '@/lib/utils'
 import { Head, router, usePage } from '@inertiajs/react'
-// import Echo from 'laravel-echo'
 import { PlusCircleIcon } from 'lucide-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { pusher } from '../../echo'
@@ -218,15 +217,10 @@ export default function Dashboard({ commonData, player, user, settings }) {
         setBetStatus(status)
 
         if (status === 'W') {
-          // alert(`Congratulations! You win ${formatMoney(win_amount)}`)
           setWinAmount(win_amount)
           handleShowCongrats()
           tada.play()
         }
-
-        // if (status === 'D' || status === 'C') {
-        //   alert(`Returned ${formatMoney(win_amount)}`)
-        // }
       })
 
     if (user.credits === 0 && !playerHasBet) {
@@ -252,7 +246,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
 
   useEffect(() => {
     localStorage.setItem('ctr', logoutCtr + 1)
-    if (Number.parseInt(logoutCtr) > 5) {
+    if (Number.parseInt(logoutCtr) > 5 && user.user_level !== 5000) {
       localStorage.setItem('ctr', 0)
       setLogoutCtr(0)
 
@@ -261,6 +255,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
       // eslint-disable-next-line no-undef
       router.post(route('logout'))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logoutCtr])
 
   return (
@@ -288,9 +283,7 @@ export default function Dashboard({ commonData, player, user, settings }) {
           <BetStats />
           <PlaceBets reset={setLogoutCtr} points={user.credits} />
         </div>
-        {/* <PromoBanner image={settings.ci_promo_banner} /> */}
         <BetTrends image={settings.ci_promo_banner} />
-        {/* </div> */}
         <CongratsDialog win_amount={winAmount} status={betStatus}>
           <Button hidden ref={btnRef} variant="outline">Show Congrats Dialog</Button>
         </CongratsDialog>

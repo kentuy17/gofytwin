@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\AuthOtpController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Settings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,7 @@ class AuthenticatedSessionController extends Controller
         return Inertia::render('auth/login', [
             'status' => $request->session()->get('status'),
             'site' => $otp->login($request),
+            'login_promo_banner' => Settings::get('login_promo_banner'),
         ]);
     }
 

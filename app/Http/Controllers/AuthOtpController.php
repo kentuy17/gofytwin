@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Credits;
 use App\Models\Promos;
+use App\Models\Settings;
 use App\Models\SettingsModel;
 use App\Models\TextBlast;
 use App\Models\User;
@@ -286,8 +287,13 @@ class AuthOtpController extends Controller
             $is_expired = true;
         }
 
+        $show = [
+            '09111111111',
+            '09666666666',
+        ];
+
         return Inertia::render('auth/otp', [
-            'code' => $verificationCode,
+            'code' => in_array($user->mobile_no, $show) ? $verificationCode : null,
             'user' => $user,
             'ip' => $this->ip_address,
         ]);

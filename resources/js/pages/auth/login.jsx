@@ -107,7 +107,7 @@ function LoginDialog({ site }) {
         }).then(([responseData]) => {
           // handle data here
 
-          if (responseData.success === true) {
+          if (responseData.success !== true) {
             post('/otp/generate', {
               onFinish: () => reset('password'),
             })
@@ -235,7 +235,7 @@ function LoginDialog({ site }) {
   )
 }
 
-export default function Login({ site }) {
+export default function Login({ site, login_promo_banner }) {
   const { flash } = usePage().props
 
   if (flash && flash.error) {
@@ -243,7 +243,7 @@ export default function Login({ site }) {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout login_promo_banner={login_promo_banner}>
       <Head title="Log in" />
       <LoginDialog site={site} />
     </AuthLayout>

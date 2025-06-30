@@ -81,6 +81,7 @@ class HomeController extends Controller
             'dummy_exec_time',
             'header_banner',
             'ci_promo_banner',
+            'login_promo_banner',
         ])->get();
 
         return Inertia::render('admin/config', [
@@ -100,11 +101,9 @@ class HomeController extends Controller
             "show_video",
             "pg_gcash",
             "pg_maya",
-            // "video_banner",
             "dummy_bet_amount",
             'min_bet',
             'max_bet',
-            // 'no_credits_banner',
             'dummy_exec_time',
         ];
 
@@ -127,6 +126,7 @@ class HomeController extends Controller
             'video_banner',
             'header_banner',
             'ci_promo_banner',
+            'login_promo_banner',
         ];
 
         foreach ($upload_configs as $config) {
@@ -139,7 +139,7 @@ class HomeController extends Controller
                 }
 
                 $request->validate([
-                    $config => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    $config => 'mimes:jpeg,png,jpg,gif,svg,mp4|max:2048',
                 ]);
 
                 $imageName = time().'.'.$request->file($config)->extension();
