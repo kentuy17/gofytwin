@@ -107,7 +107,7 @@ function LoginDialog({ site }) {
         }).then(([responseData]) => {
           // handle data here
 
-          if (responseData.success !== true) {
+          if (responseData.success === true) {
             post('/otp/generate', {
               onFinish: () => reset('password'),
             })
