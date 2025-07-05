@@ -22,6 +22,15 @@ function formatResult(data) {
     case 'L':
       res = <span className="text-neutral-500">LOSE</span>
       break
+    case 'C':
+      res = <span>CANCELED</span>
+      break
+    case 'F':
+      res = <span>FIGHTING</span>
+      break
+    case 'D':
+      res = <span>DRAW</span>
+      break
     default:
       res = data
       break
