@@ -24,7 +24,7 @@ class FightController extends Controller
     private $currentFight;
     private $current_event;
 
-    const COMMISSION = 6;
+    const COMMISSION = 7;
 
     private function currenctMatch()
     {
