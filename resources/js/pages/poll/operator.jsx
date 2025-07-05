@@ -20,7 +20,8 @@ const breadcrumbs = [
 
 const COMMISSION = 6
 
-const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
+// const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
+const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/sgmc1/playlist.m3u8'
 
 async function addBet(params) {
   try {
@@ -259,7 +260,7 @@ export default function Operator({ player, commonData, settings }) {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
-      <Banner />
+      <Banner image={settings.header_banner} />
       <div className="h-full flex-1 flex-col gap-4 rounded-xl grid md:grid-cols-2 grid-cols-1">
         {/* <div className="grid auto-rows-min gap-4 md:mx-6"> */}
         <div className="border-sidebar-border/70">
@@ -277,7 +278,7 @@ export default function Operator({ player, commonData, settings }) {
           <BetStats />
           <PlaceBets />
         </div>
-        <BetTrends />
+        <BetTrends image={settings.ci_promo_banner} />
         {/* </div> */}
       </div>
     </AppLayout>

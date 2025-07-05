@@ -154,6 +154,9 @@ class FightController extends Controller
             'settings' => [
                 'show_video' => Settings::get('show_video'),
                 'video_banner' => Settings::get('video_banner'),
+                'no_credits_banner' => Settings::get('no_credits_banner'),
+                'header_banner' => Settings::get('header_banner'),
+                'ci_promo_banner' => Settings::get('ci_promo_banner'),
             ]
         ]);
     }
@@ -167,7 +170,7 @@ class FightController extends Controller
     }
     public function bets()
     {
-        $bets = Bet::where('user_id',Auth::user()->id)
+        $bets = BetHistory::where('user_id',Auth::user()->id)
             ->orderBy('id', 'desc')->get();
         return Inertia::render('bets',[
             'bets' => $bets,

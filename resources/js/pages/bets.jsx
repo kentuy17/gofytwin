@@ -25,6 +25,17 @@ export function getData() {
       status: 'processing',
       email: 'example@gmail.com',
     },
+    /*
+    <th>#</th>
+    <th>FIGHT #</th>
+    <th>BET SIDE</th>
+    <th>RESULT</th>
+    <th>TOTAL WIN</th>
+    <th>PERCENT %</th>
+    <th>BET</th>
+    <th>CURRENT POINTS</th>
+    <th>DATE</th>
+    */
   ]
 }
 
