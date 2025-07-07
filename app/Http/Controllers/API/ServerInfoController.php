@@ -1,7 +1,7 @@
 <?php
-   
+
 namespace App\Http\Controllers\API;
-   
+
 use DataTables;
 use Carbon\Carbon;
 use App\Models\Bet;
@@ -44,7 +44,8 @@ use App\Http\Resources\CashinResource;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class ServerInfoController extends BaseController
-{   
+{
+    const COMPANY_SHARE = 0.07;
     const INACTIVE = 40;
     const NEW_REGISTERS = 20;
     public function serverTime2(Request $request){
@@ -74,28 +75,28 @@ class ServerInfoController extends BaseController
             return $this->sendResponse($data, 'Response passed..');
         }
     }
-    
 
 
 
 
-    
+
+
     public function serverTime(Request $request){
         if ($request->ajax()) {
-            
+
             return $this->sendResponse(date("h:iA"), 'Response passed..');
         }
     }
     public function balance(Request $request){
         if ($request->ajax()) {
-            $balance = User::find($request->user_id); 
+            $balance = User::find($request->user_id);
             $balance = number_format($balance->credits->amount, 2, '.',',');
-            
+
             return $this->sendResponse($balance, 'Response passed..');
         }
     }
     public function user_ci(Request $request){
-        $data = [];           
+        $data = [];
         $orderData = Callbacks::where('merchant_order_num',$request->id)->get();
         $successful_ci = 0;
         foreach ($orderData as $orderData) {
@@ -124,11 +125,11 @@ class ServerInfoController extends BaseController
         // $data['total'] = $successful_ci;
 
         return $this->sendResponse($data, 'Response passed..');
-                       
+
     }
     public function company_share_info_board_birth(Request $request){
         $from = isset($request->from) ? $request->from : date('Y-m-d');
-      
+
         $totalEarnings = 0;
         $fights = Fight::all();
         foreach($fights as $fight){
@@ -139,14 +140,14 @@ class ServerInfoController extends BaseController
                 }
             }
         }
-        $total = $totalEarnings * 0.06;
+        $total = $totalEarnings * self::COMPANY_SHARE;
         $data['overall_company_share'] = number_format($total, 2, '.',',');
 
         return $this->sendResponse($data, 'Response passed..');
     }
     public function company_share_info_board(Request $request){
         $from = isset($request->from) ? $request->from : date('Y-m-d');
-      
+
         $totalEarnings = 0;
         $fights = Fight::whereBetween('created_at', [$from." 00:00:00", $from." 23:59:59"])->get();
         foreach($fights as $fight){
@@ -157,7 +158,7 @@ class ServerInfoController extends BaseController
                 }
             }
         }
-        $total = $totalEarnings * 0.06;
+        $total = $totalEarnings * self::COMPANY_SHARE;
         $data['daily_company_share'] = number_format($total, 2, '.',',');
 
         return $this->sendResponse($data, 'Response passed..');
@@ -189,7 +190,7 @@ class ServerInfoController extends BaseController
                         $company_share = $total_meron + $total_wala;
                         $total_bets += $company_share;
                         $total_pool += $total_meron + $total_wala;
-                        $house_cut += $total_pool * 0.06;
+                        $house_cut += $total_pool * self::COMPANY_SHARE;
                         $net_pool += $total_pool - $house_cut;
                         if($fight->game_winner = 'M'){
                             if($total_meron == 0){
@@ -232,7 +233,7 @@ class ServerInfoController extends BaseController
 
         $data['total_meron'] = "₱".number_format($total_meron, 2, '.', ',');
         $data['total_wala'] = "₱".number_format($total_wala, 2, '.', ',');
-        $data['company_share'] = "₱".number_format($company_share * 0.06, 2, '.', ',');
+        $data['company_share'] = "₱".number_format($company_share * self::COMPANY_SHARE, 2, '.', ',');
         $data['total_winnings'] = number_format($total_win_amount, 2, '.',',');
         // $data['total_bets'] = number_format($total_bets, 2, '.',',');
         $data['total_bets'] = $total_bets;
@@ -265,7 +266,7 @@ class ServerInfoController extends BaseController
             ->orderBy('created_at', 'desc')
             ->paginate($request->per_page ?? 1000);
         }
-        
+
 
         return CashinResource::collection($readers);
         // $data = CashinResource::collection($readers);
@@ -282,13 +283,13 @@ class ServerInfoController extends BaseController
             $total_ci = Cashins::where('user_id', $user_id)->where('status', 'success')->sum('amount');
             $gross = 0;
             $profitability = 100;
-   
+
             $data['gross'] = number_format($gross, 2, '.',',');
             $data['win_count'] = 0;
             $data['total_winnings'] = number_format(0, 2, '.',',');
             $data['profitability'] = $profitability;
             $data['total_ci'] = number_format($total_ci, 2, '.',',');
-            
+
             return $this->sendResponse($data, 'Response passed..');
         }
     }
@@ -301,20 +302,20 @@ class ServerInfoController extends BaseController
             $data['two_winners'] = 0;
             $data['three_winners'] = 0;
             $data['four_winners'] = 0;
-            
+
             return $this->sendResponse($data, 'Response passed..');
         }
     }
     public function check_credits(Request $request){
         $user = User::find($request->user_id);
-        
+
         return $this->sendResponse($user->credits, 'Response passed..');
     }
     public function check_balance(Request $request){
         if ($request->ajax()) {
             $balance = new CheckBalance;
-            $bal = $balance->getBalance($request); 
-            
+            $bal = $balance->getBalance($request);
+
             return $this->sendResponse($bal, 'Response passed..');
         }
     }
@@ -338,15 +339,15 @@ class ServerInfoController extends BaseController
 
         $inactive = Credits::where('amount',self::INACTIVE)->count();
         $new_registers = Credits::where('amount',self::NEW_REGISTERS)->count();
-  
-        $users = DB::select("SELECT cashins.user_id, 
-                    COUNT(cashins.user_id) as hits, 
-                    users.mobile_no as mobile_no, 
-                    users.website_register as website_register, 
-                    users.created_at  as created_at 
+
+        $users = DB::select("SELECT cashins.user_id,
+                    COUNT(cashins.user_id) as hits,
+                    users.mobile_no as mobile_no,
+                    users.website_register as website_register,
+                    users.created_at  as created_at
                 FROM
-                    users  
-                LEFT JOIN cashins ON users.id=cashins.user_id 
+                    users
+                LEFT JOIN cashins ON users.id=cashins.user_id
 
                 WHERE  users.created_at >= '".$from." 00:00:00' AND users.created_at <= '".$to." 23:59:59' GROUP BY users.mobile_no,users.created_at,users.website_register,cashins.user_id ORDER BY created_at desc");
         $nap = 0;
@@ -358,7 +359,7 @@ class ServerInfoController extends BaseController
                     // $status = 'active';
                     $nap++;
                 }else{
-                    $nip++; 
+                    $nip++;
                 }
             }else {
                 $nip++;
@@ -374,7 +375,7 @@ class ServerInfoController extends BaseController
         $data['inactive_players'] = $inactive;
         $data['new_registers'] = $new_registers;
         $data['daily_new_registers'] = $daily_new_registers;
-        
+
         return $this->sendResponse($data, 'Response passed..');
     }
     public function get_bettors(Request $request){
@@ -384,7 +385,7 @@ class ServerInfoController extends BaseController
             $to = isset($request->to) ? $request->to : date('Y-m-d');
             $bets = 0;
             $total_cashin = 0;
-       
+
             $cashins = DB::table('cashins')
                         ->select('id','user_id')
                         ->where('status', 'success')
@@ -429,30 +430,30 @@ class ServerInfoController extends BaseController
             # withdrawal request
             $withdrawal_request = Withdrawals::whereNot('process_status','success')->count();
             $data['withdrawal_request'] = $withdrawal_request;
-            
+
             return $this->sendResponse($data, 'Response passed..');
         }
     }
- 
+
     public function get_cashin_total(Request $request){
         if ($request->ajax()) {
 
             $cashin = Cashins::all()->where('draw_date',date('Y-m-d'))->where('status','success');
             $total = $cashin->unique('user_id')->count();
-            
+
             $data['total_cashin'] = $total;
-            
+
             return $this->sendResponse($data, 'Response passed..');
         }
     }
-     
- 
- 
+
+
+
     public function resend_otp(Request $request){
         if ($request->ajax()) {
-            $balance = PotMoney::find(1); 
+            $balance = PotMoney::find(1);
             $balance = number_format($balance->amount, 2, '.',',');
-            
+
             return $this->sendResponse($balance, 'Response passed..');
         }
     }

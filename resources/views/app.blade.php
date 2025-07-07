@@ -26,7 +26,7 @@
   }
 
 </script>
-@if (Request::is('login'))
+@if (Route::current()->getName() == 'login')
   <script src='https://www.google.com/recaptcha/api.js?render=6Le8DV4rAAAAAF-ouzsNUjLykUkSRauVLJ6gfmJm'></script>
 @endif
 </html>
