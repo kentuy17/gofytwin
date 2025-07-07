@@ -11,7 +11,7 @@
         url: "{{route('winner.info.company.share.since.birth')}}",
         data: {
             from:"{{$from}}",
-        },  
+        },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
@@ -31,7 +31,7 @@
             url: "{{route('winner.info.company.share')}}",
             data: {
                 from:"{{$from}}",
-            },  
+            },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -56,7 +56,7 @@
                     to:"{{$to}}",
                     record_id:e,
                     play:"players"
-                },  
+                },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -133,7 +133,7 @@
                     <th class="text-primary">Wala Bets (Blue Color)</th>
                     <th>Winner</th>
                     <th>Company Share</th>
-                    <th>Company Cut: 6% (0.06)</th>
+                    <th>Company Cut: 7% (0.07)</th>
                     <th>Date Timestamp</th>
                     <th>Fight ID</th>
                     <th>Net Pool</th>
@@ -143,7 +143,7 @@
             <tbody>
                     @php
                         $cntr = 1;
-                        
+
                     @endphp
                     @foreach($fights as $fight)
                     @php
@@ -158,7 +158,7 @@
                             case 'W':
                                     $winSide = '<span class="text-primary">WALA</span>';
                                 break;
-                            
+
                             case 'C':
                                     $winSide = '<span class="text-secondary">CANCELLED</span>';
                                 break;
@@ -166,12 +166,12 @@
                             case 'X':
                                     $winSide = '<span class="text-warning">DRAW</span>';
                                 break;
-                            
+
                             default:
                                 # code...
                                 break;
                         }
-                        
+
                     @endphp
                     @php
                         @endphp
@@ -195,18 +195,18 @@
                             $cntr ++;
                         @endphp
                     @endforeach
-                 
+
             </tbody>
         </table>
     </div>
-   
+
 </div>
 @endsection
 
 <x-js-lib />
 <x-modal-info />
 <x-datepicker />
- 
+
 @section('scripts')
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 @endsection

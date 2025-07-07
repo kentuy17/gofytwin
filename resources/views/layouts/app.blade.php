@@ -16,17 +16,17 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
-        body #app {  
+        body #app {
             /* width: 100vw;
             height: 100vh;
-            background-image: url('{{asset("images/700x508.png")}}'); 
+            background-image: url('{{asset("images/700x508.png")}}');
             background-size: cover;
             background-repeat: repeat;
             background-size: 100px; */
             background-color: grey !important;
             color: #fff;
         }
-        
+
     </style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1FG3RNCF6P"></script>
@@ -42,8 +42,8 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-black shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand">
-                    GoFytWin    
+                <a  class="navbar-brand" href="{{ url('/') }}" class="navbar-brand">
+                    GoFytWin
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -53,8 +53,8 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         @auth
-                            @include('components.sidebar') 
-                        @endauth 
+                            @include('components.sidebar')
+                        @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
