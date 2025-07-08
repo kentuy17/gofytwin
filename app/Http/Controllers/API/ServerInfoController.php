@@ -45,7 +45,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 
 class ServerInfoController extends BaseController
 {
-    const COMPANY_SHARE = 0.07;
+    const COMPANY_SHARE = 0.10;
     const INACTIVE = 40;
     const NEW_REGISTERS = 20;
     public function serverTime2(Request $request){

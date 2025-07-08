@@ -133,7 +133,7 @@
                     <th class="text-primary">Wala Bets (Blue Color)</th>
                     <th>Winner</th>
                     <th>Company Share</th>
-                    <th>Company Cut: 7% (0.07)</th>
+                    <th>Company Cut: 10% (0.10)</th>
                     <th>Date Timestamp</th>
                     <th>Fight ID</th>
                     <th>Net Pool</th>
