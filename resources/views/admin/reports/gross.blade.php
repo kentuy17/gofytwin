@@ -182,7 +182,7 @@
                             <td class="text-primary total_wala_{{$fight->id}}">Loading...</td>
                             <td><?php echo $winSide ?></td>
                             <td class="company_share_{{$fight->id}} text-success">Loading...</td> {{--company share--}}
-                            <td>7%</td>
+                            <td>10%</td>
                             <td><?php echo date('M d, Y h:iA',strtotime($fight->created_at)) ?></td>
                             <td>{{$fight->id}}</td>
                             <td class="net_pool_{{$fight->id}}">Loading...</td>
