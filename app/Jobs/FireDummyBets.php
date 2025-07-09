@@ -38,7 +38,7 @@ class FireDummyBets implements ShouldQueue
         $option = ['M' => 0, 'W' => 0];
 
         $choices = array('M', 'W');
-        $amount = range(100, 900);
+        $amount = range(50, 400);
         $dummy_bets = [];
 
         while ($option['M'] <= $limit || $option['W'] <= $limit) {
@@ -47,11 +47,11 @@ class FireDummyBets implements ShouldQueue
 
             if ($option[$side] > $limit) continue;
 
-            if ((($option['M'] - $option['W']) > 1000) && $side == 'M') {
+            if ((($option['M'] - $option['W']) > 500) && $side == 'M') {
                 $side = 'W';
             }
 
-            if ((($option['W'] - $option['M']) > 1000) && $side == 'W') {
+            if ((($option['W'] - $option['M']) > 500) && $side == 'W') {
                 $side = 'M';
             }
 
