@@ -1,6 +1,6 @@
 {
-  "_app-layout-DF9yj5iV.js": {
-    "file": "assets/app-layout-DF9yj5iV.js",
+  "_app-layout-Dflkc_1Z.js": {
+    "file": "assets/app-layout-Dflkc_1Z.js",
     "name": "app-layout",
     "imports": [
       "_vendor-DuT8KaIC.js",
@@ -20,8 +20,8 @@
     "file": "assets/bet-arnie-6TzRgHii.css",
     "src": "_bet-arnie-6TzRgHii.css"
   },
-  "_bet-dialog-Dd35Z01B.js": {
-    "file": "assets/bet-dialog-Dd35Z01B.js",
+  "_bet-dialog-vl3m2WpD.js": {
+    "file": "assets/bet-dialog-vl3m2WpD.js",
     "name": "bet-dialog",
     "imports": [
       "_vendor-DuT8KaIC.js",
@@ -103,14 +103,14 @@
       "assets/vendor-BGiR1nSE.css"
     ]
   },
-  "_videojs-BkDuSjTg.js": {
-    "file": "assets/videojs-BkDuSjTg.js",
+  "_videojs-CVIH0IMw.js": {
+    "file": "assets/videojs-CVIH0IMw.js",
     "name": "videojs",
     "imports": [
       "_vendor-DuT8KaIC.js",
       "_theme-provider-BaWc09VA.js",
       "resources/js/app.tsx",
-      "_bet-dialog-Dd35Z01B.js",
+      "_bet-dialog-vl3m2WpD.js",
       "_label-DIXlQMuH.js",
       "_switch-CHbyNS-s.js"
     ],
@@ -150,7 +150,7 @@
     ]
   },
   "resources/js/app.tsx": {
-    "file": "assets/app-DZhdimlY.js",
+    "file": "assets/app-z7JqGLVC.js",
     "name": "app",
     "src": "resources/js/app.tsx",
     "isEntry": true,
@@ -179,7 +179,7 @@
     ]
   },
   "resources/js/pages/admin/config.jsx": {
-    "file": "assets/config-DQ17QRDW.js",
+    "file": "assets/config-Cldp6QK-.js",
     "name": "config",
     "src": "resources/js/pages/admin/config.jsx",
     "isDynamicEntry": true,
@@ -190,7 +190,7 @@
       "_input-BX4OTcsO.js",
       "_label-DIXlQMuH.js",
       "_switch-CHbyNS-s.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "resources/js/app.tsx"
     ],
     "css": [
@@ -231,7 +231,7 @@
     ]
   },
   "resources/js/pages/bets.jsx": {
-    "file": "assets/bets-DIYqW15C.js",
+    "file": "assets/bets-46mP1SAa.js",
     "name": "bets",
     "src": "resources/js/pages/bets.jsx",
     "isDynamicEntry": true,
@@ -239,7 +239,7 @@
       "_vendor-DuT8KaIC.js",
       "_select-oKcwMuT0.js",
       "_theme-provider-BaWc09VA.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "resources/js/app.tsx"
     ],
     "css": [
@@ -247,7 +247,7 @@
     ]
   },
   "resources/js/pages/cashout.jsx": {
-    "file": "assets/cashout-BQOaBw43.js",
+    "file": "assets/cashout-DQW2wTWi.js",
     "name": "cashout",
     "src": "resources/js/pages/cashout.jsx",
     "isDynamicEntry": true,
@@ -257,7 +257,7 @@
       "_card-C9uIQ2Za.js",
       "_input-BX4OTcsO.js",
       "_label-DIXlQMuH.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "resources/js/app.tsx"
     ],
     "css": [
@@ -266,17 +266,17 @@
     ]
   },
   "resources/js/pages/dashboard.jsx": {
-    "file": "assets/dashboard-BCBptOmf.js",
+    "file": "assets/dashboard-C11qcFN4.js",
     "name": "dashboard",
     "src": "resources/js/pages/dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-DuT8KaIC.js",
-      "_videojs-BkDuSjTg.js",
+      "_videojs-CVIH0IMw.js",
       "_theme-provider-BaWc09VA.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "resources/js/app.tsx",
-      "_bet-dialog-Dd35Z01B.js",
+      "_bet-dialog-vl3m2WpD.js",
       "_dialog-BWFcMB3P.js",
       "_label-DIXlQMuH.js",
       "_switch-CHbyNS-s.js"
@@ -287,7 +287,7 @@
     ]
   },
   "resources/js/pages/deposit-tmp.jsx": {
-    "file": "assets/deposit-tmp-DgIfkzb9.js",
+    "file": "assets/deposit-tmp-COb72RS5.js",
     "name": "deposit-tmp",
     "src": "resources/js/pages/deposit-tmp.jsx",
     "isDynamicEntry": true,
@@ -297,7 +297,7 @@
       "_card-C9uIQ2Za.js",
       "_input-BX4OTcsO.js",
       "_label-DIXlQMuH.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "resources/js/app.tsx"
     ],
     "css": [
@@ -306,18 +306,18 @@
     ]
   },
   "resources/js/pages/deposit.jsx": {
-    "file": "assets/deposit-5yO6lxUj.js",
+    "file": "assets/deposit-zjgzRZDC.js",
     "name": "deposit",
     "src": "resources/js/pages/deposit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-DuT8KaIC.js",
-      "_bet-dialog-Dd35Z01B.js",
+      "_bet-dialog-vl3m2WpD.js",
       "_theme-provider-BaWc09VA.js",
       "_card-C9uIQ2Za.js",
       "_input-BX4OTcsO.js",
       "_label-DIXlQMuH.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "_dialog-BWFcMB3P.js",
       "resources/js/app.tsx"
     ],
@@ -327,7 +327,7 @@
     ]
   },
   "resources/js/pages/events.jsx": {
-    "file": "assets/events-OHDVtnL2.js",
+    "file": "assets/events-BJWqgQax.js",
     "name": "events",
     "src": "resources/js/pages/events.jsx",
     "isDynamicEntry": true,
@@ -336,7 +336,7 @@
       "_theme-provider-BaWc09VA.js",
       "_select-oKcwMuT0.js",
       "_dialog-BWFcMB3P.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "_input-BX4OTcsO.js",
       "resources/js/app.tsx",
       "_label-DIXlQMuH.js"
@@ -346,7 +346,7 @@
     ]
   },
   "resources/js/pages/my-cashin.jsx": {
-    "file": "assets/my-cashin-BfpyOwED.js",
+    "file": "assets/my-cashin-D-F5BDqC.js",
     "name": "my-cashin",
     "src": "resources/js/pages/my-cashin.jsx",
     "isDynamicEntry": true,
@@ -354,7 +354,7 @@
       "_vendor-DuT8KaIC.js",
       "_select-oKcwMuT0.js",
       "_theme-provider-BaWc09VA.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "resources/js/app.tsx"
     ],
     "css": [
@@ -362,7 +362,7 @@
     ]
   },
   "resources/js/pages/my-cashout.jsx": {
-    "file": "assets/my-cashout-Iaual0b5.js",
+    "file": "assets/my-cashout-CqM7ZXJe.js",
     "name": "my-cashout",
     "src": "resources/js/pages/my-cashout.jsx",
     "isDynamicEntry": true,
@@ -370,7 +370,7 @@
       "_vendor-DuT8KaIC.js",
       "_select-oKcwMuT0.js",
       "_theme-provider-BaWc09VA.js",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "resources/js/app.tsx"
     ],
     "css": [
@@ -378,17 +378,17 @@
     ]
   },
   "resources/js/pages/poll/dashboard.jsx": {
-    "file": "assets/dashboard-DftVxZoX.js",
+    "file": "assets/dashboard-BLX8Svrh.js",
     "name": "dashboard",
     "src": "resources/js/pages/poll/dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-DuT8KaIC.js",
-      "_bet-dialog-Dd35Z01B.js",
-      "_videojs-BkDuSjTg.js",
+      "_bet-dialog-vl3m2WpD.js",
+      "_videojs-CVIH0IMw.js",
       "_theme-provider-BaWc09VA.js",
       "resources/js/app.tsx",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "_echo-Dxc6qoEc.js",
       "_dialog-BWFcMB3P.js",
       "_label-DIXlQMuH.js",
@@ -400,18 +400,18 @@
     ]
   },
   "resources/js/pages/poll/operator.jsx": {
-    "file": "assets/operator-BZGHlutA.js",
+    "file": "assets/operator-CQyvB9Dz.js",
     "name": "operator",
     "src": "resources/js/pages/poll/operator.jsx",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-DuT8KaIC.js",
-      "_videojs-BkDuSjTg.js",
+      "_videojs-CVIH0IMw.js",
       "_theme-provider-BaWc09VA.js",
       "resources/js/app.tsx",
-      "_app-layout-DF9yj5iV.js",
+      "_app-layout-Dflkc_1Z.js",
       "_echo-Dxc6qoEc.js",
-      "_bet-dialog-Dd35Z01B.js",
+      "_bet-dialog-vl3m2WpD.js",
       "_dialog-BWFcMB3P.js",
       "_label-DIXlQMuH.js",
       "_switch-CHbyNS-s.js"

@@ -38,14 +38,24 @@ class FireDummyBets implements ShouldQueue
         $option = ['M' => 0, 'W' => 0];
 
         $choices = array('M', 'W');
-        $amount = range(100,1500);
+        $amount = range(100, 900);
         $dummy_bets = [];
 
-        while($option['M'] <= $limit || $option['W'] <= $limit) {
+        while ($option['M'] <= $limit || $option['W'] <= $limit) {
             $side = $choices[array_rand($choices)];
             $money = $amount[array_rand($amount)];
-            if($option[$side] > $limit) continue;
-            if($option['M'] > $limit && $option['W'] > $limit) break;
+
+            if ($option[$side] > $limit) continue;
+
+            if ((($option['M'] - $option['W']) > 1000) && $side == 'M') {
+                $side = 'W';
+            }
+
+            if ((($option['W'] - $option['M']) > 1000) && $side == 'W') {
+                $side = 'M';
+            }
+
+            if ($option['M'] > $limit && $option['W'] > $limit) break;
 
             $dummy_bets[] = [
                 'fight_id' => $this->currentFight->id,
@@ -63,12 +73,10 @@ class FireDummyBets implements ShouldQueue
 
         $delay = ($this->exec_time * 1000000) / count($dummy_bets);
         // Log::channel('test')->info($delay);
-        foreach($dummy_bets as $bet) {
+        foreach ($dummy_bets as $bet) {
             $betController->dummyBets($bet);
             // Log::channel('test')->info(json_encode($bet));
             usleep(floor($delay));
         }
-
-
     }
 }
