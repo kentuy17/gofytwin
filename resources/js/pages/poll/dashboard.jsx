@@ -23,6 +23,8 @@ const COMMISSION = 10
 
 // const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/swarena2/playlist.m3u8'
 const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/sgmc1/playlist.m3u8'
+// const VIDEO_URL = 'https://nondrm.mystreamingserver.live/livecf/mainsabong/playlist.m3u8'
+
 
 function PlaceBets({ reset, points }) {
   const { status } = useContext(OperatorContext)

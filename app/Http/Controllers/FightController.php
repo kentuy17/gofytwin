@@ -277,9 +277,12 @@ class FightController extends Controller
 
     private function activeEvent()
     {
-        $check = EventGame::where('status', 'ACTIVE')->orderBy('id', 'desc')->first();
+        $check = EventGame::where('status', 'ACTIVE')
+            ->orderBy('id', 'desc')
+            ->first();
+
         if (!$check) {
-            return $this->create([
+            return EventGame::create([
                 'name' => 'EVENT GAMEFOWL MASTER',
                 'event_date' => Carbon::now(),
                 'time_start' => '08:00:00',
