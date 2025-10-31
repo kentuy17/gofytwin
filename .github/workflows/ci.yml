@@ -84,7 +84,7 @@ jobs:
           php artisan key:generate --ansi
 
       - name: Download assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build-${{ needs.build.outputs.target-env }}
           path: public
